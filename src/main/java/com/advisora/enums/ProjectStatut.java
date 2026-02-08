@@ -1,4 +1,4 @@
 package com.advisora.enums;
 
-public class RoleUser {
+public enum ProjectStatut {
 }

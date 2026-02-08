@@ -1,4 +1,4 @@
 package com.advisora.entity;
 
-public class Ressources {
+public class Event {
 }

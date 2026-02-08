@@ -1,4 +1,4 @@
 package com.advisora.entity;
 
-public class Users {
+public class Project {
 }

@@ -1,4 +1,4 @@
 package com.advisora.entity;
 
-public class Investments {
+public class Ressource {
 }
