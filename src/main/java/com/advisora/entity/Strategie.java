@@ -1,4 +1,4 @@
 package com.advisora.entity;
 
-public class Bookings {
+public class Strategie {
 }
