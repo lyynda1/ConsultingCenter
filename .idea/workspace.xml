@@ -4,27 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Gerant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Bookings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Booking.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Decisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Decision.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Events.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Investments.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Investment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Objectives.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Objective.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Projects.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Ressources.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Ressource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Strategies.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Strategie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Transactions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Users.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/enums/ProjectsStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/ProjectStatut.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/enums/RoleUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/UserRole.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/enums/StrategyStatut.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/StrategyStatut.java" afterDir="false" />
-    </list>
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
