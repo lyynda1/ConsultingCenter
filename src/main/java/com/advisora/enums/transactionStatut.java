@@ -1,4 +1,5 @@
 package com.advisora.enums;
 
-public class transactionStatut {
+public enum transactionStatut {
+
 }

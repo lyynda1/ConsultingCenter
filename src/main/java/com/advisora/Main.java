@@ -1,93 +1,77 @@
 package com.advisora;
 
-import com.advisora.Services.ServiceUser;
-import com.advisora.entity.*;
+import com.advisora.Model.Strategie;
+import com.advisora.Services.ServiceStrategie;
+import com.advisora.Util.DB;
+import com.advisora.enums.StrategyStatut;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
-        ServiceUser us = new ServiceUser();
+        // TEST DATABASE CONNECTION
+        DB.testConnectionOrExit();
 
-        // 1) ADD CLIENT
-        Client c = new Client(
-                0,
-                "loulezeouuu@.com",
-                "123",
-                "Ali",
-                "Salah",
-                "2222",
-                "2000-01-01",
-                5000,
-                "desc"
-        );
-        Client c1 = new Client(
-                0,
-                "lalaezuuu@.com",
-                "123",
-                "Ali",
-                "Salah",
-                "2222",
-                "2000-01-01",
-                5000,
-                "desc"
+        ServiceStrategie ss = new ServiceStrategie();
+
+        // 1) ADD STRATEGIES
+        Strategie s1 = new Strategie(
+                "Growth Strategy 2024",
+                1,
+                StrategyStatut.En_cours,
+                LocalDateTime.now(),
+                null,
+                15000.50,
+                "Market expansion plan for Q1"
         );
 
-        us.ajouter(c);
-        us.ajouter(c1);
-        System.out.println("✅ Added client id=" + c.getId());
+        Strategie s2 = new Strategie(
+                "Cost Reduction Initiative",
+                1,
+                StrategyStatut.En_cours,
+                LocalDateTime.now(),
+                null,
+                8500.00,
+                "Optimize operational costs"
+        );
 
-        // 2) AFFICHER
+        ss.ajouter(s1);
+        ss.ajouter(s2);
+        System.out.println("✅ Added strategy 1 with id=" + s1.getId());
+        System.out.println("✅ Added strategy 2 with id=" + s2.getId());
+
+        // 2) DISPLAY ALL STRATEGIES
         System.out.println("\n=== LIST AFTER ADD ===");
-        List<User> list1 = us.afficher();
+        List<Strategie> list1 = ss.afficher();
         list1.forEach(System.out::println);
 
-        // 3) MODIFY SAME ROLE (Client)
-        c.setEmail("liliezeyy2@gmail.com");
-        c.setDescription("updated description");
-        c.setBudget(9999);
-        System.out.println("DEBUG c.id = " + c.getId());
+        // 3) MODIFY STRATEGY
+        s1.setNomStrategie("Updated Growth Strategy 2024");
+        s1.setStatut(StrategyStatut.Acceptée);
+        s1.setLockedAt(LocalDateTime.now());
+        s1.setCost(18000.75);
+        s1.setNews("Strategy approved and budget increased");
+        System.out.println("\nDEBUG s1.id = " + s1.getId());
 
-        us.modifier(c);
+        ss.modifier(s1);
 
-        System.out.println("\n=== LIST AFTER MODIFY CLIENT ===");
-        List<User> list2 = us.afficher();
+        System.out.println("\n=== LIST AFTER MODIFY ===");
+        List<Strategie> list2 = ss.afficher();
         list2.forEach(System.out::println);
 
-        // 4) CHANGE ROLE: Client -> Gerant (Manager)
-        Gerant g = new Gerant(
-                c.getId(),            // IMPORTANT: same id
-                c.getEmail(),
-                c.getPassword(),
-                c.getName(),
-                c.getFirstName(),
-                c.getPhoneNumber(),
-                c.getDateN(),
-                "Finance"             // expertise_area
-        );
-        System.out.println("DEBUG g.id = " + g.getId());
-        Admin a = new Admin(
-                c.getId(),
-                c.getEmail(),
-                c.getPassword(),
-                c.getName(),
-                c.getFirstName(),
-                c.getPhoneNumber(),
-                c.getDateN()
-        );
-        us.modifier(a);
+        // 4) GET BY STATUS
+        System.out.println("\n=== STRATEGIES WITH STATUS 'accepte' ===");
+        List<Strategie> acceptedStrategies = ss.getByStatut(StrategyStatut.Acceptée);
+        acceptedStrategies.forEach(System.out::println);
 
-        System.out.println("\n=== LIST AFTER CHANGE ROLE TO MANAGER ===");
-        List<User> list3 = us.afficher();
-        list3.forEach(System.out::println);
+        // 5) DELETE STRATEGY
+         ss.supprimer(s2);
+         System.out.println("\n✅ Deleted strategy id=" + s2.getId());
 
-        // 5) DELETE
-       // us.supprimer(g); // or us.supprimer(c); same id
-        //System.out.println("\n✅ Deleted user id=" + g.getId());
-
-        //System.out.println("\n=== LIST AFTER DELETE ===");
-        //List<User> list4 = us.afficher();
-        //list4.forEach(System.out::println);
+         System.out.println("\n=== LIST AFTER DELETE ===");
+         List<Strategie> list3 = ss.afficher();
+         list3.forEach(System.out::println);
     }
 }
