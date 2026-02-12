@@ -5,5 +5,5 @@ Role: Enum/type constants used for application state
 */
 package com.advisora.enums;
 
-public enum ProjectStatut {
+public enum RessourceStatut {
 }

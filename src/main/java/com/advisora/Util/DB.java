@@ -1,3 +1,8 @@
+/*
+ADVISORA STRUCTURE COMMENT
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
+Role: Infrastructure utility (connection/config helper)
+*/
 package com.advisora.Util;
 
 import java.io.InputStream;
@@ -33,4 +38,5 @@ public final class DB {
             throw new RuntimeException("DB connection failed: " + e.getMessage(), e);
         }
     }
+
 }

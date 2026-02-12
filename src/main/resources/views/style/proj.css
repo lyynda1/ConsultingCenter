@@ -1,0 +1,80 @@
+/*
+ADVISORA STRUCTURE COMMENT
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
+Role: General source file
+*/
+.page {
+  -fx-background-color: #F6F0DD; /* beige doux */
+}
+
+.header {
+  -fx-background-color: transparent;
+}
+
+.title {
+  -fx-font-size: 26px;
+  -fx-font-weight: 700;
+  -fx-text-fill: #1f1f1f;
+}
+
+.btn-primary {
+  -fx-background-color: #E97B2C; /* orange */
+  -fx-text-fill: white;
+  -fx-font-weight: 700;
+  -fx-background-radius: 10;
+  -fx-padding: 8 14 8 14;
+}
+
+.btn-primary:hover {
+  -fx-opacity: 0.92;
+}
+
+.tabs .tab {
+  -fx-background-color: transparent;
+  -fx-text-fill: #3b3b3b;
+  -fx-font-weight: 600;
+  -fx-padding: 6 10 6 10;
+  -fx-background-radius: 10;
+  -fx-border-color: transparent;
+}
+
+.tabs .tab:selected {
+  -fx-background-color: rgba(233,123,44,0.12);
+  -fx-text-fill: #E97B2C;
+}
+
+.search {
+  -fx-pref-width: 260;
+  -fx-background-color: white;
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-border-color: rgba(0,0,0,0.08);
+  -fx-padding: 8 10 8 10;
+}
+
+.btn-ghost {
+  -fx-background-color: rgba(255,255,255,0.7);
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-border-color: rgba(0,0,0,0.08);
+  -fx-padding: 7 10 7 10;
+}
+
+.content {
+  -fx-background-color: transparent;
+}
+
+.card-list {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+}
+
+/* ListView skin */
+.card-list .list-cell {
+  -fx-background-color: transparent;
+  -fx-padding: 0 0 14 0;
+}
+.card-list .list-cell:filled:selected,
+.card-list .list-cell:filled:hover {
+  -fx-background-color: transparent;
+}
