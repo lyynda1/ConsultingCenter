@@ -13,12 +13,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DecisionFormController {
@@ -26,8 +24,6 @@ public class DecisionFormController {
     private ChoiceBox<DecisionStatus> choiceStatus;
     @FXML
     private TextArea txtDescription;
-    @FXML
-    private DatePicker dateDecision;
     @FXML
     private TextField txtProjectId;
 
@@ -39,7 +35,6 @@ public class DecisionFormController {
     private void initialize() {
         choiceStatus.setItems(FXCollections.observableArrayList(DecisionStatus.values()));
         choiceStatus.setValue(DecisionStatus.PENDING);
-        dateDecision.setValue(LocalDate.now());
     }
 
     public void initForCreate() {
@@ -58,9 +53,6 @@ public class DecisionFormController {
         choiceStatus.setValue(decision.getStatutD());
         txtDescription.setText(decision.getDescriptionD());
         txtProjectId.setText(String.valueOf(decision.getIdProj()));
-        if (decision.getDateDecision() != null) {
-            dateDecision.setValue(decision.getDateDecision().toLocalDate());
-        }
     }
 
     @FXML
@@ -71,8 +63,8 @@ public class DecisionFormController {
             d.setDescriptionD(required(txtDescription.getText(), "Description is required"));
             d.setIdProj(parsePositiveInt(txtProjectId.getText(), "Project id"));
 
-            LocalDate date = dateDecision.getValue();
-            d.setDateDecision(date == null ? LocalDateTime.now() : date.atStartOfDay());
+            // Decision date is always system date/time (no manual input in form).
+            d.setDateDecision(LocalDateTime.now());
             d.setIdUser(SessionContext.getCurrentUserId());
 
             if (editMode) {

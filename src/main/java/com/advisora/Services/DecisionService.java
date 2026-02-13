@@ -24,7 +24,8 @@ public class DecisionService {
     // Insert + project status sync are done in one DB transaction.
     public void add(Decision d) {
         validate(d, true);
-        if (d.getDateDecision() == null) d.setDateDecision(LocalDateTime.now());
+        // Always stamp with current system date/time at save.
+        d.setDateDecision(LocalDateTime.now());
         run(() -> {
             String insertSql = "INSERT INTO Decisions (StatutD, descriptionD, dateDecision, idProj, idUser) VALUES (?, ?, ?, ?, ?)";
             Connection cnx = MyConnection.getInstance().getConnection();
@@ -53,7 +54,8 @@ public class DecisionService {
     // Update an existing decision and re-apply project status synchronization.
     public void update(Decision d) {
         validate(d, false);
-        if (d.getDateDecision() == null) d.setDateDecision(LocalDateTime.now());
+        // Always refresh decision date with current system date/time at update.
+        d.setDateDecision(LocalDateTime.now());
         run(() -> {
             String updateSql = "UPDATE Decisions SET StatutD=?, descriptionD=?, dateDecision=?, idProj=?, idUser=? WHERE idD=?";
             Connection cnx = MyConnection.getInstance().getConnection();

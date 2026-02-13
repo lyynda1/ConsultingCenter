@@ -1,80 +1,72 @@
-/*
-ADVISORA STRUCTURE COMMENT
- param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
-Role: General source file
-*/
-.page {
-  -fx-background-color: #F6F0DD; /* beige doux */
+/* =========================
+   Advisora Forms (NO font changes)
+   ========================= */
+
+/* Keep one background source:
+   Your page uses .page already, so we DON'T set .root background here.
+   If you want forms to have a soft card background, use VBox styling. */
+
+/* Form container look (applies to your form VBox) */
+.vbox {
+  -fx-background-color: rgba(255,255,255,0.55);
+  -fx-background-radius: 14;
+  -fx-border-radius: 14;
+  -fx-border-color: rgba(0,0,0,0.07);
+  -fx-padding: 14;
 }
 
-.header {
-  -fx-background-color: transparent;
-}
-
-.title {
-  -fx-font-size: 26px;
-  -fx-font-weight: 700;
-  -fx-text-fill: #1f1f1f;
-}
-
-.btn-primary {
-  -fx-background-color: #E97B2C; /* orange */
-  -fx-text-fill: white;
-  -fx-font-weight: 700;
-  -fx-background-radius: 10;
-  -fx-padding: 8 14 8 14;
-}
-
-.btn-primary:hover {
-  -fx-opacity: 0.92;
-}
-
-.tabs .tab {
-  -fx-background-color: transparent;
-  -fx-text-fill: #3b3b3b;
-  -fx-font-weight: 600;
-  -fx-padding: 6 10 6 10;
-  -fx-background-radius: 10;
-  -fx-border-color: transparent;
-}
-
-.tabs .tab:selected {
-  -fx-background-color: rgba(233,123,44,0.12);
-  -fx-text-fill: #E97B2C;
-}
-
-.search {
-  -fx-pref-width: 260;
+/* Inputs (no font modifications) */
+.text-field,
+.text-area,
+.choice-box,
+.date-picker {
   -fx-background-color: white;
   -fx-background-radius: 12;
   -fx-border-radius: 12;
-  -fx-border-color: rgba(0,0,0,0.08);
+  -fx-border-color: rgba(0,0,0,0.10);
   -fx-padding: 8 10 8 10;
 }
 
-.btn-ghost {
-  -fx-background-color: rgba(255,255,255,0.7);
+/* TextArea inner background */
+.text-area .content {
+  -fx-background-color: white;
   -fx-background-radius: 12;
-  -fx-border-radius: 12;
-  -fx-border-color: rgba(0,0,0,0.08);
-  -fx-padding: 7 10 7 10;
 }
 
-.content {
-  -fx-background-color: transparent;
+/* Focus ring (color only) */
+.text-field:focused,
+.text-area:focused,
+.choice-box:focused,
+.date-picker:focused {
+  -fx-border-color: rgba(233,123,44,0.55);
 }
 
-.card-list {
-  -fx-background-color: transparent;
-  -fx-padding: 0;
+/* Buttons (no font modifications) */
+.button {
+  -fx-background-radius: 10;
+  -fx-padding: 8 14 8 14;
+  -fx-cursor: hand;
 }
 
-/* ListView skin */
-.card-list .list-cell {
-  -fx-background-color: transparent;
-  -fx-padding: 0 0 14 0;
+/* Save (first button in HBox) */
+.hbox .button:first-child {
+  -fx-background-color: #2E8B57; /* green */
+  -fx-text-fill: white;
 }
-.card-list .list-cell:filled:selected,
-.card-list .list-cell:filled:hover {
-  -fx-background-color: transparent;
+
+/* Cancel (second button) */
+.hbox .button:nth-child(2) {
+  -fx-background-color: rgba(0,0,0,0.08);
+  -fx-text-fill: #333;
+}
+
+/* Delete button by fx:id */
+#btnDelete {
+  -fx-background-color: #E97B2C; /* orange */
+  -fx-text-fill: white;
+}
+
+/* Hover (opacity only) */
+.button:hover {
+  -fx-opacity: 0.92;
 }

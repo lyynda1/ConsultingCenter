@@ -17,7 +17,8 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         int userId = Integer.parseInt(System.getProperty("advisora.userId", "4"));
-        String roleValue = System.getProperty("advisora.role", "CLIENT").trim().toUpperCase();
+        String roleValue = System.getProperty("advisora.role", "client").trim().toUpperCase();
+
         UserRole role = UserRole.valueOf(roleValue);
         SessionContext.setCurrentUser(userId, role);
 

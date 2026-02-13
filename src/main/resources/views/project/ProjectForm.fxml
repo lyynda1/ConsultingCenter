@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ADVISORA STRUCTURE COMMENT
- param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
-Role: Project module UI layout (FXML/CSS) -->
-
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -13,10 +9,17 @@ Role: Project module UI layout (FXML/CSS) -->
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Project.ProjectFormController">
+<VBox spacing="10"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Project.ProjectFormController"
+      stylesheets="@../style/forms.css"
+      styleClass="form-root">
     <padding>
         <Insets top="12" right="12" bottom="12" left="12"/>
     </padding>
+
+    <Label text="Project Form" styleClass="form-title"/>
+
     <GridPane hgap="8" vgap="8">
         <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtTitle" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
@@ -34,9 +37,9 @@ Role: Project module UI layout (FXML/CSS) -->
         <TextField fx:id="txtAvancement" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
     </GridPane>
 
-    <HBox spacing="8">
-        <Button text="Save" onAction="#onSave"/>
-        <Button text="Cancel" onAction="#onCancel"/>
-        <Button fx:id="btnDelete" text="Delete" onAction="#onDelete"/>
+    <HBox spacing="8" styleClass="form-actions">
+        <Button text="Save" onAction="#onSave" styleClass="btn-save"/>
+        <Button text="Cancel" onAction="#onCancel" styleClass="btn-cancel"/>
+        <Button fx:id="btnDelete" text="Delete" onAction="#onDelete" styleClass="btn-delete"/>
     </HBox>
 </VBox>

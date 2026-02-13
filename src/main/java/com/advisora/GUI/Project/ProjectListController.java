@@ -5,9 +5,12 @@ Role: GUI controller: user interactions and screen flow
 */
 package com.advisora.GUI.Project;
 
+import com.advisora.Model.Decision;
 import com.advisora.Model.Project;
+import com.advisora.Services.DecisionService;
 import com.advisora.Services.ProjectService;
 import com.advisora.Services.SessionContext;
+import com.advisora.enums.DecisionStatus;
 import com.advisora.enums.ProjectStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +36,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +61,7 @@ public class ProjectListController implements Initializable {
     private ListView<Project> projectList;
 
     private final ProjectService projectService = new ProjectService();
+    private final DecisionService decisionService = new DecisionService();
     private final ObservableList<Project> baseProjects = FXCollections.observableArrayList();
     // Default sort: newest project first.
     private Comparator<Project> currentComparator = Comparator.comparing(Project::getCreatedAtProj, this::compareTsDescNullSafe);
@@ -130,6 +135,19 @@ public class ProjectListController implements Initializable {
         HBox actionRow = new HBox(8);
         actionRow.getStyleClass().add("card-actions");
 
+        // Action available for all users: display current decision if it exists.
+
+        if(p.getStateProj() == ProjectStatus.PENDING) {
+            Label pendingLabel = new Label("En attente de décision du manager");
+            pendingLabel.getStyleClass().add("btn-ghost");
+            actionRow.getChildren().add(pendingLabel);
+        } else {
+
+        Button currentDecision = new Button("Decision actuelle");
+        currentDecision.getStyleClass().add("btn-ghost");
+        currentDecision.setOnAction(e -> onShowCurrentDecision(p));
+        actionRow.getChildren().add(currentDecision);
+        }
         // Client actions: can edit/delete own project.
         if (SessionContext.isClient()) {
             Button edit = new Button("Edit");
@@ -155,6 +173,34 @@ public class ProjectListController implements Initializable {
         VBox card = new VBox(8, title, desc, meta, bar, progressLabel, actionRow);
         card.getStyleClass().add("project-card");
         return card;
+    }
+
+    private void onShowCurrentDecision(Project project) {
+        try {
+            List<Decision> decisions = decisionService.getByProject(project.getIdProj());
+            Decision current = decisions.stream()
+                    .filter(d -> d.getStatutD() != DecisionStatus.PENDING)
+                    .findFirst()
+                    .orElse(null);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Decision actuelle - Projet #" + project.getIdProj());
+            if (current == null) {
+                alert.setContentText("Aucune decision actuelle (ou seulement des decisions PENDING).");
+            } else {
+                String dateValue = current.getDateDecision() == null
+                        ? "-"
+                        : current.getDateDecision().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                alert.setContentText(
+                        "Statut: " + current.getStatutD() + "\n" +
+                        "Date: " + dateValue + "\n" +
+                        "Description: " + (current.getDescriptionD() == null ? "-" : current.getDescriptionD())
+                );
+            }
+            alert.showAndWait();
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
     }
 
     @FXML
