@@ -1,4 +1,4 @@
-package com.advisora.entity;
+package com.advisora.Model;
 
 public class CatalogueFournisseur {
 }
