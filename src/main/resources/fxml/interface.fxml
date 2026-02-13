@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="591.0" prefWidth="831.0" stylesheets="@../css/button-style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <TabPane prefHeight="598.0" prefWidth="831.0" style="-fx-background-color: #f2f0d2;" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Untitled Tab 1">
+                    <content>
+                        <AnchorPane>
+                            <children>
+                                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8e3cd" height="574.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+                                <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-34.0" layoutY="125.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="284.0" styleClass="folder-button" text="Projets">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Button>
+                                <Button alignment="CENTER_RIGHT" layoutX="-4.0" layoutY="241.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="253.0" styleClass="folder-button" text="Evenement">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Button>
+                                <Button alignment="CENTER_RIGHT" layoutX="4.0" layoutY="180.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="246.0" styleClass="folder-button" text="            Ressource materielle">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Button>
+                                <Button alignment="CENTER_RIGHT" layoutX="-4.0" layoutY="296.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="254.0" styleClass="folder-button" text="Partenaires">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Button>
+                                <!-- ImageView removed - image file not found: Screenshot 2026-02-11 165810.png -->
+                                <!-- <ImageView fitHeight="120.0" fitWidth="177.0" layoutX="39.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Assets/Screenshot%202026-02-11%20165810.png" />
+                                    </image>
+                                </ImageView> -->
+                                <ImageView fitHeight="55.0" fitWidth="58.0" layoutX="4.0" layoutY="178.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Assets/Screenshot 2026-02-11 175244.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="31.0" fitWidth="26.0" layoutX="14.0" layoutY="137.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Assets/1383970.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="52.0" fitWidth="54.0" layoutX="3.0" layoutY="240.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Assets/Screenshot 2026-02-11 175209.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="56.0" fitWidth="58.0" layoutX="4.0" layoutY="295.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Assets/Screenshot 2026-02-11 175640.png" />
+                                    </image>
+                                </ImageView>
+                                <Text layoutX="296.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue" wrappingWidth="239.65704345703125">
+                                    <font>
+                                        <Font size="35.0" />
+                                    </font>
+                                </Text>
+                                <Text layoutX="296.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Que souhaitez‑vous faire aujourd’hui ?" wrappingWidth="344.4671630859375">
+                                    <font>
+                                        <Font size="20.0" />
+                                    </font>
+                                </Text>
+                                <DialogPane headerText="Réservations" layoutX="583.0" layoutY="197.0" prefHeight="217.0" prefWidth="200.0" />
+                                <Pane layoutX="288.0" layoutY="187.0" prefHeight="200.0" prefWidth="200.0" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Untitled Tab 2" />
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>
