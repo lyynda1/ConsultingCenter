@@ -11,6 +11,7 @@ import com.advisora.Services.SessionContext;
 import com.advisora.enums.ProjectStatus;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -95,16 +96,8 @@ public class ProjectFormController {
 
     @FXML
     private void onDelete() {
-        try {
-            // Delete is allowed only when editing an existing row.
-            if (!editMode || currentProject == null || currentProject.getIdProj() <= 0) {
-                throw new IllegalStateException("Delete is available only in edit mode");
-            }
-            projectService.delete(currentProject.getIdProj());
-            close();
-        } catch (Exception e) {
-            showError(e.getMessage());
-        }
+        clearForm();
+        showInfo("Form cleared. Use Save to apply changes.");
     }
 
     private String required(String value, String message) {
@@ -148,5 +141,19 @@ public class ProjectFormController {
         alert.setHeaderText("Validation Error");
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void showInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setHeaderText("Information");
+        alert.showAndWait();
+    }
+
+    private void clearForm() {
+        txtTitle.clear();
+        txtDescription.clear();
+        txtBudget.clear();
+        txtType.clear();
+        txtAvancement.setText("0");
     }
 }

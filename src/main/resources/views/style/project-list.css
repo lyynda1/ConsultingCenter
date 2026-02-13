@@ -58,7 +58,13 @@ Role: Project module UI layout (FXML/CSS)
 
 .card-list {
     -fx-background-color: transparent;
+    -fx-background-insets: 0;
     -fx-padding: 0;
+}
+
+.content {
+    -fx-padding: 0;
+    -fx-min-height: 0;
 }
 
 .card-list .list-cell {

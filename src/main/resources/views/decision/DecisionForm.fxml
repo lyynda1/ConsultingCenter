@@ -35,5 +35,6 @@
     <HBox spacing="8" styleClass="form-actions">
         <Button text="Save" onAction="#onSave" styleClass="btn-save"/>
         <Button text="Cancel" onAction="#onCancel" styleClass="btn-cancel"/>
+        <Button text="Delete" onAction="#onDelete" styleClass="btn-delete"/>
     </HBox>
 </VBox>

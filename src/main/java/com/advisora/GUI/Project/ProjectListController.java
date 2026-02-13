@@ -5,13 +5,11 @@ Role: GUI controller: user interactions and screen flow
 */
 package com.advisora.GUI.Project;
 
-import com.advisora.Model.Decision;
 import com.advisora.Model.Project;
-import com.advisora.Services.DecisionService;
 import com.advisora.Services.ProjectService;
 import com.advisora.Services.SessionContext;
-import com.advisora.enums.DecisionStatus;
 import com.advisora.enums.ProjectStatus;
+import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -36,7 +35,6 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -47,6 +45,8 @@ public class ProjectListController implements Initializable {
 
     @FXML
     private Button btnNewProject;
+    @FXML
+    private Button btnUsers;
     @FXML
     private ToggleButton tabAll;
     @FXML
@@ -61,7 +61,6 @@ public class ProjectListController implements Initializable {
     private ListView<Project> projectList;
 
     private final ProjectService projectService = new ProjectService();
-    private final DecisionService decisionService = new DecisionService();
     private final ObservableList<Project> baseProjects = FXCollections.observableArrayList();
     // Default sort: newest project first.
     private Comparator<Project> currentComparator = Comparator.comparing(Project::getCreatedAtProj, this::compareTsDescNullSafe);
@@ -81,6 +80,10 @@ public class ProjectListController implements Initializable {
         // Client can create projects.
         // Manager uses decision workflow and status tabs instead.
         btnNewProject.setDisable(!SessionContext.isClient());
+        boolean isAdmin = SessionContext.getCurrentRole() == UserRole.ADMIN;
+        btnUsers.setVisible(isAdmin);
+        btnUsers.setManaged(isAdmin);
+
         if (!SessionContext.isManager()) {
             tabAll.setVisible(false);
             tabAll.setManaged(false);
@@ -111,7 +114,10 @@ public class ProjectListController implements Initializable {
 
     private VBox buildCard(Project p) {
         // Card header.
-        Label title = new Label(p.getTitleProj());
+        String titleText = SessionContext.isGerant()
+                ? "#" + p.getIdProj() + " - " + p.getTitleProj()
+                : p.getTitleProj();
+        Label title = new Label(titleText);
         title.getStyleClass().add("card-title");
 
         // Card body.
@@ -177,27 +183,11 @@ public class ProjectListController implements Initializable {
 
     private void onShowCurrentDecision(Project project) {
         try {
-            List<Decision> decisions = decisionService.getByProject(project.getIdProj());
-            Decision current = decisions.stream()
-                    .filter(d -> d.getStatutD() != DecisionStatus.PENDING)
-                    .findFirst()
-                    .orElse(null);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Decision actuelle - Projet #" + project.getIdProj());
-            if (current == null) {
-                alert.setContentText("Aucune decision actuelle (ou seulement des decisions PENDING).");
-            } else {
-                String dateValue = current.getDateDecision() == null
-                        ? "-"
-                        : current.getDateDecision().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                alert.setContentText(
-                        "Statut: " + current.getStatutD() + "\n" +
-                        "Date: " + dateValue + "\n" +
-                        "Description: " + (current.getDescriptionD() == null ? "-" : current.getDescriptionD())
-                );
-            }
-            alert.showAndWait();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/decision/DecisionCurrent.fxml"));
+            Parent root = loader.load();
+            DecisionCurrentController controller = loader.getController();
+            controller.initWithProject(project);
+            openModal(root, "Decision actuelle");
         } catch (Exception e) {
             showError(e.getMessage());
         }
@@ -238,6 +228,16 @@ public class ProjectListController implements Initializable {
     private void onDeleteProject(Project selected) {
         if (selected == null) return;
         try {
+            Alert confirm = new Alert(
+                    Alert.AlertType.CONFIRMATION,
+                    "Voulez-vous supprimer le projet \"" + selected.getTitleProj() + "\" ?",
+                    ButtonType.YES,
+                    ButtonType.NO
+            );
+            confirm.setHeaderText("Confirmer la suppression");
+            if (confirm.showAndWait().orElse(ButtonType.NO) != ButtonType.YES) {
+                return;
+            }
             projectService.delete(selected.getIdProj());
             loadProjectsFromService();
         } catch (Exception e) {
@@ -327,6 +327,19 @@ public class ProjectListController implements Initializable {
     @FXML
     private void onSearch() {
         applyFilters();
+    }
+
+    @FXML
+    private void onOpenUsers() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Admin/admin.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) projectList.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Advisora - Admin Dashboard");
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
     }
 
     @FXML

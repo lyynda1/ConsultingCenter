@@ -12,6 +12,7 @@ import com.advisora.enums.DecisionStatus;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -84,6 +85,12 @@ public class DecisionFormController {
         close();
     }
 
+    @FXML
+    private void onDelete() {
+        clearForm();
+        showInfo("Form cleared. Use Save to apply changes.");
+    }
+
     private String required(String value, String message) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(message);
@@ -113,5 +120,17 @@ public class DecisionFormController {
         alert.setHeaderText("Validation Error");
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void showInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setHeaderText("Information");
+        alert.showAndWait();
+    }
+
+    private void clearForm() {
+        choiceStatus.setValue(DecisionStatus.PENDING);
+        txtDescription.clear();
+        txtProjectId.clear();
     }
 }

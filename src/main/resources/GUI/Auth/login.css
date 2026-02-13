@@ -1,0 +1,111 @@
+.app{
+    -fx-font-family: "Inter", "Segoe UI", Arial;
+    -fx-font-size: 13px;
+    -fx-background-color: #F6F3E7;
+}
+
+.card{
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+    -fx-padding: 22;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.18, 0, 10);
+}
+
+.brand-card{
+    -fx-background-color: #EDE6D2;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+    -fx-padding: 22;
+    -fx-min-width: 360;
+}
+
+.brand-title{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 900;
+    -fx-font-size: 18px;
+}
+
+.brand-sub{
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 12px;
+}
+
+.card-title{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 900;
+    -fx-font-size: 18px;
+}
+
+.label{
+    -fx-text-fill: #1F2937;
+}
+
+.muted{
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 12px;
+}
+
+.hint{
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 12px;
+}
+
+.input{
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: rgba(17,24,39,0.45);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 10 12 10 12;
+}
+
+.input:focused{
+    -fx-border-color: rgba(46,125,96,0.45);
+    -fx-border-width: 1.5;
+}
+
+.input-error{
+    -fx-border-color: #d32f2f;
+    -fx-border-width: 1.5;
+}
+
+.field-error{
+    -fx-text-fill: #d32f2f;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+
+.btn-primary{
+    -fx-cursor: hand;
+    -fx-font-weight: 900;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-background-color: #2E7D60;
+    -fx-text-fill: white;
+}
+
+.btn-primary:hover{
+    -fx-background-color: #276B53;
+}
+
+.btn-outline{
+    -fx-cursor: hand;
+    -fx-font-weight: 900;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-background-color: transparent;
+    -fx-text-fill: #111827;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-border-width: 1;
+}
+
+.btn-outline:hover{
+    -fx-background-color: rgba(0,0,0,0.04);
+}

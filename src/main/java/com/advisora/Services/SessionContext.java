@@ -44,6 +44,15 @@ public final class SessionContext {
     }
 
     public static boolean isManager() {
-        return getCurrentRole() == UserRole.MANAGER;
+        return isGerant();
+    }
+
+    public static boolean isGerant() {
+        return getCurrentRole() == UserRole.GERANT;
+    }
+
+    public static void clear() {
+        currentUserId = null;
+        currentRole = null;
     }
 }
