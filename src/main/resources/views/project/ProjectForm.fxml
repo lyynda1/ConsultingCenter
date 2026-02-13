@@ -12,7 +12,7 @@
 <VBox spacing="10"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.advisora.GUI.Project.ProjectFormController"
-      stylesheets="@../style/forms.css"
+      stylesheets="@../style/forms_proj.css"
       styleClass="form-root">
     <padding>
         <Insets top="12" right="12" bottom="12" left="12"/>

@@ -17,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         int userId = Integer.parseInt(System.getProperty("advisora.userId", "4"));
-        String roleValue = System.getProperty("advisora.role", "client").trim().toUpperCase();
+        String roleValue = System.getProperty("advisora.role", "manager").trim().toUpperCase();
 
         UserRole role = UserRole.valueOf(roleValue);
         SessionContext.setCurrentUser(userId, role);
@@ -27,8 +27,8 @@ public class App extends Application {
         scene.getStylesheets().add(getClass().getResource("/views/style/proj.css").toExternalForm());
         primaryStage.setTitle("Advisora - Projects (" + role + ")");
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(1200);
-        primaryStage.setMinHeight(900);
+        primaryStage.setMinWidth(1600);
+        primaryStage.setMinHeight(1000);
         primaryStage.show();
     }
 }

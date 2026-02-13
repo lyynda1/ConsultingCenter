@@ -22,7 +22,7 @@ Role: Project module UI layout (FXML/CSS) -->
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.advisora.GUI.Project.ProjectListController"
-            stylesheets="@project-list.css"
+            stylesheets="@../style/project-list.css"
             styleClass="page">
 
     <fx:define>
