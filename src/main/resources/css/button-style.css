@@ -3,7 +3,6 @@
 .folder-button {
     -fx-background-color: #e8e3cd;
     -fx-text-fill: #333333;
-    -fx-font-family: "Segoe UI", Arial, sans-serif;
     -fx-cursor: hand;
     -fx-border-width: 0;
     -fx-background-radius: 0;
@@ -21,3 +20,4 @@
     -fx-border-color: #8b8670;
     -fx-border-width: 2;
 }
+

@@ -2,7 +2,7 @@ package com.advisora.Model;
 
 import com.advisora.enums.StrategyStatut;
 import java.time.LocalDateTime;
-
+import java.util.Objects;
 public class Strategie {
     private int id;
     private String nomStrategie;

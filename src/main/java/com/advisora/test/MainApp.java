@@ -1,4 +1,4 @@
-package com.advisora;
+package com.advisora.test;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,16 +11,14 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Load the FXML file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/interface.fxml"));
         Parent root = loader.load();
 
         // Set up the scene
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root);
 
-        // Optional: Add CSS stylesheet
-        // scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
 
-        // Set up the stage
+
         primaryStage.setTitle("Advisora - Strategy Management");
         primaryStage.setScene(scene);
         primaryStage.show();

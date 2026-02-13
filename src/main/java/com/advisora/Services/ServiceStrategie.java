@@ -21,7 +21,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
 
             ps.setInt(1, strategie.getVersion());
-            ps.setString(2, strategie.getStatut().name());
+            ps.setString(2, strategie.getStatut().toString());
             ps.setTimestamp(3, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
             ps.setTimestamp(4, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
             ps.setDouble(5, strategie.getCost());

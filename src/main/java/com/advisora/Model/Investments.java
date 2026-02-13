@@ -1,4 +1,4 @@
 package com.advisora.Model;
 
-public class Investment {
+public class Investments {
 }
