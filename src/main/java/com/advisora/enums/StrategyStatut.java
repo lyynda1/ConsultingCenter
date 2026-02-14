@@ -1,14 +1,13 @@
+/*
+ADVISORA STRUCTURE COMMENT
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
+Role: Enum/type constants used for application state
+*/
 package com.advisora.enums;
 
-<<<<<<< HEAD
-public class StrategyStatut {
-    public static class ProjectsStatuts {
-    }
 
-    public static class RoleUser {
-    }
-=======
+
 public enum StrategyStatut {
     Acceptée,Refusée,En_cours
->>>>>>> gestionUtilisateurs
+
 }

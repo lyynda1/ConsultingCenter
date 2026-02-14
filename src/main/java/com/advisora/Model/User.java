@@ -1,41 +1,55 @@
 package com.advisora.Model;
-
 import com.advisora.enums.UserRole;
+import java.util.List;
+import java.util.Objects;
 
-public abstract class User {
-    protected int id;
-    protected String email;
-    protected String password;
-    protected String name;
-    protected String firstName;
-    protected String phoneNumber;
-    protected String dateN;
-    protected UserRole role;
+public class User {
+    int id;
 
-    // Default constructor
-    public User() {
+    public String getCin() {
+        return cin;
     }
 
-    // Constructor with all common fields
-    public User(int id, String email, String password, String name, String firstName,
-                String phoneNumber, String dateN, UserRole role) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.firstName = firstName;
-        this.phoneNumber = phoneNumber;
-        this.dateN = dateN;
-        this.role = role;
+    public void setCin(String cin) {
+        this.cin = cin;
     }
 
-    // Getters and Setters
+    String cin;
+    String email;
+    String password;
+    String nom;
+    String prenom;
+    String numTel;
+    String dateN;
+    UserRole role;
+    String expertiseArea;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && cin== user.cin && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(nom, user.nom) && Objects.equals(prenom, user.prenom) && Objects.equals(numTel, user.numTel) && Objects.equals(dateN, user.dateN) && role == user.role && Objects.equals(expertiseArea, user.expertiseArea);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cin, email, password, nom, prenom, numTel, dateN, role, expertiseArea);
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCIN() {
+        return cin;
+    }
+
+    public void setCIN(String cin) {
+        this.cin = cin;
     }
 
     public String getEmail() {
@@ -54,28 +68,28 @@ public abstract class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getNom() {
+        return nom;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getPrenom() {
+        return prenom;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getNumTel() {
+        return numTel;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setNumTel(String numTel) {
+        this.numTel = numTel;
     }
 
     public String getDateN() {
@@ -94,29 +108,38 @@ public abstract class User {
         this.role = role;
     }
 
+    public String getExpertiseArea() {
+        return expertiseArea;
+    }
+
+    public List<userLog> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<userLog> logs) {
+        this.logs = logs;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", CIN=" + cin +
                 ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", numTel='" + numTel + '\'' +
                 ", dateN='" + dateN + '\'' +
                 ", role=" + role +
+                ", expertiseArea='" + expertiseArea + '\'' +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id;
+    public void setExpertiseArea(String expertiseArea) {
+        this.expertiseArea = expertiseArea;
     }
 
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
-    }
+
+    private List<userLog> logs;
 }

@@ -1,5 +1,5 @@
-package com.advisora.Model;
 
+package com.advisora.Model;
 import com.advisora.enums.StrategyStatut;
 import java.time.LocalDateTime;
 
@@ -10,37 +10,42 @@ public class Strategie {
     private StrategyStatut statut;
     private LocalDateTime createdAt;
     private LocalDateTime lockedAt;
-    private double cost;
+
     private String news;
+    private String objectif;
+    private Project projet;
 
     // Default constructor
-    public Strategie() {
+    public Strategie(int id, String nom, int version, StrategyStatut statut, LocalDateTime createdAt, LocalDateTime lockedAt, String news, String objectif) {
     }
 
     // Constructor with all fields
     public Strategie(int id, String nomStrategie, int version, StrategyStatut statut,
-                     LocalDateTime createdAt, LocalDateTime lockedAt, double cost, String news) {
+                     LocalDateTime createdAt, LocalDateTime lockedAt, String news, String objectif, Project projet) {
         this.id = id;
         this.nomStrategie = nomStrategie;
         this.version = version;
         this.statut = statut;
         this.createdAt = createdAt;
         this.lockedAt = lockedAt;
-        this.cost = cost;
         this.news = news;
+        this.objectif = objectif;
+        this.projet = projet;
     }
 
     // Constructor without id (for new strategies)
     public Strategie(String nomStrategie, int version, StrategyStatut statut,
-                     LocalDateTime createdAt, LocalDateTime lockedAt, double cost, String news) {
+                     LocalDateTime createdAt, LocalDateTime lockedAt, String news, String objectif, Project projet) {
         this.nomStrategie = nomStrategie;
         this.version = version;
         this.statut = statut;
         this.createdAt = createdAt;
         this.lockedAt = lockedAt;
-        this.cost = cost;
         this.news = news;
+        this.objectif = objectif;
+        this.projet = projet;
     }
+
 
     // Getters and Setters
     public int getId() {
@@ -91,13 +96,7 @@ public class Strategie {
         this.lockedAt = lockedAt;
     }
 
-    public double getCost() {
-        return cost;
-    }
 
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
 
     public String getNews() {
         return news;
@@ -105,6 +104,21 @@ public class Strategie {
 
     public void setNews(String news) {
         this.news = news;
+    }
+
+    public String getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(String objectif) {
+        this.objectif = objectif;
+    }
+    public Project getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Project projet) {
+        this.projet = projet;
     }
 
     // toString method for debugging
@@ -117,7 +131,6 @@ public class Strategie {
                 ", statut=" + statut +
                 ", createdAt=" + createdAt +
                 ", lockedAt=" + lockedAt +
-                ", cost=" + cost +
                 ", news='" + news + '\'' +
                 '}';
     }

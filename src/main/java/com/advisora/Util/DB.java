@@ -33,8 +33,6 @@ public final class DB {
             throw new RuntimeException("DB connection failed: " + e.getMessage(), e);
         }
     }
-<<<<<<< HEAD
-=======
 
     /**
      * Tests the database connection and displays connection details
@@ -69,5 +67,4 @@ public final class DB {
             System.exit(1);
         }
     }
->>>>>>> gestionUtilisateurs
 }

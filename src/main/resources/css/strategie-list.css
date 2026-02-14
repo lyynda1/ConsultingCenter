@@ -1,0 +1,39 @@
+.card-list {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.card-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12 0;   /* space between cards */
+}
+
+.card-list .list-cell:filled:selected,
+.card-list .list-cell:filled:selected:hover {
+    -fx-background-color: transparent; /* prevent blue selection */
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #e0e0e0;
+    -fx-padding: 14;
+}
+
+.card-actions {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.badge {
+    -fx-background-color: #eaf3ff;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+}
+.card-list .list-cell:filled:selected .card {
+    -fx-border-color: #E97B2C;
+    -fx-border-width: 2;
+}
+.card-list .list-cell {
+    -fx-padding: 10;
+}
