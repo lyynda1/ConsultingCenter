@@ -28,7 +28,10 @@
                 </padding>
 
                 <HBox alignment="CENTER_LEFT">
-                    <Label styleClass="title" text="Gestion des Stratégies" />
+                    <Label styleClass="title" text="Gestion des Stratégies">
+                  <font>
+                     <Font name="System Bold" size="31.0" />
+                  </font></Label>
                     <Region HBox.hgrow="ALWAYS" />
                     <Button onAction="#nouvelleStrategie" styleClass="btn-primary" text="+ Nouvelle Stratégie" />
                 </HBox>
@@ -56,8 +59,8 @@
                             <String fx:value="stat-total" />
                         </styleClass>
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                            <StackPane styleClass="stat-icon-chip stat-icon-orange">
-                                <Label styleClass="stat-icon-text" text="📈" textFill="#ea7527">
+                            <StackPane>
+                                <Label text="📈" textFill="#ea7527">
                            <font>
                               <Font size="20.0" />
                            </font></Label>
@@ -73,8 +76,8 @@
                             <String fx:value="stat-pending" />
                         </styleClass>
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                            <StackPane styleClass="stat-icon-chip stat-icon-yellow">
-                                <Label styleClass="stat-icon-text" text="👥" textFill="#ea7527">
+                            <StackPane>
+                                <Label text="👥" textFill="#ea7527">
                            <font>
                               <Font size="20.0" />
                            </font></Label>
@@ -90,8 +93,8 @@
                             <String fx:value="stat-success" />
                         </styleClass>
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                            <StackPane styleClass="stat-icon-chip stat-icon-green">
-                                <Label styleClass="stat-icon-text" text="✅" textFill="#ea7527">
+                            <StackPane>
+                                <Label text="✅" textFill="#ea7527">
                            <font>
                               <Font size="20.0" />
                            </font></Label>
@@ -117,9 +120,9 @@
     </BorderPane>
 
     <!-- ✅ OVERLAY ABOVE EVERYTHING -->
-    <StackPane fx:id="overlay" managed="false" styleClass="modal-overlay" visible="false">
-        <!-- Draggable modal container -->
-        <VBox fx:id="modalBox" maxWidth="560" styleClass="modal-box" />
+    <StackPane fx:id="overlay" visible="false" managed="false" styleClass="overlay">
+        <VBox fx:id="modalBox" styleClass="dialog-host"/>
     </StackPane>
+
 
 </StackPane>

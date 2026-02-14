@@ -119,7 +119,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
         String news = rs.getString("news");
         Project projet = null;
-        return new Strategie(nom, version, statut, createdAt, lockedAt, news, projet);
+        return new Strategie(id,nom, version, statut, createdAt, lockedAt, news,projet);
     }
 
     // Additional helper method to get a strategy by ID

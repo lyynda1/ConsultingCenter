@@ -1,7 +1,18 @@
 package com.advisora.GUI.Strategie;
 
-import com.advisora.Model.Strategie;          // ✅ change if your package is different
-import com.advisora.Services.ServiceStrategie; // ✅ change if your service name/package is different
+import com.advisora.GUI.Objective.*;
+
+import com.advisora.Model.Strategie;
+import com.advisora.Services.ServiceStrategie;
+import com.advisora.Model.Objective;
+import com.advisora.Services.ServiceObjective;
+
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.FlowPane;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.advisora.enums.StrategyStatut;
 import javafx.collections.FXCollections;
@@ -35,6 +46,8 @@ public class StrategieListController {
     private final ServiceStrategie strategieService = new ServiceStrategie();
     private final ObservableList<Strategie> allObs = FXCollections.observableArrayList();
     private final ObservableList<Strategie> viewObs = FXCollections.observableArrayList();
+    private final ServiceObjective objectiveService = new ServiceObjective();
+    private Map<Integer, List<Objective>> objectivesByStrategie = Map.of();
 
     @FXML
     public void initialize() {
@@ -67,18 +80,47 @@ public class StrategieListController {
                 Label date = new Label("Créée le: " +
                         (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate().toString()));
                 date.getStyleClass().add("card-sub");
-                Label projet = new Label("Projet: " + (s.getProjet() == null ? "-" : s.getProjet().getTitleProj()));
+                Label projet = new Label("Projet associé: " + (s.getProjet() == null ? "-" : s.getProjet().getTitleProj()));
                 projet.getStyleClass().add("card-sub");
 
                 Button btnEdit = new Button("Modifier");
                 btnEdit.getStyleClass().add("btn-ghost");
-
+                btnEdit.setOnAction(e -> onEdit(s));
                 Button btnDelete = new Button("Supprimer");
                 btnDelete.getStyleClass().add("btn-danger");
+                btnDelete.setOnAction(e -> onDelete(s));
 
-                HBox actions = new HBox(8, btnEdit, btnDelete);
+                Button btnObjectives = new Button("Attribuer des objectifs");
+                btnObjectives.getStyleClass().add("btn-ghost");
+                btnObjectives.setOnAction(e -> onObjectives(s));
 
-                VBox card = new VBox(10, head, projet, date, actions);
+                // ✅ Objective chips row
+                FlowPane objChips = new FlowPane();
+                objChips.getStyleClass().add("obj-chips");
+                objChips.setHgap(8);
+                objChips.setVgap(8);
+
+                List<Objective> objs = objectivesByStrategie.getOrDefault(s.getId(), List.of());
+
+                if (objs.isEmpty()) {
+                    Label none = new Label("Aucun objectif");
+                    none.getStyleClass().add("obj-empty");
+                    objChips.getChildren().add(none);
+                } else {
+                    for (Objective o : objs) {
+                        Button chip = new Button(o.getNomObjective()); // or a short name
+                        chip.getStyleClass().add("obj-chip");
+
+                        // ✅ click chip -> edit this objective
+                        chip.setOnAction(ev -> openObjectiveDialog(o, s));
+
+                        objChips.getChildren().add(chip);
+                    }
+                }
+
+                HBox actions = new HBox(8, btnEdit, btnDelete, btnObjectives);
+
+                VBox card = new VBox(10, head, projet, date, objChips, actions);
                 card.getStyleClass().add("card");
 
                 setText(null);
@@ -91,7 +133,38 @@ public class StrategieListController {
 
         // optional search listener
         txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+
+        StackPane.setAlignment(modalBox, Pos.CENTER);
+        modalBox.setMaxWidth(Region.USE_PREF_SIZE);
+        modalBox.setMaxHeight(Region.USE_PREF_SIZE);
+
+
+
     }
+
+    private void openObjectiveDialog(Objective obj, Strategie s) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/objectif/ObjectiveInfoDialog.fxml")
+            );
+            Parent content = loader.load();
+
+            com.advisora.GUI.Objective.ObjectiveInfoController controller = loader.getController();
+            controller.setObjective(obj);
+            controller.setOnClose(this::closeDialog);
+            controller.setOnRefresh(this::refresh);
+
+            showDialog(content);
+
+
+            enableDrag(controller.getDragHandle(), modalBox);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
 
 
     // =========================================================
@@ -109,12 +182,31 @@ public class StrategieListController {
     }
 
 
+
+    private void showDialog(Parent content) {
+        // reset drag position
+        modalBox.setTranslateX(0);
+        modalBox.setTranslateY(0);
+
+        // prevent the loaded root from expanding
+        if (content instanceof Region r) {
+            r.setMaxWidth(Region.USE_PREF_SIZE);
+            r.setMaxHeight(Region.USE_PREF_SIZE);
+        }
+
+        modalBox.getChildren().setAll(content);
+        overlay.setManaged(true);
+        overlay.setVisible(true);
+    }
+
     private void openAddDialog() {
         try {
+
             if (addDialogContent == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/AddStrategie.fxml"));
                 addDialogContent = loader.load();
                 AddStrategieDialogController c = loader.getController();
+                c.setEditingStrategie(null);
                 enableDrag(c.getDragHandle(), modalBox);
 
                 // give dialog controller a callback to close + refresh
@@ -123,11 +215,12 @@ public class StrategieListController {
                     closeDialog();
                     refresh(); // reload list after insert
                 });
+                c.resetForm();
             }
 
-            modalBox.getChildren().setAll(addDialogContent);
-            overlay.setManaged(true);
-            overlay.setVisible(true);
+            showDialog(addDialogContent);
+
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -152,6 +245,9 @@ public class StrategieListController {
     private void closeDialog() {
         overlay.setVisible(false);
         overlay.setManaged(false);
+        modalBox.getChildren().clear();     // ✅ IMPORTANT
+        modalBox.setTranslateX(0);          // optional (if you drag)
+        modalBox.setTranslateY(0);
     }
 
 
@@ -187,30 +283,92 @@ public class StrategieListController {
     // =========================================================
 
     private void onEdit(Strategie s) {
-        // TODO open edit screen with s
-        System.out.println("Edit strategie id=" + getIdSafe(s));
+        if (s == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/AddStrategie.fxml"));
+            Parent content = loader.load();
+
+            AddStrategieDialogController c = loader.getController();
+
+            // drag handle
+            enableDrag(c.getDragHandle(), modalBox);
+
+            // callbacks
+            c.setOnClose(this::closeDialog);
+            c.setOnSaved(() -> {
+                closeDialog();
+                refresh();
+            });
+
+           
+            c.setEditingStrategie(s);
+
+            modalBox.getChildren().setAll(content);
+            overlay.setManaged(true);
+            overlay.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Impossible d'ouvrir modification: " + ex.getMessage()).showAndWait();
+        }
     }
 
     private void onDelete(Strategie s) {
         if (s == null) return;
 
+        int id = s.getId();
+        if (id <= 0) {
+            new Alert(Alert.AlertType.ERROR, "Impossible de supprimer: ID invalide.").showAndWait();
+            return;
+        }
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer cette stratégie ?");
-        confirm.setContentText("Cette action est irréversible.");
+        confirm.setContentText("ID: " + id + "\nCette action est irréversible.");
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
 
         try {
-            strategieService.supprimer(s);
+            strategieService.supprimer(s);  // uses id inside
             refresh();
         } catch (Exception ex) {
-            Alert err = new Alert(Alert.AlertType.ERROR);
-            err.setTitle("Erreur");
-            err.setHeaderText("Suppression échouée");
-            err.setContentText(ex.getMessage());
-            err.showAndWait();
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Suppression échouée: " + ex.getMessage()).showAndWait();
         }
+    }
+
+    private void onObjectives(Strategie s) {
+        if (s == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/objectif/AddObjectif.fxml"));
+            Parent content = loader.load();
+
+            AddObjectifController c = loader.getController();
+
+            // drag handle
+            enableDrag(c.getDragHandle(), modalBox);
+
+            // callbacks
+            c.setOnClose(this::closeDialog);
+            c.setOnSaved(() -> {
+                closeDialog();
+                refresh();
+            });
+
+            c.setStrategie(s);
+            c.resetForm();
+            modalBox.getChildren().setAll(content);
+            overlay.setManaged(true);
+            overlay.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Impossible d'ouvrir objectifs: " + ex.getMessage()).showAndWait();
+        }
+
     }
 
     // =========================================================
@@ -218,8 +376,14 @@ public class StrategieListController {
     // =========================================================
 
     private void refresh() {
-        List<Strategie> list = strategieService.afficher(); // ✅ adapt if your method name differs
+        List<Strategie> list = strategieService.afficher();
         allObs.setAll(list);
+
+        // ✅ Load objectives once, group by strategieId
+        List<Objective> allObjectives = objectiveService.afficher();
+        objectivesByStrategie = allObjectives.stream()
+                .collect(Collectors.groupingBy(Objective::getStrategieId));
+
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
         updateStats(allObs);
     }
