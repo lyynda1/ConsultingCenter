@@ -94,6 +94,7 @@ public class StrategieListController {
                 btnObjectives.getStyleClass().add("btn-ghost");
                 btnObjectives.setOnAction(e -> onObjectives(s));
 
+
                 // ✅ Objective chips row
                 FlowPane objChips = new FlowPane();
                 objChips.getStyleClass().add("obj-chips");

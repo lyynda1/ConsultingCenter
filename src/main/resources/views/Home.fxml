@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="309.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+            <Label layoutX="14.0" layoutY="14.0" style="-fx-font-size: 24px; -fx-font-weight: 800;" text="Bienvenue dans Advisora!" />
+                <Label layoutX="14.0" layoutY="60.0" style="-fx-font-size: 16px;" text="Que souhaitez-vous faire aujourd'hui ?" />
+
+    </children>
+</AnchorPane>

@@ -14,8 +14,8 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public void ajouter(Strategie strategie) {
-        String sql = "INSERT INTO `strategies`( `versions`, `statusStrategie`, `CreatedAtS`, `lockedAt`, `news`, `nomStrategie`)" +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `strategies`( `versions`, `statusStrategie`, `CreatedAtS`, `lockedAt`, `news`, `nomStrategie`, `IdProj`)" +
+                     "VALUES (?, ?, ?, ?, ?, ? , ?)";
 
         try (Connection conn = DB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -27,6 +27,8 @@ public class ServiceStrategie implements IService<Strategie> {
             ps.setTimestamp(4, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
             ps.setString(5, strategie.getNews());
             ps.setString(6, strategie.getNomStrategie());
+            ps.setInt(7, strategie.getProjet().getIdProj());
+
 
 
             ps.executeUpdate();
@@ -66,7 +68,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public void modifier(Strategie strategie) {
-        String sql = "UPDATE strategies SET nomStrategie=?, versions=?, statusStrategie=?, createdAtS=?, lockedAt=? " +
+        String sql = "UPDATE strategies SET nomStrategie=?, versions=?, statusStrategie=?, createdAtS=?, IdProj=? " +
                      "WHERE idStrategie=?";
 
         try (Connection conn = DB.getConnection();
@@ -76,9 +78,7 @@ public class ServiceStrategie implements IService<Strategie> {
             ps.setDouble(2, strategie.getVersion());
             ps.setString(3, strategie.getStatut().name());
             ps.setTimestamp(4, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
-            ps.setTimestamp(5, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
-
-
+            ps.setInt(5, strategie.getProjet().getIdProj());
             ps.setInt(6, strategie.getId());
 
             ps.executeUpdate();
@@ -118,7 +118,7 @@ public class ServiceStrategie implements IService<Strategie> {
         LocalDateTime lockedAt = lockedAtTs != null ? lockedAtTs.toLocalDateTime() : null;
 
         String news = rs.getString("news");
-        Project projet = null;
+        Project projet = rs.getObject("IdProj", Integer.class) != null ? new ProjectService().getById(rs.getInt("IdProj")) : null;
         return new Strategie(id,nom, version, statut, createdAt, lockedAt, news,projet);
     }
 

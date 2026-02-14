@@ -84,7 +84,7 @@ public class ProjectListController implements Initializable {
         btnUsers.setVisible(isAdmin);
         btnUsers.setManaged(isAdmin);
 
-        if (!SessionContext.isManager()) {
+        if (!SessionContext.isAdmin() || !SessionContext.isGerant()) {
             tabAll.setVisible(false);
             tabAll.setManaged(false);
             tabValid.setVisible(false);
@@ -166,7 +166,7 @@ public class ProjectListController implements Initializable {
         }
 
         // Manager action: create decision on selected project.
-        if (SessionContext.isManager()) {
+        if (SessionContext.isGerant()) {
             Button decide = new Button("Decide");
             decide.getStyleClass().add("btn-primary");
             decide.setOnAction(e -> onDecideProject(p));

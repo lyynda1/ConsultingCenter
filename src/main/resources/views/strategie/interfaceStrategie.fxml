@@ -46,6 +46,7 @@
                             <SeparatorMenuItem />
                             <MenuItem onAction="#onSortDateDesc" text="Date récente" />
                             <MenuItem onAction="#onSortDateAsc" text="Date ancienne" />
+
                         </items>
                     </MenuButton>
                 </HBox>

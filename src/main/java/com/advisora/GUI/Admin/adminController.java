@@ -58,6 +58,7 @@ public class adminController {
     private final UserService userService = new UserService();
     private final ObservableList<User> usersObs = FXCollections.observableArrayList();
     private Node usersContent;
+    @FXML private Button strategiesBtn;
 
     // --------------------------
     // VALIDATION RULES
@@ -79,6 +80,14 @@ public class adminController {
 
     @FXML
     public void initialize() {
+        boolean isManager = SessionContext.isAdmin() || SessionContext.isGerant();
+        if (!isManager) {
+            strategiesBtn.setDisable(true);
+            strategiesBtn.setVisible(false);
+
+
+        }
+
         if (contentHost != null && !contentHost.getChildren().isEmpty()) {
             usersContent = contentHost.getChildren().get(0);
         }
@@ -426,6 +435,7 @@ public class adminController {
 
     @FXML
     private void handleOpenStrategies() {
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/interfaceStrategie.fxml"));
             Parent root = loader.load();

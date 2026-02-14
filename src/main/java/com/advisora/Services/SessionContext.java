@@ -43,8 +43,8 @@ public final class SessionContext {
         return getCurrentRole() == UserRole.CLIENT;
     }
 
-    public static boolean isManager() {
-        return isGerant();
+    public static boolean isAdmin() {
+        return getCurrentRole() == UserRole.ADMIN;
     }
 
     public static boolean isGerant() {

@@ -62,9 +62,11 @@ public class loginController {
             SessionContext.setCurrentUser(user.getId(), user.getRole());
             openGeneralInterface(user);
         } catch (Exception ex) {
-            showLoginError(ex.getMessage());
+            ex.printStackTrace(); // ✅ see real error in console
+            showLoginError("Erreur: " + ex.getClass().getSimpleName() + " - " + ex.getMessage());
             statusLabel.setText("Login error.");
         }
+
     }
 
     @FXML
@@ -76,7 +78,7 @@ public class loginController {
     }
 
     private void openGeneralInterface(User user) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Admin/admin.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InterfaceGeneral.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) emailField.getScene().getWindow();
         stage.setScene(new Scene(root));
