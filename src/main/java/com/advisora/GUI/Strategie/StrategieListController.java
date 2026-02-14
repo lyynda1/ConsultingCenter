@@ -152,6 +152,8 @@ public class StrategieListController {
 
             com.advisora.GUI.Objective.ObjectiveInfoController controller = loader.getController();
             controller.setObjective(obj);
+            controller.setOnEditRequested(o -> openEditObjectiveDialog(o, s));
+
             controller.setOnClose(this::closeDialog);
             controller.setOnRefresh(this::refresh);
 
@@ -159,9 +161,37 @@ public class StrategieListController {
 
 
             enableDrag(controller.getDragHandle(), modalBox);
+            controller.setOnEditRequested(o -> openEditObjectiveDialog(o, s));
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+    private void openEditObjectiveDialog(Objective obj, Strategie s) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/objectif/AddObjectif.fxml"));
+            Parent content = loader.load();
+
+            AddObjectifController c = loader.getController();
+            enableDrag(c.getDragHandle(), modalBox);
+
+            c.setOnClose(this::closeDialog);
+            c.setOnSaved(() -> {
+                closeDialog();
+                refresh();
+            });
+
+            c.setStrategie(s);
+            c.setEditingObjective(obj);
+
+            modalBox.getChildren().setAll(content);
+            overlay.setManaged(true);
+            overlay.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Impossible d'ouvrir modification objectif: " + ex.getMessage()).showAndWait();
         }
     }
 

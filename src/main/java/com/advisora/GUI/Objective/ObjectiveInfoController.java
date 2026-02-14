@@ -2,7 +2,6 @@ package com.advisora.GUI.Objective;
 
 import com.advisora.Model.Objective;
 import com.advisora.Services.ServiceObjective;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -21,39 +20,60 @@ public class ObjectiveInfoController {
     private Runnable onClose = () -> {};
     private Runnable onRefresh = () -> {};
 
+    // ✅ NEW: ask parent to open edit dialog
+    private java.util.function.Consumer<Objective> onEditRequested = o -> {};
+
     public Node getDragHandle() { return dragHandle; }
 
     public void setObjective(Objective obj) {
         this.objective = obj;
-
         nomLabel.setText("Nom: " + obj.getNomObjective());
-        descArea.setText("Description: " + obj.getDescription());
+        descArea.setText(obj.getDescription());          // no "Description:" prefix inside textarea
         priorityLabel.setText("Priorité: " + obj.getPriority());
     }
 
     public void setOnClose(Runnable r) { this.onClose = r; }
     public void setOnRefresh(Runnable r) { this.onRefresh = r; }
 
+    public void setOnEditRequested(java.util.function.Consumer<Objective> c) {
+        this.onEditRequested = (c == null) ? (o -> {}) : c;
+    }
+
     @FXML
     private void delete() {
+        if (objective == null || objective.getId() <= 0) {
+            new Alert(Alert.AlertType.ERROR, "Objectif invalide (ID).").showAndWait();
+            return;
+        }
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer cet objectif ?");
+        confirm.setContentText(objective.getNomObjective());
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
 
-        service.supprimer(objective);
-        onRefresh.run();
-        onClose.run();
+        try {
+            service.supprimer(objective);
+            onRefresh.run();
+            onClose.run();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Suppression échouée: " + ex.getMessage()).showAndWait();
+        }
     }
 
     @FXML
     private void modify() {
+        if (objective == null) return;
+
+        // ✅ close info dialog then ask parent to open edit dialog
         onClose.run();
-        // reopen AddObjectifController in edit mode
-        // we’ll connect this in next step
+        onEditRequested.accept(objective);
     }
 
-    public void close(ActionEvent actionEvent) {
+    @FXML
+    private void close() {
         onClose.run();
     }
 }

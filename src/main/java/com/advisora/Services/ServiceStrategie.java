@@ -78,7 +78,13 @@ public class ServiceStrategie implements IService<Strategie> {
             ps.setDouble(2, strategie.getVersion());
             ps.setString(3, strategie.getStatut().name());
             ps.setTimestamp(4, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
-            ps.setInt(5, strategie.getProjet().getIdProj());
+            Integer projectId = (strategie.getProjet() == null) ? null : strategie.getProjet().getIdProj();
+
+            if (projectId == null) {
+                ps.setNull(5, Types.INTEGER);
+            } else {
+                ps.setInt(5, projectId);
+            }
             ps.setInt(6, strategie.getId());
 
             ps.executeUpdate();
