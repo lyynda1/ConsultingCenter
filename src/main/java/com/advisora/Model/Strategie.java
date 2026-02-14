@@ -6,22 +6,21 @@ import java.time.LocalDateTime;
 public class Strategie {
     private int id;
     private String nomStrategie;
-    private int version;
+    private double version;
     private StrategyStatut statut;
     private LocalDateTime createdAt;
     private LocalDateTime lockedAt;
 
     private String news;
-    private String objectif;
     private Project projet;
 
     // Default constructor
-    public Strategie(int id, String nom, int version, StrategyStatut statut, LocalDateTime createdAt, LocalDateTime lockedAt, String news, String objectif) {
+    public Strategie() {
     }
 
     // Constructor with all fields
-    public Strategie(int id, String nomStrategie, int version, StrategyStatut statut,
-                     LocalDateTime createdAt, LocalDateTime lockedAt, String news, String objectif, Project projet) {
+    public Strategie(int id, String nomStrategie, double version, StrategyStatut statut,
+                     LocalDateTime createdAt, LocalDateTime lockedAt, String news, Project projet) {
         this.id = id;
         this.nomStrategie = nomStrategie;
         this.version = version;
@@ -29,20 +28,18 @@ public class Strategie {
         this.createdAt = createdAt;
         this.lockedAt = lockedAt;
         this.news = news;
-        this.objectif = objectif;
         this.projet = projet;
     }
 
     // Constructor without id (for new strategies)
-    public Strategie(String nomStrategie, int version, StrategyStatut statut,
-                     LocalDateTime createdAt, LocalDateTime lockedAt, String news, String objectif, Project projet) {
+    public Strategie(String nomStrategie, double version, StrategyStatut statut,
+                     LocalDateTime createdAt, LocalDateTime lockedAt, String news, Project projet) {
         this.nomStrategie = nomStrategie;
         this.version = version;
         this.statut = statut;
         this.createdAt = createdAt;
         this.lockedAt = lockedAt;
         this.news = news;
-        this.objectif = objectif;
         this.projet = projet;
     }
 
@@ -64,11 +61,11 @@ public class Strategie {
         this.nomStrategie = nomStrategie;
     }
 
-    public int getVersion() {
+    public double getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(double version) {
         this.version = version;
     }
 
@@ -106,13 +103,7 @@ public class Strategie {
         this.news = news;
     }
 
-    public String getObjectif() {
-        return objectif;
-    }
 
-    public void setObjectif(String objectif) {
-        this.objectif = objectif;
-    }
     public Project getProjet() {
         return projet;
     }
@@ -122,16 +113,18 @@ public class Strategie {
     }
 
     // toString method for debugging
+
+
     @Override
     public String toString() {
         return "Strategie{" +
-                "id=" + id +
-                ", nom='" + nomStrategie + '\'' +
+                "nomStrategie='" + nomStrategie + '\'' +
                 ", version=" + version +
                 ", statut=" + statut +
                 ", createdAt=" + createdAt +
                 ", lockedAt=" + lockedAt +
                 ", news='" + news + '\'' +
+                ", projet=" + projet +
                 '}';
     }
 

@@ -3,21 +3,23 @@ package com.advisora.GUI.Strategie;
 import com.advisora.Model.Strategie;          // ✅ change if your package is different
 import com.advisora.Services.ServiceStrategie; // ✅ change if your service name/package is different
 
+import com.advisora.enums.StrategyStatut;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.event.ActionEvent;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.Priority;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
 
 public class StrategieListController {
 
@@ -65,6 +67,8 @@ public class StrategieListController {
                 Label date = new Label("Créée le: " +
                         (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate().toString()));
                 date.getStyleClass().add("card-sub");
+                Label projet = new Label("Projet: " + (s.getProjet() == null ? "-" : s.getProjet().getTitleProj()));
+                projet.getStyleClass().add("card-sub");
 
                 Button btnEdit = new Button("Modifier");
                 btnEdit.getStyleClass().add("btn-ghost");
@@ -74,7 +78,7 @@ public class StrategieListController {
 
                 HBox actions = new HBox(8, btnEdit, btnDelete);
 
-                VBox card = new VBox(10, head, date, actions);
+                VBox card = new VBox(10, head, projet, date, actions);
                 card.getStyleClass().add("card");
 
                 setText(null);
@@ -94,13 +98,62 @@ public class StrategieListController {
     // Handlers referenced by FXML
     // =========================================================
 
+    @FXML private StackPane overlay;
+    @FXML private VBox modalBox;
+
+    private Parent addDialogContent;
+
     @FXML
     private void nouvelleStrategie(ActionEvent e) {
-        // TODO: open your add form
-        // Example:
-        // NavigationUtil.open("/views/strategie/AddStrategie.fxml");
-        System.out.println("Open add strategie form...");
+        openAddDialog();
     }
+
+
+    private void openAddDialog() {
+        try {
+            if (addDialogContent == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/AddStrategie.fxml"));
+                addDialogContent = loader.load();
+                AddStrategieDialogController c = loader.getController();
+                enableDrag(c.getDragHandle(), modalBox);
+
+                // give dialog controller a callback to close + refresh
+                c.setOnClose(this::closeDialog);
+                c.setOnSaved(() -> {
+                    closeDialog();
+                    refresh(); // reload list after insert
+                });
+            }
+
+            modalBox.getChildren().setAll(addDialogContent);
+            overlay.setManaged(true);
+            overlay.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Impossible d'ouvrir le formulaire: " + ex.getMessage()).showAndWait();
+        }
+    }
+    private double dragOffsetX;
+    private double dragOffsetY;
+
+    private void enableDrag(Node handle, Node draggable) {
+        handle.setOnMousePressed(e -> {
+            dragOffsetX = e.getSceneX() - draggable.getTranslateX();
+            dragOffsetY = e.getSceneY() - draggable.getTranslateY();
+        });
+
+        handle.setOnMouseDragged(e -> {
+            draggable.setTranslateX(e.getSceneX() - dragOffsetX);
+            draggable.setTranslateY(e.getSceneY() - dragOffsetY);
+        });
+    }
+
+    private void closeDialog() {
+        overlay.setVisible(false);
+        overlay.setManaged(false);
+    }
+
 
     @FXML
     private void onSearch(KeyEvent e) {
@@ -194,16 +247,22 @@ public class StrategieListController {
 
     private void updateStats(List<Strategie> list) {
         int total = list == null ? 0 : list.size();
-        int pending = (int) (list == null ? 0 : list.stream().filter(this::isPending).count());
 
-        // success rate: customize if you have "VALIDEE/REFUSEE" etc.
-        long ok = (list == null ? 0 : list.stream().filter(this::isSuccess).count());
-        String rate = total == 0 ? "0%" : Math.round((ok * 100.0) / total) + "%";
+        long enCours = list == null ? 0 : list.stream()
+                .filter(s -> s.getStatut() == StrategyStatut.En_cours)
+                .count();
+
+        long acceptee = list == null ? 0 : list.stream()
+                .filter(s -> s.getStatut() == StrategyStatut.Acceptée)
+                .count();
+
+        String rate = total == 0 ? "0%" : Math.round((acceptee * 100.0) / total) + "%";
 
         if (lblTotalStrategies != null) lblTotalStrategies.setText(String.valueOf(total));
-        if (lblPending != null) lblPending.setText(String.valueOf(pending));
+        if (lblPending != null) lblPending.setText(String.valueOf(enCours));
         if (lblSuccess != null) lblSuccess.setText(rate);
     }
+
 
     // =========================================================
     // ADAPT HERE: map to your real Strategie model fields

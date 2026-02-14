@@ -1,5 +1,6 @@
 package com.advisora.Services;
 
+import com.advisora.Model.Project;
 import com.advisora.Model.Strategie;
 import com.advisora.Util.DB;
 import com.advisora.enums.StrategyStatut;
@@ -13,20 +14,20 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public void ajouter(Strategie strategie) {
-        String sql = "INSERT INTO `strategies`( `versions`, `statusStrategie`, `CreatedAtS`, `lockedAt`, `news`, `nomStrategie`, `objectif`)" +
-                     "VALUES (?, ?, ?, ?, ?, ?, ? )";
+        String sql = "INSERT INTO `strategies`( `versions`, `statusStrategie`, `CreatedAtS`, `lockedAt`, `news`, `nomStrategie`)" +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 
-            ps.setInt(1, strategie.getVersion());
+            ps.setDouble(1, strategie.getVersion());
             ps.setString(2, strategie.getStatut().name());
             ps.setTimestamp(3, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
             ps.setTimestamp(4, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
             ps.setString(5, strategie.getNews());
             ps.setString(6, strategie.getNomStrategie());
-            ps.setString(7, strategie.getObjectif());
+
 
             ps.executeUpdate();
 
@@ -65,20 +66,20 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public void modifier(Strategie strategie) {
-        String sql = "UPDATE strategies SET nomStrategie=?, versions=?, statusStrategie=?, createdAtS=?, lockedAt=?, news=?, objectif=? " +
+        String sql = "UPDATE strategies SET nomStrategie=?, versions=?, statusStrategie=?, createdAtS=?, lockedAt=? " +
                      "WHERE idStrategie=?";
 
         try (Connection conn = DB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, strategie.getNomStrategie());
-            ps.setInt(2, strategie.getVersion());
+            ps.setDouble(2, strategie.getVersion());
             ps.setString(3, strategie.getStatut().name());
             ps.setTimestamp(4, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
             ps.setTimestamp(5, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
-            ps.setString(6, strategie.getNews());
-            ps.setString(7, strategie.getObjectif());
-            ps.setInt(8, strategie.getId());
+
+
+            ps.setInt(6, strategie.getId());
 
             ps.executeUpdate();
 
@@ -117,8 +118,8 @@ public class ServiceStrategie implements IService<Strategie> {
         LocalDateTime lockedAt = lockedAtTs != null ? lockedAtTs.toLocalDateTime() : null;
 
         String news = rs.getString("news");
-        String objectif = rs.getString("objectif");
-        return new Strategie(id, nom, version, statut, createdAt, lockedAt, news, objectif);
+        Project projet = null;
+        return new Strategie(nom, version, statut, createdAt, lockedAt, news, projet);
     }
 
     // Additional helper method to get a strategy by ID

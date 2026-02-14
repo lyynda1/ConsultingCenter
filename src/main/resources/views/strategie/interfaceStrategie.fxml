@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -11,79 +12,114 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.advisora.GUI.Strategie.StrategieListController"
-            stylesheets="@/css/strategie-list.css"
-            styleClass="page">
+<StackPane fx:id="pageRoot" styleClass="page-root" stylesheets="@/css/strategie-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Strategie.StrategieListController">
 
-    <top>
-        <VBox spacing="12" styleClass="header">
-            <padding>
-                <Insets top="18" right="18" bottom="12" left="18"/>
-            </padding>
+    <!-- MAIN PAGE -->
+    <BorderPane fx:id="mainPane" styleClass="page">
 
-            <!-- Title + actions -->
-            <HBox alignment="CENTER_LEFT">
-                <Label text="Gestion des Stratégies" styleClass="title"/>
-                <Region HBox.hgrow="ALWAYS"/>
+        <top>
+            <VBox spacing="12" styleClass="header">
+                <padding>
+                    <Insets bottom="12" left="18" right="18" top="18" />
+                </padding>
 
-                <Button text="+ Nouvelle Stratégie"
-                        onAction="#nouvelleStrategie"
-                        styleClass="btn-primary"/>
-            </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="title" text="Gestion des Stratégies" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button onAction="#nouvelleStrategie" styleClass="btn-primary" text="+ Nouvelle Stratégie" />
+                </HBox>
 
-            <!-- Search + filter -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Region HBox.hgrow="ALWAYS"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher une stratégie..." styleClass="search" />
+                    <MenuButton styleClass="btn-ghost" text="Filtrer">
+                        <items>
+                            <MenuItem onAction="#onSortNomAsc" text="Nom A → Z" />
+                            <MenuItem onAction="#onSortNomDesc" text="Nom Z → A" />
+                            <SeparatorMenuItem />
+                            <MenuItem onAction="#onSortDateDesc" text="Date récente" />
+                            <MenuItem onAction="#onSortDateAsc" text="Date ancienne" />
+                        </items>
+                    </MenuButton>
+                </HBox>
 
-                <TextField fx:id="txtSearch"
-                           promptText="Rechercher une stratégie..."
-                           onKeyReleased="#onSearch"
-                           styleClass="search"/>
+                <!-- Stats row (your 3 boxes) -->
+                <HBox fillHeight="true" spacing="16" styleClass="stats">
 
-                <MenuButton text="Filtrer" styleClass="btn-ghost">
-                    <items>
-                        <MenuItem text="Nom A → Z" onAction="#onSortNomAsc"/>
-                        <MenuItem text="Nom Z → A" onAction="#onSortNomDesc"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem text="Date récente" onAction="#onSortDateDesc"/>
-                        <MenuItem text="Date ancienne" onAction="#onSortDateAsc"/>
-                    </items>
-                </MenuButton>
-            </HBox>
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                        <styleClass>
+                            <String fx:value="stat-card" />
+                            <String fx:value="stat-total" />
+                        </styleClass>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                                <Label styleClass="stat-icon-text" text="📈" textFill="#ea7527">
+                           <font>
+                              <Font size="20.0" />
+                           </font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="Total Stratégies" />
+                        </HBox>
+                        <Label fx:id="lblTotalStrategies" styleClass="stat-value" text="0" />
+                    </VBox>
 
-            <!-- Small stats row (optional, you had it) -->
-            <HBox spacing="16" styleClass="stats">
-                <VBox spacing="4" styleClass="stat-card">
-                    <Label text="Total Stratégies" styleClass="stat-label"/>
-                    <Label fx:id="lblTotalStrategies" text="0" styleClass="stat-value"/>
-                </VBox>
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                        <styleClass>
+                            <String fx:value="stat-card" />
+                            <String fx:value="stat-pending" />
+                        </styleClass>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                                <Label styleClass="stat-icon-text" text="👥" textFill="#ea7527">
+                           <font>
+                              <Font size="20.0" />
+                           </font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="En attente d'approbation" />
+                        </HBox>
+                        <Label fx:id="lblPending" styleClass="stat-value" text="0" />
+                    </VBox>
 
-                <VBox spacing="4" styleClass="stat-card">
-                    <Label text="En attente d'approbation" styleClass="stat-label"/>
-                    <Label fx:id="lblPending" text="0" styleClass="stat-value"/>
-                </VBox>
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                        <styleClass>
+                            <String fx:value="stat-card" />
+                            <String fx:value="stat-success" />
+                        </styleClass>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane styleClass="stat-icon-chip stat-icon-green">
+                                <Label styleClass="stat-icon-text" text="✅" textFill="#ea7527">
+                           <font>
+                              <Font size="20.0" />
+                           </font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="Taux de réussite" />
+                        </HBox>
+                        <Label fx:id="lblSuccess" styleClass="stat-value" text="0%" />
+                    </VBox>
 
-                <VBox spacing="4" styleClass="stat-card">
-                    <Label text="Taux de réussite" styleClass="stat-label"/>
-                    <Label fx:id="lblSuccess" text="0%" styleClass="stat-value"/>
-                </VBox>
-            </HBox>
-        </VBox>
-    </top>
+                </HBox>
+            </VBox>
+        </top>
 
-    <center>
-        <VBox styleClass="content" fillWidth="true">
-            <padding>
-                <Insets top="14" right="18" bottom="18" left="18"/>
-            </padding>
+        <center>
+            <VBox fillWidth="true" styleClass="content">
+                <padding>
+                    <Insets bottom="18" left="18" right="18" top="14" />
+                </padding>
 
-            <!-- This replaces the TableView -->
-            <ListView fx:id="strategieList" styleClass="card-list" VBox.vgrow="ALWAYS"/>
-        </VBox>
-    </center>
+                <ListView fx:id="strategieList" styleClass="card-list" VBox.vgrow="ALWAYS" />
+            </VBox>
+        </center>
+    </BorderPane>
 
-</BorderPane>
+    <!-- ✅ OVERLAY ABOVE EVERYTHING -->
+    <StackPane fx:id="overlay" managed="false" styleClass="modal-overlay" visible="false">
+        <!-- Draggable modal container -->
+        <VBox fx:id="modalBox" maxWidth="560" styleClass="modal-box" />
+    </StackPane>
+
+</StackPane>
