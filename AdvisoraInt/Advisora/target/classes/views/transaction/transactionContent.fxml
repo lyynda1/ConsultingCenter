@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Transaction.TransactionListController" stylesheets="@/css/admin.css">
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
+            <padding><Insets bottom="14" left="18" right="18" top="14" /></padding>
+            <VBox spacing="2">
+                <Label styleClass="top-title" text="Gestion des Transactions" />
+                <Label styleClass="top-sub" text="Affichage des données." />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-wrap">
+                <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher..." styleClass="search" />
+            </HBox>
+            <Button onAction="#handleRefresh" styleClass="icon-btn" text="Refresh" />
+        </HBox>
+        <StackPane fx:id="contentHost" VBox.vgrow="ALWAYS">
+            <children>
+                <!-- WIDGET 1: Liste uniquement + boutons à côté (affiché par défaut) -->
+                <HBox fx:id="listPane" spacing="16" styleClass="page" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
+                    <padding><Insets bottom="18" left="18" right="18" top="18" /></padding>
+                    <VBox spacing="14" styleClass="card" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label styleClass="card-title" text="Liste des Transactions" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="countLabel" styleClass="pill" text="0 transactions" />
+                        </HBox>
+                        <ListView fx:id="transactionList" styleClass="list" VBox.vgrow="ALWAYS" />
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <VBox spacing="6">
+                                <Label styleClass="label" text="Transaction ID (pour Modifier/Supprimer)" />
+                                <TextField fx:id="idField" promptText="ID ou sélectionner dans la liste" styleClass="input small" />
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS" />
+                        </HBox>
+                        <Label fx:id="rightStatus" styleClass="hint" text="Sélectionner une ligne ou saisir un ID, puis cliquer Modifier ou Supprimer." />
+                    </VBox>
+                    <!-- Boutons à côté de la liste -->
+                    <VBox spacing="10" alignment="CENTER_LEFT" styleClass="card" prefWidth="160">
+                        <Label styleClass="label" text="Actions" />
+                        <Button onAction="#handleShowAddForm" styleClass="btn-primary" maxWidth="Infinity" text="Ajouter" />
+                        <Button onAction="#handleEditById" styleClass="icon-chip" maxWidth="Infinity" text="Modifier" />
+                        <Button onAction="#handleDeleteById" styleClass="icon-chip danger" maxWidth="Infinity" text="Supprimer" />
+                        <Region VBox.vgrow="ALWAYS" />
+                        <Button onAction="#openInvestissements" styleClass="icon-btn" maxWidth="Infinity" text="Investissements" />
+                    </VBox>
+                </HBox>
+
+                <!-- WIDGET 2: Formulaire (affiché au clic Ajouter/Modifier) -->
+                <VBox fx:id="formPane" visible="false" managed="false" spacing="14" styleClass="page" alignment="TOP_LEFT" StackPane.alignment="TOP_LEFT">
+                    <padding><Insets bottom="18" left="18" right="18" top="18" /></padding>
+                    <VBox spacing="14" styleClass="card" VBox.vgrow="ALWAYS" maxWidth="560">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label fx:id="formTitleLabel" styleClass="card-title" text="Formulaire" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleBackToList" styleClass="btn-outline" text="Retour" />
+                        </HBox>
+                        <VBox spacing="12">
+                            <VBox spacing="6">
+                                <Label styleClass="label" text="Date (yyyy-MM-dd)" />
+                                <TextField fx:id="dateField" promptText="ex: 2025-02-15" styleClass="input" />
+                            </VBox>
+                            <VBox spacing="6">
+                                <Label styleClass="label" text="Montant" />
+                                <TextField fx:id="montantField" promptText="ex: 25000" styleClass="input" />
+                            </VBox>
+                            <VBox spacing="6">
+                                <Label styleClass="label" text="Type" />
+                                <TextField fx:id="typeField" promptText="ex: Initial Funding" styleClass="input" />
+                            </VBox>
+                            <VBox spacing="6">
+                                <Label styleClass="label" text="Statut" />
+                                <ComboBox fx:id="statutCombo" styleClass="combo" />
+                            </VBox>
+                            <VBox spacing="6">
+                                <Label styleClass="label" text="ID Investissement" />
+                                <TextField fx:id="idInvField" promptText="ex: 1" styleClass="input" />
+                            </VBox>
+                        </VBox>
+                        <HBox alignment="CENTER_RIGHT" spacing="10">
+                            <Button onAction="#handleClearForm" styleClass="btn-outline" text="Clear" />
+                            <Button fx:id="submitFormBtn" onAction="#handleSubmitForm" styleClass="btn-primary" text="Enregistrer" />
+                        </HBox>
+                        <Label fx:id="leftStatus" styleClass="hint" text="" />
+                    </VBox>
+                </VBox>
+            </children>
+        </StackPane>
+    </children>
+</VBox>
