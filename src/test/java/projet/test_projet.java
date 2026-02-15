@@ -94,6 +94,25 @@ public class test_projet {
         invokeValidate(p, false);
     }
 
+    // Boundary checks:
+    // avancement exactly 0 and 100 must be accepted.
+    @Test
+    void validate_accepts_avancement_boundaries() throws Exception {
+        Project p = validProject();
+        p.setAvancementProj(0);
+        invokeValidate(p, true);
+
+        p.setAvancementProj(100);
+        invokeValidate(p, true);
+    }
+
+    // Enum mapping should accept whitespace and mixed case.
+    @Test
+    void project_status_mapping_accepts_whitespace_and_case() {
+        assertEquals(ProjectStatus.ACCEPTED, ProjectStatus.fromDb(" accepted "));
+        assertEquals(ProjectStatus.ARCHIVED, ProjectStatus.fromDb("ArChIvEd"));
+    }
+
     // Test fixture factory:
     // returns a project object that satisfies service validation rules.
     private static Project validProject() {
@@ -124,7 +143,4 @@ public class test_projet {
         }
     }
 
-
-
 }
-

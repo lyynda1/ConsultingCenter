@@ -23,6 +23,13 @@ public class test_resource {
     }
 
     @Test
+    void status_from_db_mapping_handles_spaces_and_case() {
+        assertEquals(RessourceStatut.AVAILABLE, RessourceStatut.fromDb("  DISPONIBLE  "));
+        assertEquals(RessourceStatut.RESERVED, RessourceStatut.fromDb("ReSeRvEd"));
+        assertEquals(RessourceStatut.UNAVAILABLE, RessourceStatut.fromDb("  unavailable "));
+    }
+
+    @Test
     void validate_rejects_null_resource() {
         assertThrows(IllegalArgumentException.class, () -> invokeValidate(null));
     }

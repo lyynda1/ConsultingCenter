@@ -35,6 +35,14 @@ public class test_strategie {
         assertEquals(StrategyStatut.EN_COURS, StrategyStatut.fromDb(null));
     }
 
+    // Mapping should also tolerate spaces and separators.
+    @Test
+    void strategy_status_mapping_handles_spaces_and_dash() {
+        assertEquals(StrategyStatut.EN_COURS, StrategyStatut.fromDb("  en-cours  "));
+        assertEquals(StrategyStatut.ACCEPTEE, StrategyStatut.fromDb(" acceptee "));
+        assertEquals(StrategyStatut.REFUSEE, StrategyStatut.fromDb(" REFUSEE "));
+    }
+
     // Validation guard: null strategy must be rejected.
     @Test
     void validate_rejects_null_strategie() {
