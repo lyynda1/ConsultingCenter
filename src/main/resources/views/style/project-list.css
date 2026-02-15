@@ -263,13 +263,28 @@ Role: Project module UI layout (FXML/CSS)
 }
 
 /* Make sure buttons never become tiny */
-.chip-ok, .chip-no{
+.chip-no{
     -fx-min-width: 80px;
     -fx-pref-width: 90px;
     -fx-max-width: 90px;
     -fx-padding: 6 10;
     -fx-background-radius: 999;
     -fx-font-weight: 700;
+
+    -fx-background-color: rgba(237, 57, 57, 0.95);
+    -fx-text-fill: white;
+}
+
+.chip-ok{
+    -fx-min-width: 80px;
+    -fx-pref-width: 90px;
+    -fx-max-width: 90px;
+    -fx-padding: 6 10;
+    -fx-background-radius: 999;
+    -fx-font-weight: 700;
+
+    -fx-background-color: rgba(46, 163, 106, 0.95);
+    -fx-text-fill: white;
 }
 
 

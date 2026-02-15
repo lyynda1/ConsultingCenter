@@ -125,7 +125,7 @@ public class ProjectListController implements Initializable {
     // =========================
     private VBox buildCard(Project p) {
 
-        // Title (header stays simple)
+        // Title
         String titleText =
                 (SessionContext.isGerant() || SessionContext.getCurrentRole() == UserRole.ADMIN)
                         ? "#" + p.getIdProj() + " - " + safe(p.getTitleProj())
@@ -133,10 +133,9 @@ public class ProjectListController implements Initializable {
 
         Label title = new Label(titleText);
         title.getStyleClass().add("card-title");
-
         HBox head = new HBox(10, title);
 
-        // Left content (project info)
+        // Left content
         Label desc = new Label(p.getDescriptionProj() == null ? "" : p.getDescriptionProj());
         desc.setWrapText(true);
         desc.getStyleClass().add("card-desc");
@@ -155,7 +154,7 @@ public class ProjectListController implements Initializable {
         left.getStyleClass().add("card-left");
         HBox.setHgrow(left, Priority.ALWAYS);
 
-        // Status badge (moved BEFORE vertical divider)
+        // Status badge (keep it)
         Label statusBadge = new Label(p.getStateProj() == null ? "-" : p.getStateProj().name());
         statusBadge.getStyleClass().addAll("status-badge", statusClassFor(p.getStateProj()));
 
@@ -163,19 +162,23 @@ public class ProjectListController implements Initializable {
         badgeBox.getStyleClass().add("badge-box");
         badgeBox.setMinWidth(Region.USE_PREF_SIZE);
 
-        // Right strategies panel
-        VBox right = buildStrategiesPanel(p);
-        right.getStyleClass().add("card-right");
+        // ===== MID (conditional) =====
+        HBox mid;
+        if (SessionContext.isClient()) {
+            VBox right = buildStrategiesPanel(p);
+            right.getStyleClass().add("card-right");
 
-        // Divider
-        Region divider = new Region();
-        divider.getStyleClass().add("card-divider");
+            Region divider = new Region();
+            divider.getStyleClass().add("card-divider");
 
-        // Middle line = left + badge + divider + right
-        HBox mid = new HBox(16, left, badgeBox, divider, right);
+            mid = new HBox(16, left, badgeBox, divider, right);
+        } else {
+            // No divider, no right panel => no empty space
+            mid = new HBox(16, left, badgeBox);
+        }
         mid.getStyleClass().add("card-mid");
 
-        // Actions row (your original logic)
+        // Actions row (same logic)
         HBox actionRow = new HBox(8);
         actionRow.getStyleClass().add("card-actions");
 
@@ -213,6 +216,7 @@ public class ProjectListController implements Initializable {
         card.getStyleClass().add("project-card");
         return card;
     }
+
 
     private VBox buildStrategiesPanel(Project p) {
         VBox panel = new VBox(10);
@@ -271,6 +275,7 @@ public class ProjectListController implements Initializable {
         ok.getStyleClass().add("chip-ok");
         ok.setMinWidth(80);
         ok.setPrefWidth(90);
+
 
         Button no = new Button("Refuser");
         no.getStyleClass().add("chip-no");

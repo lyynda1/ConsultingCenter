@@ -44,11 +44,11 @@ public class SupplierFormController {
         try {
             CatalogueFournisseur f = current == null ? new CatalogueFournisseur() : current;
             f.setNomFr(required(txtName.getText(), "Nom fournisseur obligatoire"));
-            f.setQuantite(parseIntOrZero(txtQuantite.getText()));
-            f.setFournisseur(txtFournisseur.getText());
-            f.setEmailFr(txtEmail.getText());
-            f.setLocalisationFr(txtLocalisation.getText());
-            f.setNumTelFr(txtNumTel.getText());
+            f.setQuantite(requiredInt(txtQuantite.getText(), "Quantité du produit est obligatoire"));
+            f.setFournisseur(required(txtFournisseur.getText(), "entreprise fournisseur obligatoire"));
+            f.setEmailFr(requiredEmail(txtEmail.getText(), "Email obligatoire"));
+            f.setLocalisationFr(required(txtLocalisation.getText(), "Localisation obligatoire"));
+            f.setNumTelFr(requiredTel(txtNumTel.getText(), "Numéro de téléphone obligatoire"));
             if (editMode) {
                 service.modifier(f);
             } else {
@@ -58,6 +58,22 @@ public class SupplierFormController {
         } catch (Exception ex) {
             showError(ex.getMessage());
         }
+    }
+
+    private String requiredTel(String text, String numéroDeTéléphoneObligatoire) {
+        String v = required(text, numéroDeTéléphoneObligatoire);
+        if (!v.matches("^\\+?[0-9]{7,15}$")) {
+            throw new IllegalArgumentException("Numéro de téléphone invalide");
+        }
+        return v;
+    }
+
+    private String requiredEmail(String text, String emailObligatoire) {
+        String v = required(text, emailObligatoire);
+        if (!v.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$")) {
+            throw new IllegalArgumentException("Email invalide");
+        }
+        return v;
     }
 
     @FXML
@@ -82,18 +98,18 @@ public class SupplierFormController {
         return value.trim();
     }
 
-    private int parseIntOrZero(String value) {
+    private int requiredInt(String value, String msg) {
         if (value == null || value.isBlank()) {
-            return 0;
+            throw new IllegalArgumentException(msg);
         }
         try {
             int v = Integer.parseInt(value.trim());
             if (v < 0) {
-                throw new IllegalArgumentException("Quantite >= 0 obligatoire.");
+                throw new IllegalArgumentException(msg);
             }
             return v;
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Quantite invalide.");
+            throw new IllegalArgumentException(msg);
         }
     }
 
