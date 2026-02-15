@@ -59,6 +59,12 @@ public class ProjectListController implements Initializable {
     private TextField txtSearch;
     @FXML
     private ListView<Project> projectList;
+    @FXML
+    private Label lblTotalProjects;
+    @FXML
+    private Label lblPendingProjects;
+    @FXML
+    private Label lblAcceptanceRate;
 
     private final ProjectService projectService = new ProjectService();
     private final ObservableList<Project> baseProjects = FXCollections.observableArrayList();
@@ -79,12 +85,13 @@ public class ProjectListController implements Initializable {
     private void setupRoleUI() {
         // Client can create projects.
         // Manager uses decision workflow and status tabs instead.
-        btnNewProject.setDisable(!SessionContext.isClient());
+        boolean canCreateProject = SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN;
+        btnNewProject.setDisable(!canCreateProject);
         boolean isAdmin = SessionContext.getCurrentRole() == UserRole.ADMIN;
         btnUsers.setVisible(isAdmin);
         btnUsers.setManaged(isAdmin);
 
-        if (!SessionContext.isManager()) {
+        if (!(SessionContext.isManager() || isAdmin)) {
             tabAll.setVisible(false);
             tabAll.setManaged(false);
             tabValid.setVisible(false);
@@ -114,11 +121,17 @@ public class ProjectListController implements Initializable {
 
     private VBox buildCard(Project p) {
         // Card header.
-        String titleText = SessionContext.isGerant()
+        String titleText = (SessionContext.isGerant() || SessionContext.getCurrentRole() == UserRole.ADMIN)
                 ? "#" + p.getIdProj() + " - " + p.getTitleProj()
                 : p.getTitleProj();
         Label title = new Label(titleText);
         title.getStyleClass().add("card-title");
+        Label statusBadge = new Label(p.getStateProj() == null ? "-" : p.getStateProj().name());
+        statusBadge.getStyleClass().add("status-badge");
+        statusBadge.getStyleClass().add(statusClassFor(p.getStateProj()));
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox head = new HBox(10, title, spacer, statusBadge);
 
         // Card body.
         Label desc = new Label(p.getDescriptionProj() == null ? "" : p.getDescriptionProj());
@@ -127,8 +140,7 @@ public class ProjectListController implements Initializable {
 
         Label meta = new Label(
                 "Type: " + nullToDash(p.getTypeProj()) +
-                        "   |   Budget: " + p.getBudgetProj() +
-                        "   |   Statut: " + p.getStateProj()
+                        "   |   Budget: " + p.getBudgetProj()
         );
         meta.getStyleClass().add("card-meta");
 
@@ -155,7 +167,7 @@ public class ProjectListController implements Initializable {
         actionRow.getChildren().add(currentDecision);
         }
         // Client actions: can edit/delete own project.
-        if (SessionContext.isClient()) {
+        if (SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
             Button edit = new Button("Edit");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> onEditProject(p));
@@ -166,17 +178,14 @@ public class ProjectListController implements Initializable {
         }
 
         // Manager action: create decision on selected project.
-        if (SessionContext.isManager()) {
+        if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
             Button decide = new Button("Decide");
             decide.getStyleClass().add("btn-primary");
             decide.setOnAction(e -> onDecideProject(p));
             actionRow.getChildren().add(decide);
         }
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        VBox card = new VBox(8, title, desc, meta, bar, progressLabel, actionRow);
+        VBox card = new VBox(8, head, desc, meta, bar, progressLabel, actionRow);
         card.getStyleClass().add("project-card");
         return card;
     }
@@ -195,8 +204,8 @@ public class ProjectListController implements Initializable {
 
     @FXML
     private void onAdd() {
-        if (!SessionContext.isClient()) {
-            showError("Only CLIENT can create projects.");
+        if (!(SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN)) {
+            showError("Only CLIENT or ADMIN can create projects.");
             return;
         }
         try {
@@ -269,6 +278,7 @@ public class ProjectListController implements Initializable {
                 projects = projectService.getAll();
             }
             baseProjects.setAll(projects);
+            updateStats(baseProjects);
             applyFilters();
         } catch (Exception e) {
             showError(e.getMessage());
@@ -287,6 +297,23 @@ public class ProjectListController implements Initializable {
                 .collect(Collectors.toList());
 
         projectList.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    private void updateStats(List<Project> projects) {
+        int total = projects == null ? 0 : projects.size();
+        long pending = projects == null ? 0 : projects.stream().filter(p -> p.getStateProj() == ProjectStatus.PENDING).count();
+        long accepted = projects == null ? 0 : projects.stream().filter(p -> p.getStateProj() == ProjectStatus.ACCEPTED).count();
+        String acceptanceRate = total == 0 ? "0%" : Math.round((accepted * 100.0) / total) + "%";
+
+        if (lblTotalProjects != null) {
+            lblTotalProjects.setText(String.valueOf(total));
+        }
+        if (lblPendingProjects != null) {
+            lblPendingProjects.setText(String.valueOf(pending));
+        }
+        if (lblAcceptanceRate != null) {
+            lblAcceptanceRate.setText(acceptanceRate);
+        }
     }
 
     private boolean matchesSearch(Project p, String search) {
@@ -376,6 +403,18 @@ public class ProjectListController implements Initializable {
 
     private String nullToDash(String value) {
         return value == null || value.isBlank() ? "-" : value;
+    }
+
+    private String statusClassFor(ProjectStatus status) {
+        if (status == null) {
+            return "status-pending";
+        }
+        return switch (status) {
+            case ACCEPTED -> "status-accepted";
+            case REFUSED -> "status-refused";
+            case ARCHIVED -> "status-archived";
+            default -> "status-pending";
+        };
     }
 
     private void openModal(Parent root, String title) {

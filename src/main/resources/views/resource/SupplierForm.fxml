@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.SupplierFormController"
+      stylesheets="@../style/forms_proj.css"
+      styleClass="form-root">
+    <padding>
+        <Insets top="12" right="12" bottom="12" left="12"/>
+    </padding>
+
+    <Label text="Supplier Form" styleClass="form-title"/>
+
+    <GridPane hgap="8" vgap="8">
+        <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="nombre des produits" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtQuantite" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="nom société" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtFournisseur" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Email" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtEmail" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Localisation" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtLocalisation" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Telephone" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtNumTel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="8" styleClass="form-actions">
+        <Button text="Save" onAction="#onSave" styleClass="btn-save"/>
+        <Button text="Cancel" onAction="#onCancel" styleClass="btn-cancel"/>
+        <Button fx:id="btnDelete" text="Delete" onAction="#onDelete" styleClass="btn-delete"/>
+    </HBox>
+</VBox>

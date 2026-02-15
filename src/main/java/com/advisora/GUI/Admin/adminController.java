@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -35,7 +36,7 @@ public class adminController {
     @FXML private PasswordField passwordField;
     @FXML private ComboBox<UserRole> roleCombo;
 
-    // âœ… error labels under fields (must exist in FXML)
+    // Error labels under fields (must exist in FXML)
     @FXML private Label nomError;
     @FXML private Label prenomError;
     @FXML private Label emailError;
@@ -54,6 +55,10 @@ public class adminController {
     @FXML private TextField idField;
     @FXML private TextField searchField;
     @FXML private StackPane contentHost;
+    @FXML private HBox navUsersRow;
+    @FXML private Button btnUsers;
+    @FXML private HBox navStrategiesRow;
+    @FXML private Button btnStrategies;
 
     private final UserService userService = new UserService();
     private final ObservableList<User> usersObs = FXCollections.observableArrayList();
@@ -82,6 +87,7 @@ public class adminController {
         if (contentHost != null && !contentHost.getChildren().isEmpty()) {
             usersContent = contentHost.getChildren().get(0);
         }
+        applyRoleVisibility();
 
         roleCombo.setItems(FXCollections.observableArrayList(UserRole.values()));
         usersList.setItems(usersObs);
@@ -99,7 +105,7 @@ public class adminController {
                 String email = safe(u.getEmail());
                 String role = u.getRole() == null ? "" : u.getRole().name();
 
-                setText("#" + u.getId() + " • " + firstName + " " + lastName + " • " + email + " • " + role);
+                setText("#" + u.getId() + " - " + firstName + " " + lastName + " - " + email + " - " + role);
             }
         });
 
@@ -108,7 +114,7 @@ public class adminController {
                 fillForm(u);
                 idField.setText(String.valueOf(u.getId()));
                 rightStatus.setText("Selected user #" + u.getId());
-                clearErrors(); // âœ…
+                clearErrors();
             }
         });
 
@@ -116,7 +122,7 @@ public class adminController {
             searchField.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
         }
 
-        // âœ… Expertise only if GERANT
+        // Expertise only if GERANT
         roleCombo.valueProperty().addListener((obs, oldR, newR) -> {
             boolean isGERANT = (newR == UserRole.GERANT);
             expertiseField.setDisable(!isGERANT);
@@ -132,6 +138,30 @@ public class adminController {
 
         // Optional: validate live as user types
         addLiveValidation();
+
+        // Show Home by default instead of user management form.
+        handleHome();
+    }
+
+    private void applyRoleVisibility() {
+        UserRole role = SessionContext.getCurrentRole();
+        boolean isClient = role == UserRole.CLIENT;
+        if (navUsersRow != null) {
+            navUsersRow.setVisible(!isClient);
+            navUsersRow.setManaged(!isClient);
+        }
+        if (btnUsers != null) {
+            btnUsers.setVisible(!isClient);
+            btnUsers.setManaged(!isClient);
+        }
+        if (navStrategiesRow != null) {
+            navStrategiesRow.setVisible(!isClient);
+            navStrategiesRow.setManaged(!isClient);
+        }
+        if (btnStrategies != null) {
+            btnStrategies.setVisible(!isClient);
+            btnStrategies.setManaged(!isClient);
+        }
     }
 
     // --------------------------
@@ -143,12 +173,12 @@ public class adminController {
         clearErrors();
         User u = buildUserFromForm(0);
         if (!validateForm()) {
-            leftStatus.setText("Corrige les champs en rouge âŒ");
+            leftStatus.setText("Corrige les champs en rouge.");
             return;
         }
 
         userService.ajouter(u);
-        leftStatus.setText("User added âœ… ID=" + u.getId());
+        leftStatus.setText("User added. ID=" + u.getId());
         clearForm();
         refreshList();
     }
@@ -160,12 +190,12 @@ public class adminController {
         User u = buildUserFromForm(id);
 
         if (!validateForm()) {
-            leftStatus.setText("Corrige les champs en rouge âŒ");
+            leftStatus.setText("Corrige les champs en rouge.");
             return;
         }
 
         userService.modifier(u);
-        leftStatus.setText("User updated âœ… ID=" + id);
+        leftStatus.setText("User updated. ID=" + id);
         refreshList();
     }
 
@@ -174,19 +204,19 @@ public class adminController {
         try {
             int id = parseIdOrThrow();
             userService.supprimerParId(id);
-            leftStatus.setText("User deleted âœ… ID=" + id);
+            leftStatus.setText("User deleted. ID=" + id);
             clearForm();
             idField.clear();
             refreshList();
         } catch (Exception ex) {
-            leftStatus.setText("Delete failed âŒ " + ex.getMessage());
+            leftStatus.setText("Delete failed: " + ex.getMessage());
         }
     }
 
     @FXML
     private void handleRefresh() {
         refreshList();
-        leftStatus.setText("Refreshed âœ…");
+        leftStatus.setText("Refreshed.");
     }
 
     @FXML
@@ -195,7 +225,7 @@ public class adminController {
         clearErrors();
         idField.clear();
         usersList.getSelectionModel().clearSelection();
-        leftStatus.setText("Cleared âœ…");
+        leftStatus.setText("Cleared.");
     }
 
     // --------------------------
@@ -221,8 +251,8 @@ public class adminController {
         else hideError(nomField, nomError);
 
         // PRENOM
-        if (prenom.isBlank()) ok &= showError(prenomField, prenomError, "PrÃ©nom obligatoire");
-        else if (!NAME_PATTERN.matcher(prenom).matches()) ok &= showError(prenomField, prenomError, "PrÃ©nom invalide (lettres seulement)");
+        if (prenom.isBlank()) ok &= showError(prenomField, prenomError, "Prenom obligatoire");
+        else if (!NAME_PATTERN.matcher(prenom).matches()) ok &= showError(prenomField, prenomError, "Prenom invalide (lettres seulement)");
         else hideError(prenomField, prenomError);
 
         // EMAIL
@@ -236,8 +266,8 @@ public class adminController {
         else hideError(cinField, cinError);
 
         // TEL
-        if (tel.isBlank()) ok &= showError(telField, telError, "TÃ©lÃ©phone obligatoire");
-        else if (!PHONE_PATTERN.matcher(tel).matches()) ok &= showError(telField, telError, "TÃ©lÃ©phone invalide (8-15 chiffres)");
+        if (tel.isBlank()) ok &= showError(telField, telError, "Telephone obligatoire");
+        else if (!PHONE_PATTERN.matcher(tel).matches()) ok &= showError(telField, telError, "Telephone invalide (8-15 chiffres)");
         else hideError(telField, telError);
 
         // DATE
@@ -249,7 +279,7 @@ public class adminController {
                 if (dob.isAfter(LocalDate.now())) ok &= showError(dateNField, dateNError, "Date invalide (dans le futur)");
                 else {
                     int age = Period.between(dob, LocalDate.now()).getYears();
-                    if (age < 10) ok &= showError(dateNField, dateNError, "Ã‚ge invalide (<10 ans)");
+                    if (age < 10) ok &= showError(dateNField, dateNError, "Age invalide (<10 ans)");
                     else hideError(dateNField, dateNError);
                 }
             } catch (DateTimeParseException ex) {
@@ -262,7 +292,7 @@ public class adminController {
         else hideError(passwordField, passwordError);
 
         // ROLE
-        if (role == null) ok &= showError(roleCombo, roleError, "Choisir un rÃ´le");
+        if (role == null) ok &= showError(roleCombo, roleError, "Choisir un role");
         else hideError(roleCombo, roleError);
 
         // EXPERTISE
@@ -312,15 +342,15 @@ public class adminController {
     }
 
     private void addLiveValidation() {
-        nomField.textProperty().addListener((o,a,b) -> validateForm());
-        prenomField.textProperty().addListener((o,a,b) -> validateForm());
-        emailField.textProperty().addListener((o,a,b) -> validateForm());
-        cinField.textProperty().addListener((o,a,b) -> validateForm());
-        telField.textProperty().addListener((o,a,b) -> validateForm());
-        dateNField.textProperty().addListener((o,a,b) -> validateForm());
-        passwordField.textProperty().addListener((o,a,b) -> validateForm());
-        roleCombo.valueProperty().addListener((o,a,b) -> validateForm());
-        expertiseField.textProperty().addListener((o,a,b) -> validateForm());
+        nomField.textProperty().addListener((o,a,b) -> hideError(nomField, nomError));
+        prenomField.textProperty().addListener((o,a,b) -> hideError(prenomField, prenomError));
+        emailField.textProperty().addListener((o,a,b) -> hideError(emailField, emailError));
+        cinField.textProperty().addListener((o,a,b) -> hideError(cinField, cinError));
+        telField.textProperty().addListener((o,a,b) -> hideError(telField, telError));
+        dateNField.textProperty().addListener((o,a,b) -> hideError(dateNField, dateNError));
+        passwordField.textProperty().addListener((o,a,b) -> hideError(passwordField, passwordError));
+        roleCombo.valueProperty().addListener((o,a,b) -> hideError(roleCombo, roleError));
+        expertiseField.textProperty().addListener((o,a,b) -> hideError(expertiseField, expertiseError));
     }
 
     // --------------------------
@@ -409,11 +439,26 @@ public class adminController {
     @FXML
     private void handleOpenProjects() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
-            Parent root = loader.load();
-            contentHost.getChildren().setAll(root);
+            loadIntoContent("/views/project/ProjectList.fxml");
         } catch (Exception ex) {
-            leftStatus.setText("Navigation failed âŒ " + ex.getMessage());
+            leftStatus.setText("Navigation failed: " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleOpenStrategies() {
+        try {
+            UserRole r = SessionContext.getCurrentRole();
+            if (r != UserRole.ADMIN && r != UserRole.GERANT) {
+                leftStatus.setText("Acces refuse: GERANT ou ADMIN requis.");
+                return;
+            }
+            loadIntoContent("/views/strategie/interfaceStrategie.fxml");
+        } catch (Exception ex) {
+            leftStatus.setText("Navigation failed: " + ex.getMessage());
+            Alert a = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
+            a.setHeaderText("Gestion Strategies");
+            a.showAndWait();
         }
     }
 
@@ -421,6 +466,50 @@ public class adminController {
     private void handleOpenUsers() {
         if (usersContent != null) {
             contentHost.getChildren().setAll(usersContent);
+        }
+    }
+
+    
+    @FXML
+    private void handleOpenResourceModule() {
+        try {
+            if (SessionContext.getCurrentRole() == UserRole.CLIENT) {
+                loadIntoContent("/views/resource/CatalogView.fxml");
+            } else {
+                loadIntoContent("/views/resource/InventoryDashboard.fxml");
+            }
+        } catch (Exception ex) {
+            Throwable root = ex;
+            while (root.getCause() != null) {
+                root = root.getCause();
+            }
+            String message = ex.getMessage();
+            if (root != ex && root.getMessage() != null && !root.getMessage().isBlank()) {
+                message = message + "\nCause: " + root.getMessage();
+            }
+            String messageLower = message == null ? "" : message.toLowerCase();
+            if (messageLower.contains("content is not allowed in prolog")) {
+                message = message + "\nHint: Verifier un BOM UTF-8 en tete des fichiers FXML inclus.";
+            }
+            leftStatus.setText("Navigation failed: " + message);
+            Alert a = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+            a.setHeaderText("Gestion Ressources");
+            a.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleOpenReservations() {
+        leftStatus.setText("Module Gestion Investissements desactive pour le moment.");
+    }
+
+    @FXML
+    private void handleHome() {
+        try {
+            loadIntoContent("/views/Home.fxml");
+            leftStatus.setText("Bienvenue sur la page d'accueil.");
+        } catch (Exception ex) {
+            leftStatus.setText("Navigation failed: " + ex.getMessage());
         }
     }
 
@@ -434,8 +523,13 @@ public class adminController {
             stage.setScene(new Scene(root));
             stage.setTitle("Advisora - Login");
         } catch (Exception ex) {
-            leftStatus.setText("Logout failed ❌ " + ex.getMessage());
+            leftStatus.setText("Logout failed: " + ex.getMessage());
         }
     }
-}
 
+    private void loadIntoContent(String fxmlPath) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent root = loader.load();
+        contentHost.getChildren().setAll(root);
+    }
+}

@@ -4,7 +4,9 @@
 Role: Project module UI layout (FXML/CSS) -->
 
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -66,6 +68,50 @@ Role: Project module UI layout (FXML/CSS) -->
                         <MenuItem text="Avancement decroissant" onAction="#onSortAvancementDesc"/>
                     </items>
                 </MenuButton>
+            </HBox>
+
+            <HBox fillHeight="true" spacing="16" styleClass="stats">
+                <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                    <styleClass>
+                        <String fx:value="stat-card"/>
+                        <String fx:value="stat-total"/>
+                    </styleClass>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                            <Label text="&#128202;" styleClass="stat-icon-text"/>
+                        </StackPane>
+                        <Label text="Total Projets" styleClass="stat-label"/>
+                    </HBox>
+                    <Label fx:id="lblTotalProjects" text="0" styleClass="stat-value"/>
+                </VBox>
+
+                <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                    <styleClass>
+                        <String fx:value="stat-card"/>
+                        <String fx:value="stat-pending"/>
+                    </styleClass>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                            <Label text="&#128101;" styleClass="stat-icon-text"/>
+                        </StackPane>
+                        <Label text="En attente d'approbation" styleClass="stat-label"/>
+                    </HBox>
+                    <Label fx:id="lblPendingProjects" text="0" styleClass="stat-value"/>
+                </VBox>
+
+                <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                    <styleClass>
+                        <String fx:value="stat-card"/>
+                        <String fx:value="stat-success"/>
+                    </styleClass>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane styleClass="stat-icon-chip stat-icon-green">
+                            <Label text="&#10004;" styleClass="stat-icon-text"/>
+                        </StackPane>
+                        <Label text="Taux d'acceptation" styleClass="stat-label"/>
+                    </HBox>
+                    <Label fx:id="lblAcceptanceRate" text="0%" styleClass="stat-value"/>
+                </VBox>
             </HBox>
         </VBox>
     </top>

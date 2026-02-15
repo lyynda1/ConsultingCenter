@@ -1,20 +1,22 @@
-/*
-ADVISORA STRUCTURE COMMENT
- param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
-Role: Project module UI layout (FXML/CSS)
-*/
-.page {
-    -fx-background-color: transparent;
+.module-root {
+    -fx-background-color: #f6f0dd;
 }
 
-.header {
-    -fx-background-color: transparent;
-}
-
-.title {
+.module-title {
     -fx-font-size: 31px;
     -fx-font-weight: 800;
     -fx-text-fill: #1f1f1f;
+}
+
+.module-subtitle {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
 }
 
 .btn-primary {
@@ -51,52 +53,25 @@ Role: Project module UI layout (FXML/CSS)
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 12, 0.22, 0, 3);
 }
 
-.btn-danger {
-    -fx-background-color: #ea7527;
-    -fx-text-fill: white;
-    -fx-font-weight: 800;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-padding: 8 14 8 14;
-    -fx-cursor: hand;
-}
-
-.btn-danger:hover {
-    -fx-background-color: #fd6c01;
-}
-
-.tabs .tab {
-    -fx-background-color: transparent;
-    -fx-text-fill: #2b2b2b;
+.module-root .label {
+    -fx-text-fill: #1f1f1f;
     -fx-font-weight: 600;
-    -fx-padding: 6 10 6 10;
-    -fx-background-radius: 10;
-    -fx-border-color: transparent;
-    -fx-cursor: hand;
 }
 
-.tabs .tab:selected {
-    -fx-background-color: rgba(233,123,44,0.12);
-    -fx-text-fill: #e97b2c;
-}
-
-.search {
-    -fx-pref-width: 260;
+.module-root .text-field,
+.module-root .combo-box {
     -fx-background-color: rgba(255,255,255,0.92);
     -fx-background-radius: 14;
     -fx-border-radius: 14;
     -fx-border-color: rgba(0,0,0,0.10);
     -fx-border-width: 1;
-    -fx-padding: 10 14 10 14;
-    -fx-font-size: 13px;
-    -fx-text-fill: #1f1f1f;
-    -fx-prompt-text-fill: rgba(60,60,60,0.55);
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 3);
+    -fx-padding: 8 12 8 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0.18, 0, 2);
 }
 
-.search:focused {
+.module-root .text-field:focused,
+.module-root .combo-box:focused {
     -fx-border-color: rgba(233,123,44,0.55);
-    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.20), 18, 0.22, 0, 4);
 }
 
 .stats {
@@ -146,9 +121,69 @@ Role: Project module UI layout (FXML/CSS)
 .stat-icon-yellow { -fx-background-color: rgba(244,197,66,0.22); }
 .stat-icon-green  { -fx-background-color: rgba(46,163,106,0.18); }
 
-.content {
-    -fx-padding: 0;
-    -fx-min-height: 0;
+.table-view {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 4);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #f8f8f8, #ececec);
+    -fx-background-radius: 14 14 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 38;
+    -fx-border-color: transparent transparent rgba(0,0,0,0.10) transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #1f2937;
+    -fx-font-weight: 700;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-table-cell-border-color: rgba(0,0,0,0.06);
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fbfbfb;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(233,123,44,0.16);
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: #1f1f1f;
+}
+
+.tab-pane {
+    -fx-background-color: #f6f0dd;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: rgba(255,255,255,0.70);
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 7 14 7 14;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #1f1f1f;
+    -fx-font-weight: 700;
 }
 
 .card-list {
@@ -165,7 +200,7 @@ Role: Project module UI layout (FXML/CSS)
     -fx-background-color: transparent;
 }
 
-.project-card {
+.resource-card {
     -fx-background-color: rgba(255,255,255,0.96);
     -fx-background-radius: 14;
     -fx-border-radius: 14;
@@ -175,7 +210,7 @@ Role: Project module UI layout (FXML/CSS)
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
 }
 
-.card-list .list-cell:filled:selected .project-card {
+.card-list .list-cell:filled:selected .resource-card {
     -fx-border-color: rgba(233,123,44,0.85);
     -fx-border-width: 2;
 }
@@ -186,18 +221,10 @@ Role: Project module UI layout (FXML/CSS)
     -fx-text-fill: #1f1f1f;
 }
 
-.card-desc {
-    -fx-text-fill: #374151;
-}
-
 .card-meta {
     -fx-text-fill: #6b7280;
     -fx-font-size: 12px;
     -fx-font-weight: 600;
-}
-
-.card-actions .button {
-    -fx-cursor: hand;
 }
 
 .status-badge {
@@ -221,7 +248,24 @@ Role: Project module UI layout (FXML/CSS)
     -fx-text-fill: #b42318;
 }
 
-.status-archived {
-    -fx-background-color: rgba(107,114,128,0.16);
-    -fx-text-fill: #374151;
+.reservation-section {
+    -fx-background-color: rgba(255,255,255,0.78);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 14;
+}
+
+.reservation-actions {
+    -fx-padding: 0 0 4 0;
+}
+
+.reservation-card {
+    -fx-background-color: rgba(255,255,255,0.96);
+}
+
+.reservation-badge {
+    -fx-background-color: rgba(233,123,44,0.20);
+    -fx-text-fill: #8a4d22;
 }

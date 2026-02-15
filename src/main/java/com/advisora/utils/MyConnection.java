@@ -16,7 +16,6 @@ public final class MyConnection {
     private final String url;
     private final String user;
     private final String password;
-    private Connection connection;
 
     private MyConnection() {
         try (InputStream in = MyConnection.class.getResourceAsStream("/db.properties")) {
@@ -41,9 +40,6 @@ public final class MyConnection {
     }
 
     public synchronized Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed() || !connection.isValid(2)) {
-            connection = DriverManager.getConnection(url, user, password);
-        }
-        return connection;
+        return DriverManager.getConnection(url, user, password);
     }
 }
