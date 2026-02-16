@@ -1,6 +1,6 @@
 package com.advisora.Services;
 
-import com.advisora.Util.DB;
+import com.advisora.utils.MyConnection;
 import com.advisora.entity.Event;
 
 import java.sql.*;
@@ -12,10 +12,10 @@ import java.util.List;
 public class ServiceEvent implements IService<Event> {
 
     @Override
-    public void add(Event event) {
+    public void ajouter(Event event) {
         String query = "INSERT INTO event (title, description, startDate, endDate, capacite, localisation) VALUES (?, ?, ?, ?, ?, ?)";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
             stmt.setString(1, event.getTitle());
@@ -39,7 +39,7 @@ public class ServiceEvent implements IService<Event> {
         List<Event> events = new ArrayList<>();
         String query = "SELECT * FROM event";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
             
@@ -77,7 +77,7 @@ public class ServiceEvent implements IService<Event> {
     public void modifier(Event event) {
         String query = "UPDATE event SET title = ?, description = ?, startDate = ?, endDate = ?, capacite = ?, localisation = ? WHERE id = ?";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
             stmt.setString(1, event.getTitle());
@@ -105,7 +105,7 @@ public class ServiceEvent implements IService<Event> {
     public void supprimer(Event event) {
         String query = "DELETE FROM event WHERE id = ?";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
             stmt.setInt(1, event.getId());
@@ -128,7 +128,7 @@ public class ServiceEvent implements IService<Event> {
     public Event getById(int id) {
         String query = "SELECT * FROM event WHERE id = ?";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
             stmt.setInt(1, id);
@@ -168,7 +168,7 @@ public class ServiceEvent implements IService<Event> {
         List<Event> events = new ArrayList<>();
         String query = "SELECT * FROM event WHERE localisation LIKE ?";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
             stmt.setString(1, "%" + localisation + "%");
@@ -208,7 +208,7 @@ public class ServiceEvent implements IService<Event> {
         List<Event> events = new ArrayList<>();
         String query = "SELECT * FROM event WHERE startDate > NOW() ORDER BY startDate ASC";
         
-        try (Connection conn = DB.getConnection();
+        try (Connection conn = MyConnection.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
             

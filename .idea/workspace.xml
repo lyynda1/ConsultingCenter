@@ -4,56 +4,152 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Admin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Booking.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Decision.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Event.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Gerant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Investment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Objective.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Project.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Ressource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Strategie.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Transaction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/ProjectStatut.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/StrategyStatut.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/UserRole.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/event_table.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Main.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/IService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceEvent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Util/DB.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Admin.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Booking.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/CatalogueFournisseur.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Client.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Decision.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Event.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Gerant.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Investment.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Objective.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Project.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Ressource.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Strategie.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Transaction.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/ProjectStatut.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/StrategyStatut.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/UserRole.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/db.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/event_table.sql" afterDir="false" />
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/SweepConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backup_advisora_20260215_011735.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/EventFormController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Admin/adminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Auth/loginController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventFormController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/HomeController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/InterfaceGeneralController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Objective/AddObjectifController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Objective/ObjectiveInfoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/DecisionCurrentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/DecisionFormController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectFormController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Ressource/CatalogController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Ressource/ReservationListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Ressource/ResourceFormController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Ressource/ResourceListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Ressource/SupplierFormController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Ressource/SupplierListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Booking.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/CatalogueFournisseur.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Decision.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Event.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/EventBooking.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Investment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Objective.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Project.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Ressource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Strategie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Transaction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/userLog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/CatalogueFournisseurService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/DecisionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/EventBookingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/EventService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ICatalogueFournisseurService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IReservationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IRessourceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ProjectService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ReservationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/RessourceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceObjective.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/SessionContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/DecisionStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/ProjectStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/RessourceStatut.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/transactionStatut.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/utils/MyConnection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Assets/1383970.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Assets/Screenshot 2026-02-11 175209.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Assets/Screenshot 2026-02-11 175244.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Assets/Screenshot 2026-02-11 175640.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/admin.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/admin.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/ADVISORA.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/GEAR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/delete.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/edit.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/edit.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/home.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/home.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/message.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/profile.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/projects.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/search.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/users.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/users.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Auth/login.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/GUI/Auth/login.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/css/button-style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/css/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/Home.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/InterfaceGeneral.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/decision/DecisionCurrent.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/decision/DecisionForm.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/objectif/AddObjectif.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/objectif/ObjectiveInfoDialog.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/project/ProjectForm.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/project/ProjectList.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/CatalogView.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/InventoryDashboard.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/ReservationList.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/ResourceForm.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/ResourceList.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/SupplierForm.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/resource/SupplierList.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/StrategieInfoDialog.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/interfaceStrategie.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/style/decision-current.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/style/forms_proj.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/style/proj.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/style/project-list.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/views/style/resource-module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/common/test_session_context.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/decision/test_decision.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/projet/test_projet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/resource/FxmlEncodingTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/resource/test_resource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/strategie/test_strategie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsultingCenter-gestionProjets" beforeDir="false" afterPath="$PROJECT_DIR$/ConsultingCenter-gestionProjets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/enums/StrategyStatut.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/StrategyStatut.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/enums/UserRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/UserRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/Services/IService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/IService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceUser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Admin.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Admin.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Booking.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Booking.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Decision.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Decision.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Event.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Event.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Gerant.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Gerant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Investment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Investment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Objective.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Objective.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Project.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Project.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Ressource.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Ressource.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Strategie.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Strategie.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/Transaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Transaction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/enums/ProjectStatut.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/ProjectStatut.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/enums/StrategyStatut.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/StrategyStatut.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/advisora/enums/UserRole.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/UserRole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/db.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/db.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,20 +163,20 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "scrup"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;scrup&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -98,6 +194,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -143,6 +240,85 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Advisora" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Advisora" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="Advisora" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="Advisora" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Autodetect">
+      <module name="Advisora" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="Advisora" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
     </configuration>
     <recent_temporary>
       <list>

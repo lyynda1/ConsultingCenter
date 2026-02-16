@@ -1,0 +1,383 @@
+/* admin.css — Beige Admin Dashboard (JavaFX)
+   Professional beige sidebar + clean cards + subtle nav hover/active
+*/
+
+/* =========================
+   Base
+========================= */
+.app{
+    -fx-font-family: "Inter", "Segoe UI", Arial;
+    -fx-font-size: 13px;
+    -fx-background-color: #F6F3E7; /* warm beige background */
+}
+
+.input-error{
+    -fx-border-color: #d32f2f;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 10;}
+.root{
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Text */
+.label{ -fx-text-fill: #1F2937; }
+.muted{ -fx-text-fill: #6B7280; -fx-font-size: 12px; }
+.hint{  -fx-text-fill: #6B7280; -fx-font-size: 12px; }
+
+.card-title{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 800;
+    -fx-font-size: 15px;
+}
+
+/* =========================
+   Sidebar (Beige)
+========================= */
+.sidebar{
+    -fx-background-color: #EDE6D2; /* sidebar beige */
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+}
+
+/* Separator under logo */
+.sidebar-sep{
+    -fx-padding: 6 0 6 0;
+}
+.sidebar-sep .line{
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+
+/* ===== PRO SIDENAV (hover + active) ===== */
+.sidebar .nav .nav-btn,
+.sidebar .nav .nav-btn .label{
+    -fx-font-family: "Poppins";   /* change to the font you want */
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+}
+.sidebar .nav .nav-btn{
+    -fx-cursor: hand;
+
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-border-radius: 12;
+
+    -fx-padding: 10 12 10 12;
+    -fx-alignment: CENTER_LEFT;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* text inside sidebar buttons */
+.sidebar .nav .nav-btn .label{
+    -fx-text-fill: #2F3A44;
+    -fx-font-weight: 700;
+}
+
+/* hover: subtle tint (no border) */
+.sidebar .nav .nav-btn:hover,
+.sidebar .nav .nav-btn:hover .content{
+    -fx-background-color: rgba(0,0,0,0.04); /* subtle darker than sidebar */
+    -fx-background-radius: 12;
+}
+
+/* active: slightly lighter than sidebar (NOT white) */
+.sidebar .nav .nav-btn.nav-active,
+.sidebar .nav .nav-btn.nav-active .content{
+    -fx-background-color: rgba(255,255,255,0.28);
+    -fx-background-radius: 12;
+}
+
+/* active: left orange accent line */
+.sidebar .nav .nav-btn.nav-active{
+    -fx-border-width: 0 0 0 4;
+    -fx-border-color: #E67A2E;
+    -fx-border-radius: 12;
+}
+
+/* active text */
+.sidebar .nav .nav-btn.nav-active .label{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 800;
+}
+
+/* Profile card at bottom */
+.profile{
+    -fx-padding: 10;
+    -fx-background-color: rgba(255,255,255,0.55);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+}
+.profile-name{ -fx-text-fill: #111827; -fx-font-weight: 900; }
+.profile-role{ -fx-text-fill: #6B7280; -fx-font-size: 12px; }
+
+.sidebar-foot{
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 11px;
+    -fx-padding: 0 4 2 4;
+}
+
+/* =========================
+   Topbar (Light)
+========================= */
+.topbar{
+    -fx-background-color: rgba(255,255,255,0.55);
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 0 0 1 0;
+}
+
+.top-title{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 900;
+    -fx-font-size: 18px;
+}
+
+.top-sub{
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 12px;
+}
+
+/* Search */
+.search-wrap{
+    -fx-background-color: rgba(255,255,255,0.75);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 6 10 6 10;
+}
+
+.search-icon{ -fx-text-fill: #6B7280; }
+
+.search{
+    -fx-background-color: transparent;
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: rgba(17,24,39,0.45);
+    -fx-padding: 6 8 6 6;
+}
+
+/* Top right small buttons */
+.icon-btn{
+    -fx-cursor: hand;
+    -fx-background-color: rgba(255,255,255,0.75);
+    -fx-text-fill: #111827;
+    -fx-background-radius: 12;
+    -fx-padding: 8 12 8 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+}
+.icon-btn:hover{
+    -fx-background-color: rgba(255,255,255,0.95);
+}
+
+/* =========================
+   Cards
+========================= */
+.card{
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+    -fx-padding: 20;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.18, 0, 10);
+}
+
+.pill{
+    -fx-background-color: rgba(46,125,96,0.12);
+    -fx-text-fill: #1F2937;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+/* =========================
+   Inputs / Combo
+========================= */
+.input, .combo, .input.small{
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: rgba(17,24,39,0.45);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 10 12 10 12;
+}
+.input.small{ -fx-padding: 9 10 9 10; }
+
+.input:focused, .combo:focused{
+    -fx-border-color: rgba(46,125,96,0.45);
+    -fx-border-width: 1.5;
+}
+
+/* ComboBox popup */
+.combo .list-cell{ -fx-text-fill: #111827; }
+.combo .arrow-button{ -fx-background-color: transparent; }
+.combo .arrow{ -fx-background-color: #6B7280; }
+
+.combo-popup .list-view{
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+.combo-popup .list-cell{
+    -fx-text-fill: #111827;
+    -fx-background-color: transparent;
+    -fx-padding: 10 12 10 12;
+}
+.combo-popup .list-cell:hover{
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+.combo-popup .list-cell:selected{
+    -fx-background-color: rgba(46,125,96,0.14);
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn{
+    -fx-cursor: hand;
+    -fx-font-weight: 900;
+    -fx-background-radius: 12;
+    -fx-border-radius: 16;
+    -fx-padding: 10 14 10 14;
+}
+.btn:pressed{ -fx-translate-y: 1; }
+
+/* Primary (Green) */
+.btn-primary{
+    -fx-background-color: #2E7D60;
+    -fx-text-fill: white;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+}
+.btn-primary:hover{ -fx-background-color: #276B53; }
+.btn-primary:pressed{ -fx-background-color: #1F4F3D; }
+
+/* Warn (Orange) */
+.btn-warn{
+    -fx-background-color: #E67A2E;
+    -fx-text-fill: white;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+}
+.btn-warn:hover{ -fx-background-color: #CF6E29; }
+
+/* Danger (Red) */
+.btn-danger{
+    -fx-background-color: #E14B4B;
+    -fx-text-fill: white;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+}
+.btn-danger:hover{ -fx-background-color: #C94141; }
+
+/* Outline (Clear) */
+.btn-outline{
+    -fx-background-color: transparent;
+    -fx-text-fill: #111827;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-border-width: 1;
+}
+.btn-outline:hover{
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+
+/* =========================
+   ListView
+========================= */
+.list{
+    -fx-background-color: rgba(255,255,255,0.85);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 6;
+}
+
+.list .virtual-flow{ -fx-background-color: transparent; }
+
+.list .list-cell{
+    -fx-background-color: transparent;
+    -fx-text-fill: #111827;
+    -fx-padding: 12;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.list .list-cell:hover{
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+
+.list .list-cell:selected{
+    -fx-background-color: rgba(46,125,96,0.14);
+}
+
+/* Scrollbar */
+.scroll-bar:vertical, .scroll-bar:horizontal{ -fx-background-color: transparent; }
+.scroll-bar:vertical .track, .scroll-bar:horizontal .track{
+    -fx-background-color: rgba(0,0,0,0.03);
+    -fx-background-radius: 10;
+}
+.scroll-bar .thumb{
+    -fx-background-color: rgba(0,0,0,0.12);
+    -fx-background-radius: 10;
+}
+.scroll-bar .thumb:hover{ -fx-background-color: rgba(0,0,0,0.18); }
+.scroll-bar .increment-button, .scroll-bar .decrement-button{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* =========================
+   Bottom actions panel + icon chips
+========================= */
+.bottom-actions{
+    -fx-background-color: rgba(246,243,231,0.65);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+    -fx-padding: 10;
+}
+
+.icon-chip{
+    -fx-cursor: hand;
+    -fx-padding: 10;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-background-color: rgba(255,255,255,0.80);
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+}
+.icon-chip:hover{
+    -fx-background-color: rgba(46,125,96,0.14);
+}
+.icon-chip:pressed{
+    -fx-translate-y: 1;
+}
+.icon-chip.danger:hover{
+    -fx-background-color: rgba(225,75,75,0.16);
+}
+    .field-error{
+        -fx-text-fill: #d32f2f; /* rouge */
+        -fx-font-size: 11px;
+        -fx-font-weight: 600;
+    }
