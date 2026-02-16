@@ -4,7 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="295935c2-6947-43b8-b2b8-b26a2eb69d55" name="Changes" comment="merge event" />
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/IService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Admin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Booking.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Decision.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Event.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Gerant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Investment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Objective.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Project.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Ressource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Strategie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Transaction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/ProjectStatut.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/StrategyStatut.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/UserRole.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/event_table.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Main.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/IService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceEvent.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Services/ServiceUser.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/Util/DB.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Admin.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Booking.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/CatalogueFournisseur.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Client.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Decision.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Event.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Gerant.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Investment.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Objective.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Project.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Ressource.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Strategie.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/Transaction.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/entity/User.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/ProjectStatut.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/StrategyStatut.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/advisora/enums/UserRole.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/db.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/event_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,60 +63,93 @@
   <component name="ComposerSettings">
     <execution />
   </component>
-  <component name="CopilotPersistence">
-    <persistenceIdMap>
-      <entry key="_C:/Users/MSI/Downloads/ConsultingCenter-gestionProjets" value="39lDOxEtaiToBzxzK079t4z40nw" />
-    </persistenceIdMap>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+        <option value="Enum" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="master" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/lyynda1/ConsultingCenter.git",
-    "accountId": "e44810b8-919c-4bc5-a11e-735584d1a3c3"
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "scrup"
   }
 }]]></component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="$PROJECT_DIR$/../../../../xampp/php/php.exe" />
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
-  <component name="ProjectId" id="39lDOxEtaiToBzxzK079t4z40nw" />
+  <component name="ProjectColorInfo">{
+        &quot;associatedIndex&quot;: 3
+        }</component>
+  <component name="ProjectId" id="39OSo5h2RQKe0nFpnLKCkqwmMqi" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "gestionEvenements",
+    "git-widget-placeholder": "Merging gestionEvenements",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/MSI/Downloads/ConsultingCenter-gestionProjets",
+    "last_opened_file_path": "C:/Users/dhiab/Downloads/Advisora/Advisora",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "onboarding.tips.debug.path": "C:/Users/user/IdeaProjects/Advisora/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user\IdeaProjects\Advisora\src\main\java" />
+      <recent name="C:\Users\user\IdeaProjects\Advisora\src\Entities" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.advisora.Main" />
+      <module name="Advisora" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.advisora.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -76,45 +159,21 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="295935c2-6947-43b8-b2b8-b26a2eb69d55" name="Changes" comment="" />
-      <created>1771261736538</created>
+      <changelist id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="" />
+      <created>1770565797318</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1771261736538</updated>
-      <workItem from="1771261738805" duration="1526000" />
+      <updated>1770565797318</updated>
+      <workItem from="1770565799038" duration="6175000" />
+      <workItem from="1770572083759" duration="8000" />
+      <workItem from="1770572346688" duration="459000" />
+      <workItem from="1770582123085" duration="1370000" />
+      <workItem from="1770583557298" duration="709000" />
+      <workItem from="1770584305916" duration="817000" />
     </task>
-    <task id="LOCAL-00001" summary="merge event">
-      <option name="closed" value="true" />
-      <created>1771262558303</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1771262558303</updated>
-    </task>
-    <task id="LOCAL-00002" summary="merge event">
-      <option name="closed" value="true" />
-      <created>1771263227711</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1771263227711</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="merge event" />
-    <option name="LAST_COMMIT_MESSAGE" value="merge event" />
-  </component>
-  <component name="github-copilot-workspace">
-    <instructionFileLocations>
-      <option value=".github/instructions" />
-    </instructionFileLocations>
-    <promptFileLocations>
-      <option value=".github/prompts" />
-    </promptFileLocations>
   </component>
 </project>
