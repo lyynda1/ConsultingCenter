@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ADVISORA STRUCTURE COMMENT
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/')
+Role: Project module UI layout (FXML/CSS) -->
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.advisora.GUI.Project.ProjectListController">
+
+    <!-- ============== YOUR EXISTING PAGE ============== -->
+    <BorderPane stylesheets="@../style/project-list.css"
+                styleClass="page">
+
+        <fx:define>
+            <ToggleGroup fx:id="statusGroup"/>
+        </fx:define>
+
+        <top>
+            <VBox spacing="12" styleClass="header">
+                <padding>
+                    <Insets top="18" right="18" bottom="12" left="18"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Gerer vos projets" styleClass="title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnUsers" text="Utilisateurs" onAction="#onOpenUsers" styleClass="btn-ghost"/>
+                    <Button fx:id="btnNewProject" text="Nouveau projet" onAction="#onAdd" styleClass="btn-primary"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <HBox spacing="8" styleClass="tabs">
+                        <ToggleButton fx:id="tabAll" text="Tous les projets" onAction="#onTabAll" toggleGroup="$statusGroup" selected="true" styleClass="tab"/>
+                        <ToggleButton fx:id="tabValid" text="Valide" onAction="#onTabValid" toggleGroup="$statusGroup" styleClass="tab"/>
+                        <ToggleButton fx:id="tabPending" text="En attente" onAction="#onTabPending" toggleGroup="$statusGroup" styleClass="tab"/>
+                        <ToggleButton fx:id="tabRefused" text="Refuse" onAction="#onTabRefused" toggleGroup="$statusGroup" styleClass="tab"/>
+                    </HBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="txtSearch"
+                               promptText="Rechercher un projet..."
+                               onKeyReleased="#onSearch"
+                               styleClass="search"/>
+
+                    <MenuButton text="Filtrer" styleClass="btn-ghost">
+                        <items>
+                            <MenuItem text="Budget croissant" onAction="#onSortBudgetAsc"/>
+                            <MenuItem text="Budget decroissant" onAction="#onSortBudgetDesc"/>
+                            <SeparatorMenuItem/>
+                            <MenuItem text="Avancement croissant" onAction="#onSortAvancementAsc"/>
+                            <MenuItem text="Avancement decroissant" onAction="#onSortAvancementDesc"/>
+                        </items>
+                    </MenuButton>
+                </HBox>
+
+                <HBox fillHeight="true" spacing="16" styleClass="stats">
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                        <styleClass>
+                            <String fx:value="stat-card"/>
+                            <String fx:value="stat-total"/>
+                        </styleClass>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                                <Label text="&#128202;" styleClass="stat-icon-text"/>
+                            </StackPane>
+                            <Label text="Total Projets" styleClass="stat-label"/>
+                        </HBox>
+                        <Label fx:id="lblTotalProjects" text="0" styleClass="stat-value"/>
+                    </VBox>
+
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                        <styleClass>
+                            <String fx:value="stat-card"/>
+                            <String fx:value="stat-pending"/>
+                        </styleClass>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                                <Label text="&#128101;" styleClass="stat-icon-text"/>
+                            </StackPane>
+                            <Label text="En attente d'approbation" styleClass="stat-label"/>
+                        </HBox>
+                        <Label fx:id="lblPendingProjects" text="0" styleClass="stat-value"/>
+                    </VBox>
+
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                        <styleClass>
+                            <String fx:value="stat-card"/>
+                            <String fx:value="stat-success"/>
+                        </styleClass>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane styleClass="stat-icon-chip stat-icon-green">
+                                <Label text="&#10004;" styleClass="stat-icon-text"/>
+                            </StackPane>
+                            <Label text="Taux d'acceptation" styleClass="stat-label"/>
+                        </HBox>
+                        <Label fx:id="lblAcceptanceRate" text="0%" styleClass="stat-value"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </top>
+
+        <center>
+            <VBox styleClass="content" fillWidth="true">
+                <padding>
+                    <Insets top="14" right="18" bottom="18" left="18"/>
+                </padding>
+                <ListView fx:id="projectList" styleClass="card-list" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </center>
+    </BorderPane>
+
+    <!-- ============== OVERLAY MODAL LAYER ============== -->
+    <StackPane fx:id="overlay"
+               visible="false"
+               managed="false"
+               pickOnBounds="true"
+               styleClass="overlay">
+
+        <!-- background click closes the dialog -->
+        <Region styleClass="overlay-bg" onMouseClicked="#closeDialog"/>
+
+        <!-- modal content container -->
+        <VBox fx:id="modalBox" styleClass="modal-box"/>
+    </StackPane>
+
+</StackPane>
