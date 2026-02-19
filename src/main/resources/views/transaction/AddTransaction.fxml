@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Transaction.AddTransactionDialogController"
+      spacing="14" styleClass="dialog-card">
+
+    <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" styleClass="dialog-header">
+        <Label fx:id="dialogTitle" text="Nouvelle Transaction" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✕" onAction="#close" styleClass="btn-ghost"/>
+    </HBox>
+
+    <VBox spacing="6">
+        <Label text="Date (yyyy-MM-dd)"/>
+        <TextField fx:id="dateField" promptText="ex: 2025-02-15"/>
+    </VBox>
+
+    <VBox spacing="6">
+        <Label text="Montant"/>
+        <TextField fx:id="montantField" promptText="ex: 25000"/>
+    </VBox>
+
+    <VBox spacing="6">
+        <Label text="Type"/>
+        <TextField fx:id="typeField" promptText="ex: Initial Funding"/>
+    </VBox>
+
+    <VBox fx:id="statutRow" spacing="6">
+        <Label text="Statut"/>
+        <ComboBox fx:id="statutCombo" prefWidth="200"/>
+    </VBox>
+
+    <!-- Pour admin/gerant : ID Investissement -->
+    <VBox fx:id="idInvRow" spacing="6">
+        <Label text="ID Investissement"/>
+        <TextField fx:id="idInvField" promptText="ex: 1"/>
+    </VBox>
+
+    <!-- Pour client : liste des investissements (ceux qu'il a créés) -->
+    <VBox fx:id="clientInvestmentRow" spacing="6" visible="false" managed="false">
+        <Label text="Investissement"/>
+        <ComboBox fx:id="investmentCombo" prefWidth="280" promptText="Choisir un investissement"/>
+    </VBox>
+
+    <HBox spacing="8" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#close" styleClass="btn-ghost"/>
+        <Button fx:id="submitButton" text="Ajouter" onAction="#save" styleClass="btn-primary"/>
+    </HBox>
+</VBox>

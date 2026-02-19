@@ -1,5 +1,6 @@
 package com.advisora.Services;
 
+import com.advisora.Model.Notification;
 import com.advisora.Model.Project;
 import com.advisora.Model.Strategie;
 import com.advisora.enums.StrategyStatut;
@@ -21,7 +22,7 @@ public class ServiceStrategie implements IService<Strategie> {
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, strategie.getVersion());
-            ps.setString(2, resolveDbStrategyStatus(cnx, strategie.getStatut()));
+            ps.setString(2, "En_cours"); // default status for new strategy
             ps.setTimestamp(3, Timestamp.valueOf(strategie.getCreatedAt()));
             ps.setTimestamp(4, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
             ps.setString(5, emptyToNull(strategie.getNews()));
@@ -45,8 +46,13 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public List<Strategie> afficher() {
-        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, s.idProj, s.idUser, s.nomStrategie, "
-                + "p.titleProj FROM strategies s LEFT JOIN projects p ON p.idProj = s.idProj ORDER BY s.idStrategie DESC";
+        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.justification, " +
+                "p.titleProj " +
+                "FROM strategies s " +
+                "LEFT JOIN projects p ON p.idProj = s.idProj " +
+                "ORDER BY s.idStrategie DESC";
+
         List<Strategie> list = new ArrayList<>();
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql);
@@ -69,18 +75,19 @@ public class ServiceStrategie implements IService<Strategie> {
             newProjId = strategie.getProjet().getIdProj();
         }
 
-        // 1) read current idProj from DB
         Integer oldProjId = getCurrentProjectId(strategie.getId());
 
-        // 2) if idProj changed -> force status EN_COURS
         StrategyStatut statusToSave = strategie.getStatut();
+        String justification = strategie.getJustification();
+
         if (!Objects.equals(oldProjId, newProjId)) {
             statusToSave = StrategyStatut.EN_COURS;
-            strategie.setStatut(statusToSave); // keep object consistent too
+            justification = null;              // clear justification if project changed
+            strategie.setStatut(statusToSave);
         }
 
-        String sql = "UPDATE strategies SET versions=?, statusStrategie=?, lockedAt=?, news=?, idProj=?, idUser=?, nomStrategie=? "
-                + "WHERE idStrategie=?";
+        String sql = "UPDATE strategies SET versions=?, statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=? " +
+                "WHERE idStrategie=?";
 
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -88,22 +95,22 @@ public class ServiceStrategie implements IService<Strategie> {
             ps.setInt(1, strategie.getVersion());
             ps.setString(2, resolveDbStrategyStatus(cnx, statusToSave));
             ps.setTimestamp(3, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
-            ps.setString(4, emptyToNull(strategie.getNews()));
 
-            // idProj can be NULL
-            if (newProjId == null) {
-                ps.setNull(5, Types.INTEGER);
-            } else {
-                ps.setInt(5, newProjId);
-            }
+            // 4) idProj
+            if (newProjId == null) ps.setNull(4, Types.INTEGER);
+            else ps.setInt(4, newProjId);
 
-            if (strategie.getIdUser() == null) {
-                ps.setNull(6, Types.INTEGER);
-            } else {
-                ps.setInt(6, strategie.getIdUser());
-            }
+            // 5) idUser
+            if (strategie.getIdUser() == null) ps.setNull(5, Types.INTEGER);
+            else ps.setInt(5, strategie.getIdUser());
 
-            ps.setString(7, strategie.getNomStrategie().trim());
+            // 6) nomStrategie
+            ps.setString(6, strategie.getNomStrategie().trim());
+
+            // 7) justification
+            ps.setString(7, (justification == null || justification.isBlank()) ? null : justification.trim());
+
+            // 8) idStrategie (WHERE)
             ps.setInt(8, strategie.getId());
 
             ps.executeUpdate();
@@ -113,21 +120,6 @@ public class ServiceStrategie implements IService<Strategie> {
         }
     }
 
-    /** returns current idProj in DB (nullable) */
-    private Integer getCurrentProjectId(int idStrategie) {
-        String sql = "SELECT idProj FROM strategies WHERE idStrategie=?";
-        try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setInt(1, idStrategie);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) return null;
-                int idProj = rs.getInt(1);
-                return rs.wasNull() ? null : idProj;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur lecture idProj strategie: " + e.getMessage(), e);
-        }
-    }
 
 
     @Override
@@ -146,8 +138,13 @@ public class ServiceStrategie implements IService<Strategie> {
     }
 
     public Strategie getById(int idStrategie) {
-        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, s.idProj, s.idUser, s.nomStrategie, "
-                + "p.titleProj FROM strategies s LEFT JOIN projects p ON p.idProj = s.idProj WHERE s.idStrategie=?";
+        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.justification, " +
+                "p.titleProj " +
+                "FROM strategies s " +
+                "LEFT JOIN projects p ON p.idProj = s.idProj " +
+                "WHERE s.idStrategie=?";
+
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, idStrategie);
@@ -173,6 +170,7 @@ public class ServiceStrategie implements IService<Strategie> {
         s.setLockedAt(locked == null ? null : locked.toLocalDateTime());
         s.setNews(rs.getString("news"));
         s.setNomStrategie(rs.getString("nomStrategie"));
+        s.setJustification(rs.getString("justification")); // set justification even if project is null, for potential later use
         int idProj = rs.getInt("idProj");
         if (!rs.wasNull()) {
             Project p = new Project();
@@ -257,14 +255,15 @@ public class ServiceStrategie implements IService<Strategie> {
 
     public List<Strategie> getByProject(int projectId) {
         String sql = """
-        SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news,
-               s.idProj, s.idUser, s.nomStrategie,
-               p.titleProj
-        FROM strategies s
-        LEFT JOIN projects p ON p.idProj = s.idProj
-        WHERE s.idProj = ?
-        ORDER BY s.idStrategie DESC
-    """;
+    SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news,
+           s.idProj, s.idUser, s.nomStrategie, s.justification,
+           p.titleProj
+    FROM strategies s
+    LEFT JOIN projects p ON p.idProj = s.idProj
+    WHERE s.idProj = ?
+    ORDER BY s.idStrategie DESC
+""";
+
 
         List<Strategie> list = new ArrayList<>();
         try (Connection cnx = MyConnection.getInstance().getConnection();
@@ -282,32 +281,77 @@ public class ServiceStrategie implements IService<Strategie> {
     }
 
 
-    public void setDecision(int id, boolean b) {
-        String sql = "UPDATE strategies SET statusStrategie=? WHERE idStrategie=?";
-        String newStatus = b ? StrategyStatut.ACCEPTEE.toDb() : StrategyStatut.REFUSEE.toDb();
+    public void applyDecision(int idStrategie, boolean accepted, String justificationIfRefused, boolean detachOnRefuse) {
+
+        if (!accepted) {
+            if (justificationIfRefused == null || justificationIfRefused.trim().isEmpty()) {
+                throw new IllegalArgumentException("Le refus nécessite une justification.");
+            }
+        }
+
+        String sql = detachOnRefuse
+                ? "UPDATE strategies SET statusStrategie=?, idProj = CASE WHEN ? THEN idProj ELSE NULL END, " +
+                "justification = ? WHERE idStrategie=?"
+                : "UPDATE strategies SET statusStrategie=?, justification=? WHERE idStrategie=?";
+
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setString(1, newStatus);
-            ps.setInt(2, id);
+
+            String status = accepted ? StrategyStatut.ACCEPTEE.toDb() : StrategyStatut.REFUSEE.toDb();
+            String justification = accepted ? null : justificationIfRefused.trim();
+
+            if (detachOnRefuse) {
+                ps.setString(1, status);
+                ps.setBoolean(2, accepted);     // if accepted => keep idProj, else => NULL
+                ps.setString(3, justification);
+                ps.setInt(4, idStrategie);
+            } else {
+                ps.setString(1, status);
+                ps.setString(2, justification);
+                ps.setInt(3, idStrategie);
+            }
+
             ps.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException("Erreur mise à jour décision strategie: " + e.getMessage(), e);
         }
+        NotificationManager.getInstance().addNotification(new Notification("Decision strategie", "Strategie #" + getById(idStrategie).getNomStrategie() + " a été " + (accepted ? "acceptée" : "refusée")));
     }
 
-    public void refuseAndDetach(int idStrategie) {
-        String sql = "UPDATE strategies SET statusStrategie=?, idProj=NULL WHERE idStrategie=?";
+    public boolean hasActiveStrategyForProject(int projectId) {
+        String sql = "SELECT COUNT(*) FROM strategies WHERE idProj = ? AND statusStrategie = ?";
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
-
-            ps.setString(1, StrategyStatut.REFUSEE.toDb()); // matches your enum mapping
-            ps.setInt(2, idStrategie);
-
-            ps.executeUpdate();
+            ps.setInt(1, projectId);
+            ps.setString(2, StrategyStatut.EN_COURS.toDb());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+                return false;
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur refus + détachement strategie: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur vérification stratégie active pour projet: " + e.getMessage(), e);
         }
     }
+
+    /** returns current idProj in DB (nullable) */
+    private Integer getCurrentProjectId(int idStrategie) {
+        String sql = "SELECT idProj FROM strategies WHERE idStrategie=?";
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idStrategie);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return null;
+                int idProj = rs.getInt(1);
+                return rs.wasNull() ? null : idProj;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lecture idProj strategie: " + e.getMessage(), e);
+        }
+    }
+
 
 
 }

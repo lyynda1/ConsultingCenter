@@ -91,7 +91,7 @@ public class userPageController {
                 if (path == null || path.trim().isEmpty()) {
                     avatar.setImage(new Image(getClass().getResourceAsStream("/GUI/Admin/icons/profile.png")));
                 } else {
-                    avatar.setImage(new Image(new java.io.File(path).toURI().toString()));
+                    avatar.setImage(new Image(new File(path).toURI().toString()));
                 }
 
                 HBox header = new HBox(10, avatar, topRow);

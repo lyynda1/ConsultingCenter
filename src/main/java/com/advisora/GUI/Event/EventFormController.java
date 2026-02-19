@@ -62,12 +62,12 @@ public class EventFormController {
         try {
             Event e = current == null ? new Event() : current;
             e.setTitleEv(required(txtTitle.getText(), "Titre obligatoire"));
-            e.setDescriptionEv(safe(txtDescription.getText()));
+            e.setDescriptionEv(required(txtDescription.getText(), "Veuillez fournir une description"));
             e.setStartDateEv(parseDateTime(dateStart, txtStartTime, "Date/heure debut obligatoire"));
             e.setEndDateEv(parseDateTime(dateEnd, txtEndTime, "Date/heure fin obligatoire"));
-            e.setOrganisateurName(safe(txtOrganiser.getText()));
+            e.setOrganisateurName(required(txtOrganiser.getText(), "Nom organisateur requis"));
             e.setCapaciteEvnt(parsePositiveInt(txtCapacity.getText(), "Capacite invalide"));
-            e.setLocalisationEv(safe(txtLocation.getText()));
+            e.setLocalisationEv(required(txtLocation.getText(), "veuillez fournir une localisation"));
 
             UserRole role = SessionContext.getCurrentRole();
             if (role == UserRole.ADMIN || role == UserRole.GERANT) {

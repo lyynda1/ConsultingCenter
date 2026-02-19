@@ -19,10 +19,12 @@ public class Strategie {
     private String news;
     private Project projet;
     private Integer idUser;
+    private String justification;
 
     public Strategie() {
         this.version = 1;
         this.statut = StrategyStatut.EN_COURS;
+        this.justification = "";
     }
 
     public int getId() {
@@ -95,6 +97,13 @@ public class Strategie {
 
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
+    }
+
+    public void setJustification(String justification) {
+        this.justification = justification;
+    }
+    public String getJustification() {
+        return justification;
     }
 
     @Override

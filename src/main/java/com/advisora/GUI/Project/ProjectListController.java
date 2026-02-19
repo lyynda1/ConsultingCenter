@@ -377,10 +377,25 @@ public class ProjectListController implements Initializable {
 
         try {
             if (accepted) {
-                strategyService.setDecision(s.getId(), true); // ACCEPTED keeps idProj
+                strategyService.applyDecision(s.getId(), true, null, true);
             } else {
-                strategyService.refuseAndDetach(s.getId());   // REFUSED + remove idProj
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Justification de refus");
+                dialog.setHeaderText("Stratégie refusée");
+                dialog.setContentText("Veuillez fournir une raison de refus:");
+
+                Optional<String> result = dialog.showAndWait();
+
+                if (result.isPresent() && !result.get().trim().isEmpty()) {
+                    strategyService.applyDecision(s.getId(), false, result.get(), true);
+                } else {
+                    new Alert(Alert.AlertType.WARNING, "Le refus nécessite une justification.", ButtonType.OK).showAndWait();
+                    return; // IMPORTANT: don’t remove row if not refused
+                }
             }
+
+
+
 
             panel.getChildren().remove(row);
 
