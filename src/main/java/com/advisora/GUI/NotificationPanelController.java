@@ -2,8 +2,11 @@ package com.advisora.GUI;
 
 import com.advisora.Model.Notification;
 import com.advisora.Services.NotificationManager;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -88,8 +91,31 @@ public class NotificationPanelController implements Initializable {
         event.consume();
     }
 
+    @FXML
+    private void handleClearAll(ActionEvent e) {
+        if (NotificationManager.getInstance().getNotifications().isEmpty()) {
+            return;
+        }
 
+        Alert confirm = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "Supprimer toutes les notifications ?",
+                ButtonType.OK,
+                ButtonType.CANCEL
+        );
+        confirm.setHeaderText("Confirmation");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return;
+        }
+
+        NotificationManager.getInstance().clearAllNotifications(); // DB + list
+        loadNotifications(); // refresh UI
     }
+
+
+
+}
 
 
 

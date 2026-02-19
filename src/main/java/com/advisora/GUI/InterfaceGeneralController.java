@@ -62,6 +62,12 @@ public class InterfaceGeneralController {
     public void initialize() {
 
         User u = SessionContext.getCurrentUser();
+        if (u.getRole() != UserRole.ADMIN && u.getRole() != UserRole.GERANT) {
+            notificationButton.setVisible(false);
+            notificationButton.setManaged(false);
+            notificationBadge.setVisible(false);
+            notifCount.setVisible(false);
+        }
         NotificationManager.getInstance().loadNotifications(); // ✅ important to refresh data from DB
 
         updateNotificationBadge();

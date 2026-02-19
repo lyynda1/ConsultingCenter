@@ -484,3 +484,14 @@
 .notification-item:hover {
     -fx-background-color: #f5f5f5;
 }
+.notif-clear-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E97B2C;
+    -fx-font-weight: 800;
+    -fx-padding: 2 6;
+    -fx-cursor: hand;
+}
+
+.notif-clear-btn:hover {
+    -fx-underline: true;
+}

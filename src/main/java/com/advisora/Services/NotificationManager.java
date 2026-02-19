@@ -92,4 +92,20 @@ public class NotificationManager {
             throw new RuntimeException("Erreur chargement notifications: " + e.getMessage(), e);
         }
     }
+
+    public void clearAllNotifications() {
+        String sql = "DELETE FROM notification"; // adjust table name if it's "notifications"
+
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.executeUpdate();
+            notifications.clear();        // clear in-memory list
+            notifyChanged();              // if you rely on listeners elsewhere
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur suppression notifications: " + e.getMessage(), e);
+        }
+    }
+
 }
