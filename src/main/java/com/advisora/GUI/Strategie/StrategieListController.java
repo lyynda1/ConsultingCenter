@@ -145,25 +145,77 @@ public class StrategieListController {
         Label title = new Label(safe(s.getNomStrategie()));
         title.getStyleClass().add("card-title");
 
-        Label statut = new Label(
-                s.getStatut() == null ? "" : s.getStatut().toDb()
-        );
-        statut.getStyleClass().add("badge");
+        // Status + icon
+        String statusText = (s.getStatut() == null) ? "" : s.getStatut().toDb();
+        String statusIcon = switch (s.getStatut()) {
+            case ACCEPTEE -> "✅ ";
+            case REFUSEE  -> "⛔ ";
+            case EN_COURS -> "⏳ ";
+            default -> "";
+        };
+
+        Label statut = new Label(statusIcon + statusText);
+        statut.getStyleClass().addAll("badge", "status-badge");
+
+        // status color class
+        if (s.getStatut() != null) {
+            switch (s.getStatut()) {
+                case ACCEPTEE -> statut.getStyleClass().add("status-accepted");
+                case REFUSEE  -> statut.getStyleClass().add("status-refused");
+                case EN_COURS -> statut.getStyleClass().add("status-pending");
+            }
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox head = new HBox(10, title, spacer, statut);
+        head.getStyleClass().add("card-head");
 
 
-        // ===== PROJECT + DATE =====
+        // ===== LEFT META (Projet / Date / Type) =====
         Label projet = new Label("Projet associé : " +
                 (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
-        projet.getStyleClass().add("card-sub");
+        projet.getStyleClass().add("card-meta");
 
-        Label date = new Label("Créée le : " +
+        Label date = new Label("Date de création : " +
                 (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
-        date.getStyleClass().add("card-sub");
+        date.getStyleClass().add("card-meta");
+
+        Label type = new Label("Type : " +
+                (s.getTypeStrategie() == null ? "-" : safe(s.getTypeStrategie().name())));
+        type.getStyleClass().add("card-meta");
+
+        VBox metaLeft = new VBox(6, projet, date, type);
+        metaLeft.getStyleClass().add("card-meta-col");
+
+
+        // ===== RIGHT METRICS (Budget / Gain / ROI) =====
+        String budgetText = (s.getBudgetTotal() == 0) ? "-" : String.format("%,.0f DT", s.getBudgetTotal());
+        String gainText   = (s.getGainEstime() == 0) ? "-" : String.format("%,.0f DT", s.getGainEstime());
+
+        Label budget = new Label("Budget : " + budgetText);
+        budget.getStyleClass().add("metric-line");
+
+        Label gain = new Label("Gain estimé : " + gainText);
+        gain.getStyleClass().add("metric-line");
+
+        Label roi = new Label("ROI : -");
+        roi.getStyleClass().add("roi-value");
+
+        if (s.getGainEstime() != 0 && s.getBudgetTotal() != 0 && s.getBudgetTotal() != 0) {
+            double roiValue = strategieService.CalculROI(s.getGainEstime(), s.getBudgetTotal()) * 100.0;
+            roi.setText(String.format("ROI : %+,.0f%%", roiValue));
+        }
+
+        VBox metricsRight = new VBox(6, budget, gain, roi);
+        metricsRight.getStyleClass().add("metrics-col");
+
+
+        // ===== TOP GRID (left + right) =====
+        HBox topRow = new HBox(22, metaLeft, metricsRight);
+        topRow.getStyleClass().add("card-top-row");
+        HBox.setHgrow(metaLeft, Priority.ALWAYS);
 
 
         // ===== OBJECTIVES CHIPS =====
@@ -172,8 +224,7 @@ public class StrategieListController {
         objChips.setHgap(8);
         objChips.setVgap(8);
 
-        List<Objective> objectives =
-                objectivesByStrategie.getOrDefault(s.getId(), List.of());
+        List<Objective> objectives = objectivesByStrategie.getOrDefault(s.getId(), List.of());
 
         if (objectives.isEmpty()) {
             Label none = new Label("Aucun objectif");
@@ -188,34 +239,32 @@ public class StrategieListController {
             }
         }
 
-        System.out.println("ID=" + s.getId() + " JUSTIF=[" + s.getJustification() + "]");
 
         // ===== JUSTIFICATION =====
         Label justificationLabel = new Label();
-        justificationLabel.getStyleClass().add("card-sub");
+        justificationLabel.getStyleClass().add("justification");
         justificationLabel.setWrapText(true);
-        justificationLabel.setMaxWidth(Double.MAX_VALUE); // ✅ important
+        justificationLabel.setMaxWidth(Double.MAX_VALUE);
 
         String j = s.getJustification();
-        boolean has = j != null && !j.trim().isEmpty();
-
-        justificationLabel.setText(has ? "Justification : " + j.trim() : "");
-        justificationLabel.setVisible(has);
-        justificationLabel.setManaged(has);
-
+        boolean hasJustif = j != null && !j.trim().isEmpty();
+        justificationLabel.setText(hasJustif ? "Justification : " + j.trim() : "");
+        justificationLabel.setVisible(hasJustif);
+        justificationLabel.setManaged(hasJustif);
 
 
         // ===== ACTIONS =====
-        HBox actions = new HBox(8);
+        HBox actions = new HBox(10);
+        actions.getStyleClass().add("card-actions");
 
         if (canManage()) {
-
             Button edit = new Button("Modifier");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> openEditStrategieDialog(s));
 
             Button delete = new Button("Supprimer");
-            delete.getStyleClass().add("btn-danger");
+            // softer destructive style (outlined)
+            delete.getStyleClass().add("btn-danger-outline");
             delete.setOnAction(e -> deleteStrategie(s));
 
             Button addObjective = new Button("Attribuer des objectifs");
@@ -227,13 +276,12 @@ public class StrategieListController {
 
 
         // ===== CARD =====
-        VBox card = new VBox(15);
+        VBox card = new VBox(14);
         card.getStyleClass().add("card");
 
         card.getChildren().addAll(
                 head,
-                projet,
-                date,
+                topRow,
                 objChips,
                 justificationLabel,
                 actions
@@ -241,6 +289,7 @@ public class StrategieListController {
 
         return card;
     }
+
 
 
 

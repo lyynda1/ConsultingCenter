@@ -6,6 +6,7 @@ import com.advisora.Services.ProjectService;
 import com.advisora.Services.ServiceStrategie;
 import com.advisora.Services.SessionContext;
 import com.advisora.enums.StrategyStatut;
+import com.advisora.enums.TypeStrategie;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -28,6 +29,9 @@ public class AddStrategieDialogController {
     @FXML private TextField nomField;
     @FXML private ComboBox<Project> projetCombo;
     @FXML private ComboBox<StrategyStatut> statutCombo;
+    @FXML private ComboBox<TypeStrategie> typeCombo;
+    @FXML private TextField budgetTotalField;
+    @FXML private TextField gainEstimeField;
     @FXML private TextField versionField;
     @FXML private HBox dragHandle;
     @FXML private Button saveBtn;
@@ -42,6 +46,11 @@ public class AddStrategieDialogController {
     public void initialize() {
         statutCombo.setItems(FXCollections.observableArrayList(StrategyStatut.values()));
         statutCombo.setValue(StrategyStatut.EN_COURS);
+        typeCombo.setItems(FXCollections.observableArrayList(TypeStrategie.values()));
+        typeCombo.setValue(TypeStrategie.NULL);
+        budgetTotalField.setText("0");
+        gainEstimeField.setText("0");
+
         versionField.setText("1");
         projetCombo.setConverter(new StringConverter<>() {
             @Override
@@ -93,7 +102,10 @@ public class AddStrategieDialogController {
         nomField.setText(strategie.getNomStrategie());
         versionField.setText(String.valueOf(strategie.getVersion()));
         statutCombo.setValue(strategie.getStatut());
+        typeCombo.setValue(strategie.getTypeStrategie());
         selectProjectById(strategie.getProjet() == null ? 0 : strategie.getProjet().getIdProj());
+        budgetTotalField.setText(String.valueOf(strategie.getBudgetTotal()));
+        gainEstimeField.setText(String.valueOf(strategie.getGainEstime()));
         if (titleLabel != null) {
             titleLabel.setText("Modifier Strategie");
         }
@@ -108,6 +120,8 @@ public class AddStrategieDialogController {
         versionField.setText("1");
         statutCombo.setValue(StrategyStatut.EN_COURS);
         projetCombo.getSelectionModel().clearSelection();
+        budgetTotalField.setText("0");
+        gainEstimeField.setText("0");
         if (titleLabel != null) {
             titleLabel.setText("Nouvelle Strategie");
         }
@@ -136,6 +150,9 @@ public class AddStrategieDialogController {
             s.setStatut(statut);
             s.setProjet(selectedProject);
             s.setIdUser(SessionContext.getCurrentUserId());
+            s.setTypeStrategie(typeCombo.getValue());
+            s.setBudgetTotal(parsePositiveDouble(budgetTotalField.getText(), "Budget total invalide."));
+            s.setGainEstime(parsePositiveDouble(gainEstimeField.getText(), "Gain estime invalide."));
             if (s.getCreatedAt() == null) {
                 s.setCreatedAt(LocalDateTime.now());
             }
@@ -153,6 +170,21 @@ public class AddStrategieDialogController {
             Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             a.setHeaderText("Strategie");
             a.showAndWait();
+        }
+    }
+
+    private double parsePositiveDouble(String text, String s) {
+        try {
+            double v = Double.parseDouble(required(text, s + " obligatoire."));
+            if (v < 0) {
+                throw new IllegalArgumentException(s + " doit etre >= 0.");
+            }
+            if (v > 1_000_000_000) {
+                throw new IllegalArgumentException(s + " c'est exagéré veuillez verifier.");
+            }
+            return v;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(s + " invalide.");
         }
     }
 

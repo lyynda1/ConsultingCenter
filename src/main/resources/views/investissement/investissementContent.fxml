@@ -58,7 +58,7 @@
         <center>
             <VBox fillWidth="true" styleClass="content" spacing="16">
                 <padding><Insets bottom="18" left="18" right="18" top="14" /></padding>
-                <VBox fx:id="chartContainer" styleClass="chart-section" prefHeight="400" maxHeight="800" VBox.vgrow="NEVER" />
+                <VBox fx:id="chartContainer" styleClass="chart-section" prefHeight="400" maxHeight="600" VBox.vgrow="NEVER" />
                 <ListView fx:id="investmentList" styleClass="card-list" VBox.vgrow="ALWAYS" />
             </VBox>
         </center>

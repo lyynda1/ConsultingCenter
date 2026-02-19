@@ -85,7 +85,7 @@ public class InvestmentListController {
             chart.setLegendVisible(false);
             chart.setCreateSymbols(true);
             chart.setAnimated(false);
-            chart.setPrefHeight(200);
+            chart.setPrefHeight(400);
             chart.getStyleClass().add("evolution-chart");
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();

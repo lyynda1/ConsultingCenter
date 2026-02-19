@@ -3,6 +3,7 @@ package com.advisora.Services;
 import com.advisora.Model.Project;
 import com.advisora.Model.Strategie;
 import com.advisora.enums.StrategyStatut;
+import com.advisora.enums.TypeStrategie;
 import com.advisora.utils.MyConnection;
 
 import java.sql.*;
@@ -16,22 +17,24 @@ public class ServiceStrategie implements IService<Strategie> {
     @Override
     public void ajouter(Strategie strategie) {
         validate(strategie, true);
-        String sql = "INSERT INTO strategies (versions, statusStrategie, CreatedAtS, lockedAt, news, idProj, idUser, nomStrategie) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO strategies (versions, statusStrategie, CreatedAtS, lockedAt, idProj, idUser, nomStrategie, type, budgetTotal, gainEstime) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, strategie.getVersion());
             ps.setString(2, "En_cours"); // default status for new strategy
             ps.setTimestamp(3, Timestamp.valueOf(strategie.getCreatedAt()));
             ps.setTimestamp(4, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
-            ps.setString(5, emptyToNull(strategie.getNews()));
-            ps.setInt(6, strategie.getProjet().getIdProj());
+            ps.setInt(5, strategie.getProjet().getIdProj());
             if (strategie.getIdUser() == null) {
-                ps.setNull(7, Types.INTEGER);
+                ps.setNull(6, Types.INTEGER);
             } else {
-                ps.setInt(7, strategie.getIdUser());
+                ps.setInt(6, strategie.getIdUser());
             }
-            ps.setString(8, strategie.getNomStrategie().trim());
+            ps.setString(7, strategie.getNomStrategie().trim());
+            ps.setString(8, strategie.getTypeStrategie().name());
+            ps.setDouble(9, strategie.getBudgetTotal());
+            ps.setDouble(10, strategie.getGainEstime());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -45,7 +48,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public List<Strategie> afficher() {
-        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, " +
+        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.type, s.budgetTotal, s.gainEstime, " +
                 "s.idProj, s.idUser, s.nomStrategie, s.justification, " +
                 "p.titleProj " +
                 "FROM strategies s " +
@@ -85,7 +88,7 @@ public class ServiceStrategie implements IService<Strategie> {
             strategie.setStatut(statusToSave);
         }
 
-        String sql = "UPDATE strategies SET versions=?, statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=? " +
+        String sql = "UPDATE strategies SET versions=?, statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=?, type=?, budgetTotal=?, gainEstime=? " +
                 "WHERE idStrategie=?";
 
         try (Connection cnx = MyConnection.getInstance().getConnection();
@@ -109,8 +112,17 @@ public class ServiceStrategie implements IService<Strategie> {
             // 7) justification
             ps.setString(7, (justification == null || justification.isBlank()) ? null : justification.trim());
 
-            // 8) idStrategie (WHERE)
-            ps.setInt(8, strategie.getId());
+            // 8) type
+            ps.setString(8, strategie.getTypeStrategie().name());
+
+            // 9) budgetTotal
+            ps.setDouble(9, strategie.getBudgetTotal());
+
+            // 10) gainEstime
+            ps.setDouble(10, strategie.getGainEstime());
+
+            // 11) idStrategie (WHERE)
+            ps.setInt(11, strategie.getId());
 
             ps.executeUpdate();
 
@@ -137,8 +149,8 @@ public class ServiceStrategie implements IService<Strategie> {
     }
 
     public Strategie getById(int idStrategie) {
-        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, " +
-                "s.idProj, s.idUser, s.nomStrategie, s.justification, " +
+        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.budgetTotal, s.gainEstime, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.justification, s.type, " +
                 "p.titleProj " +
                 "FROM strategies s " +
                 "LEFT JOIN projects p ON p.idProj = s.idProj " +
@@ -167,9 +179,11 @@ public class ServiceStrategie implements IService<Strategie> {
         s.setCreatedAt(created == null ? null : created.toLocalDateTime());
         Timestamp locked = rs.getTimestamp("lockedAt");
         s.setLockedAt(locked == null ? null : locked.toLocalDateTime());
-        s.setNews(rs.getString("news"));
         s.setNomStrategie(rs.getString("nomStrategie"));
-        s.setJustification(rs.getString("justification")); // set justification even if project is null, for potential later use
+        s.setJustification(rs.getString("justification"));
+        s.setTypeStrategie(TypeStrategie.fromDb(rs.getString("type")));
+        s.setBudgetTotal(rs.getDouble("budgetTotal"));
+        s.setGainEstime(rs.getDouble("gainEstime"));
         int idProj = rs.getInt("idProj");
         if (!rs.wasNull()) {
             Project p = new Project();
@@ -192,6 +206,11 @@ public class ServiceStrategie implements IService<Strategie> {
         if (s.getStatut() == null) s.setStatut(StrategyStatut.EN_COURS);
         if (s.getCreatedAt() == null) s.setCreatedAt(java.time.LocalDateTime.now());
         if (!create && s.getId() <= 0) throw new IllegalArgumentException("idStrategie invalide.");
+        if (s.getTypeStrategie() == null) throw new IllegalArgumentException("Type strategie obligatoire, si vous n'etes pas sur veuillez choisir NULL .");
+        if (s.getBudgetTotal() < 0) throw new IllegalArgumentException("Budget total >= 0");
+        if (s.getBudgetTotal() > 1000000000) throw new IllegalArgumentException("Budget total trop élevé (max 1 milliard) il faut faire une demande de financement pour les projets de cette envergure.");
+        if (s.getGainEstime() < 0) throw new IllegalArgumentException("Gain estime >= 0");
+        if (s.getGainEstime() > 1000000000) throw new IllegalArgumentException("Gain estime trop élevé veuillez revoir votre estimation.");
     }
 
     private String emptyToNull(String v) {
@@ -234,10 +253,10 @@ public class ServiceStrategie implements IService<Strategie> {
             if (status == StrategyStatut.EN_COURS && normalized.contains("EN_COURS")) {
                 return literal;
             }
-            if (status == StrategyStatut.ACCEPTEE && normalized.contains("ACCEP")) {
+            if (status == StrategyStatut.ACCEPTEE && normalized.contains("ACCEPTEE")) {
                 return literal;
             }
-            if (status == StrategyStatut.REFUSEE && normalized.contains("REFUS")) {
+            if (status == StrategyStatut.REFUSEE && normalized.contains("REFUSEE")) {
                 return literal;
             }
         }
@@ -254,8 +273,8 @@ public class ServiceStrategie implements IService<Strategie> {
 
     public List<Strategie> getByProject(int projectId) {
         String sql = """
-    SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news,
-           s.idProj, s.idUser, s.nomStrategie, s.justification,
+    SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.budgetTotal, s.gainEstime,
+           s.idProj, s.idUser, s.nomStrategie, s.justification, s.type,
            p.titleProj
     FROM strategies s
     LEFT JOIN projects p ON p.idProj = s.idProj
@@ -348,6 +367,13 @@ public class ServiceStrategie implements IService<Strategie> {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lecture idProj strategie: " + e.getMessage(), e);
         }
+    }
+
+    public double CalculROI(double gainEstime, double budgetTotal) {
+        if (budgetTotal == 0) {
+            return gainEstime > 0 ? Double.POSITIVE_INFINITY : 0;
+        }
+        return (gainEstime - budgetTotal) / budgetTotal;
     }
 
 

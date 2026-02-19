@@ -4,58 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/NotificationPanelController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/NotificationManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Assets/notify.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Assets/vecteezy_bell-notification-icon-set-of-4-design-element-suitable-for_13421145.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/views/Notification.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/views/transaction/AddTransaction.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/views/transaction/transactionContent.fxml" afterDir="false" />
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/TypeStrategie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup_advisora_20260215_011735.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Admin/userPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Admin/userPageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Auth/loginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Auth/loginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventFormController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/InterfaceGeneralController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/InterfaceGeneralController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/AddInvestissementDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/AddInvestissementDialogController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/InvestmentListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/InvestmentListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Profil/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Profil/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectListController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/AddTransactionDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/AddTransactionDialogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/TransactionListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/TransactionListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Investment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Investment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Strategie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Strategie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/InvestmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/InvestmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ProjectService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/SessionContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/enums/transactionStatut.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/enums/transactionStatut.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/utils/AvatarUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/utils/AvatarUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/GUI/Admin/admin.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/admin.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/edit.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/GUI/Admin/icons/edit.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/GUI/Auth/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/GUI/Auth/login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/GUI/Auth/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/GUI/Auth/login.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/InterfaceGeneral.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/InterfaceGeneral.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/investissement/AddInvestissement.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/investissement/AddInvestissement.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/views/investissement/investissementContent.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/investissement/investissementContent.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/CatalogView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/CatalogView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/InventoryDashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/InventoryDashboard.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/ReservationList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/ReservationList.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/ResourceForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/ResourceForm.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/ResourceList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/ResourceList.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/SupplierForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/SupplierForm.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/resource/SupplierList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/resource/SupplierList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/strategie/StrategieInfoDialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/StrategieInfoDialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/style/project-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/style/project-list.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,41 +75,41 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Advisora [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;dev.sweep.assistant.data.RecentlyUsedFiles&quot;: &quot;src\\main\\java\\com\\advisora\\GUI\\Strategie\\AddStrategieDialogController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieListController.java;src\\main\\java\\com\\advisora\\GUI\\InterfaceGeneralController.java;src\\main\\java\\com\\advisora\\Services\\ServiceStrategie.java;src\\main\\java\\com\\advisora\\GUI\\Project\\ProjectListController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieInfoDialogController.java;src\\main\\java\\com\\advisora\\Model\\Strategie.java;src\\main\\resources\\css\\strategie-list.css&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;gestionEvenements&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/MSI/Downloads/AdvisoraValidation1&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/user/IdeaProjects/Advisora/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;sweep.chatMode&quot;: &quot;Agent&quot;,
-    &quot;sweep.selectedModel&quot;: &quot;Auto&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Maven.Advisora [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "dev.sweep.assistant.data.RecentlyUsedFiles": "src\\main\\java\\com\\advisora\\GUI\\Strategie\\AddStrategieDialogController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieListController.java;src\\main\\java\\com\\advisora\\GUI\\InterfaceGeneralController.java;src\\main\\java\\com\\advisora\\Services\\ServiceStrategie.java;src\\main\\java\\com\\advisora\\GUI\\Project\\ProjectListController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieInfoDialogController.java;src\\main\\java\\com\\advisora\\Model\\Strategie.java;src\\main\\resources\\css\\strategie-list.css",
+    "git-widget-placeholder": "gestionStrategie",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/MSI/Downloads/AdvisoraValidation1",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "C:/Users/user/IdeaProjects/Advisora/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "sweep.chatMode": "Agent",
+    "sweep.selectedModel": "Auto",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.advisora.GUI" />
@@ -220,7 +182,23 @@
       <option name="project" value="LOCAL" />
       <updated>1771264712634</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Merge branch 'gestionEvenements' into gestionStrategie&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/java/com/advisora/Model/Transaction.java&#10;#&#9;src/main/java/com/advisora/enums/UserRole.java">
+      <option name="closed" value="true" />
+      <created>1771518045282</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771518045282</updated>
+    </task>
+    <task id="LOCAL-00003" summary="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)">
+      <option name="closed" value="true" />
+      <created>1771518296324</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1771518296324</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,7 +206,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml" />
+    <MESSAGE value="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)" />
+    <option name="LAST_COMMIT_MESSAGE" value="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

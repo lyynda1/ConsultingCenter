@@ -481,6 +481,22 @@ Role: Project module UI layout (FXML/CSS)
     -fx-font-weight: 400;
     -fx-text-fill: #3b3b3b;
 }
+.summary-row {
+    -fx-background-color: rgba(0,0,0,0.02);
+    -fx-background-radius: 14;
+    -fx-padding: 10 12;
+}
+
+.meta-value {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1f1f1f;
+}
+
+.metrics-col {
+    -fx-min-width: 220;
+    -fx-pref-width: 240;
+}
 
 
 
