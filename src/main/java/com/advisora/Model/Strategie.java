@@ -1,8 +1,14 @@
+/*
+ADVISORA STRUCTURE COMMENT
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/')
+Role: Domain model/entity used by business and UI layers
+*/
 package com.advisora.Model;
 
 import com.advisora.enums.StrategyStatut;
+
 import java.time.LocalDateTime;
-import java.util.Objects;
+
 public class Strategie {
     private int id;
     private String nomStrategie;
@@ -10,39 +16,17 @@ public class Strategie {
     private StrategyStatut statut;
     private LocalDateTime createdAt;
     private LocalDateTime lockedAt;
-    private double cost;
     private String news;
+    private Project projet;
+    private Integer idUser;
+    private String justification;
 
-    // Default constructor
     public Strategie() {
+        this.version = 1;
+        this.statut = StrategyStatut.EN_COURS;
+        this.justification = "";
     }
 
-    // Constructor with all fields
-    public Strategie(int id, String nomStrategie, int version, StrategyStatut statut,
-                     LocalDateTime createdAt, LocalDateTime lockedAt, double cost, String news) {
-        this.id = id;
-        this.nomStrategie = nomStrategie;
-        this.version = version;
-        this.statut = statut;
-        this.createdAt = createdAt;
-        this.lockedAt = lockedAt;
-        this.cost = cost;
-        this.news = news;
-    }
-
-    // Constructor without id (for new strategies)
-    public Strategie(String nomStrategie, int version, StrategyStatut statut,
-                     LocalDateTime createdAt, LocalDateTime lockedAt, double cost, String news) {
-        this.nomStrategie = nomStrategie;
-        this.version = version;
-        this.statut = statut;
-        this.createdAt = createdAt;
-        this.lockedAt = lockedAt;
-        this.cost = cost;
-        this.news = news;
-    }
-
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -91,14 +75,6 @@ public class Strategie {
         this.lockedAt = lockedAt;
     }
 
-    public double getCost() {
-        return cost;
-    }
-
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
-
     public String getNews() {
         return news;
     }
@@ -107,32 +83,31 @@ public class Strategie {
         this.news = news;
     }
 
-    // toString method for debugging
+    public Project getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Project projet) {
+        this.projet = projet;
+    }
+
+    public Integer getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public void setJustification(String justification) {
+        this.justification = justification;
+    }
+    public String getJustification() {
+        return justification;
+    }
+
     @Override
     public String toString() {
-        return "Strategie{" +
-                "id=" + id +
-                ", nom='" + nomStrategie + '\'' +
-                ", version=" + version +
-                ", statut=" + statut +
-                ", createdAt=" + createdAt +
-                ", lockedAt=" + lockedAt +
-                ", cost=" + cost +
-                ", news='" + news + '\'' +
-                '}';
-    }
-
-    // equals and hashCode methods
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Strategie strategie = (Strategie) o;
-        return id == strategie.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
+        return "#" + id + " - " + (nomStrategie == null ? "" : nomStrategie);
     }
 }

@@ -1,167 +1,357 @@
 package com.advisora.Services;
 
+import com.advisora.Model.Notification;
+import com.advisora.Model.Project;
 import com.advisora.Model.Strategie;
-import com.advisora.Util.DB;
 import com.advisora.enums.StrategyStatut;
+import com.advisora.utils.MyConnection;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public void ajouter(Strategie strategie) {
-        String sql = "INSERT INTO `strategies`( `versions`, `statusStrategie`, `CreatedAtS`, `lockedAt`, `cost`, `news`, `nomStrategie`)" +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-
+        validate(strategie, true);
+        String sql = "INSERT INTO strategies (versions, statusStrategie, CreatedAtS, lockedAt, news, idProj, idUser, nomStrategie) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, strategie.getVersion());
-            ps.setString(2, strategie.getStatut().toString());
-            ps.setTimestamp(3, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
-            ps.setTimestamp(4, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
-            ps.setDouble(5, strategie.getCost());
-            ps.setString(6, strategie.getNews());
-            ps.setString(7, strategie.getNomStrategie());
-
+            ps.setString(2, "En_cours"); // default status for new strategy
+            ps.setTimestamp(3, Timestamp.valueOf(strategie.getCreatedAt()));
+            ps.setTimestamp(4, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
+            ps.setString(5, emptyToNull(strategie.getNews()));
+            ps.setInt(6, strategie.getProjet().getIdProj());
+            if (strategie.getIdUser() == null) {
+                ps.setNull(7, Types.INTEGER);
+            } else {
+                ps.setInt(7, strategie.getIdUser());
+            }
+            ps.setString(8, strategie.getNomStrategie().trim());
             ps.executeUpdate();
-
-            // Get generated ID
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     strategie.setId(rs.getInt(1));
                 }
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding strategy: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur ajout strategie: " + e.getMessage(), e);
         }
     }
 
     @Override
     public List<Strategie> afficher() {
-        List<Strategie> strategies = new ArrayList<>();
-        String sql = "SELECT * FROM strategies";
+        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.justification, " +
+                "p.titleProj " +
+                "FROM strategies s " +
+                "LEFT JOIN projects p ON p.idProj = s.idProj " +
+                "ORDER BY s.idStrategie DESC";
 
-        try (Connection conn = DB.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
+        List<Strategie> list = new ArrayList<>();
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Strategie strategie = mapResultSetToStrategie(rs);
-                strategies.add(strategie);
+                list.add(map(rs));
             }
-
+            return list;
         } catch (SQLException e) {
-            throw new RuntimeException("Error fetching strategies: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur lecture strategies: " + e.getMessage(), e);
         }
-
-        return strategies;
     }
 
     @Override
     public void modifier(Strategie strategie) {
-        String sql = "UPDATE strategies SET nomStrategie=?, versions=?, statusStrategie=?, createdAtS=?, lockedAt=?, cost=?, news=? " +
-                     "WHERE idStrategie=?";
+        validate(strategie, false);
 
-        try (Connection conn = DB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Integer newProjId = null;
+        if (strategie.getProjet() != null && strategie.getProjet().getIdProj() > 0) {
+            newProjId = strategie.getProjet().getIdProj();
+        }
 
-            ps.setString(1, strategie.getNomStrategie());
-            ps.setInt(2, strategie.getVersion());
-            ps.setString(3, strategie.getStatut().name());
-            ps.setTimestamp(4, strategie.getCreatedAt() != null ? Timestamp.valueOf(strategie.getCreatedAt()) : null);
-            ps.setTimestamp(5, strategie.getLockedAt() != null ? Timestamp.valueOf(strategie.getLockedAt()) : null);
-            ps.setDouble(6, strategie.getCost());
-            ps.setString(7, strategie.getNews());
+        Integer oldProjId = getCurrentProjectId(strategie.getId());
+
+        StrategyStatut statusToSave = strategie.getStatut();
+        String justification = strategie.getJustification();
+
+        if (!Objects.equals(oldProjId, newProjId)) {
+            statusToSave = StrategyStatut.EN_COURS;
+            justification = null;              // clear justification if project changed
+            strategie.setStatut(statusToSave);
+        }
+
+        String sql = "UPDATE strategies SET versions=?, statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=? " +
+                "WHERE idStrategie=?";
+
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setInt(1, strategie.getVersion());
+            ps.setString(2, resolveDbStrategyStatus(cnx, statusToSave));
+            ps.setTimestamp(3, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
+
+            // 4) idProj
+            if (newProjId == null) ps.setNull(4, Types.INTEGER);
+            else ps.setInt(4, newProjId);
+
+            // 5) idUser
+            if (strategie.getIdUser() == null) ps.setNull(5, Types.INTEGER);
+            else ps.setInt(5, strategie.getIdUser());
+
+            // 6) nomStrategie
+            ps.setString(6, strategie.getNomStrategie().trim());
+
+            // 7) justification
+            ps.setString(7, (justification == null || justification.isBlank()) ? null : justification.trim());
+
+            // 8) idStrategie (WHERE)
             ps.setInt(8, strategie.getId());
 
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating strategy: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur modification strategie: " + e.getMessage(), e);
         }
     }
+
+
 
     @Override
     public void supprimer(Strategie strategie) {
+        if (strategie == null || strategie.getId() <= 0) {
+            throw new IllegalArgumentException("Strategie invalide.");
+        }
         String sql = "DELETE FROM strategies WHERE idStrategie=?";
-
-        try (Connection conn = DB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, strategie.getId());
             ps.executeUpdate();
-
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting strategy: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur suppression strategie: " + e.getMessage(), e);
         }
     }
 
-    // Helper method to map ResultSet to Strategie
-    private Strategie mapResultSetToStrategie(ResultSet rs) throws SQLException {
-        int id = rs.getInt("idStrategie");
-        String nom = rs.getString("nomStrategie");
-        int version = rs.getInt("versions");
-        String statutStr = rs.getString("statusStrategie");
-        StrategyStatut statut = StrategyStatut.valueOf(statutStr);
+    public Strategie getById(int idStrategie) {
+        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.justification, " +
+                "p.titleProj " +
+                "FROM strategies s " +
+                "LEFT JOIN projects p ON p.idProj = s.idProj " +
+                "WHERE s.idStrategie=?";
 
-        Timestamp createdAtTs = rs.getTimestamp("CreatedAtS");
-        LocalDateTime createdAt = createdAtTs != null ? createdAtTs.toLocalDateTime() : null;
-
-        Timestamp lockedAtTs = rs.getTimestamp("lockedAt");
-        LocalDateTime lockedAt = lockedAtTs != null ? lockedAtTs.toLocalDateTime() : null;
-
-        double cost = rs.getDouble("cost");
-        String news = rs.getString("news");
-
-        return new Strategie(id, nom, version, statut, createdAt, lockedAt, cost, news);
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idStrategie);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return map(rs);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lecture strategie: " + e.getMessage(), e);
+        }
     }
 
-    // Additional helper method to get a strategy by ID
-    public Strategie getById(String nomStrategie) {
-        String sql = "SELECT * FROM strategies WHERE nomStrategie=?";
+    private Strategie map(ResultSet rs) throws SQLException {
+        Strategie s = new Strategie();
+        s.setId(rs.getInt("idStrategie"));
+        s.setVersion(rs.getInt("versions"));
+        s.setStatut(StrategyStatut.fromDb(rs.getString("statusStrategie")));
+        Timestamp created = rs.getTimestamp("CreatedAtS");
+        s.setCreatedAt(created == null ? null : created.toLocalDateTime());
+        Timestamp locked = rs.getTimestamp("lockedAt");
+        s.setLockedAt(locked == null ? null : locked.toLocalDateTime());
+        s.setNews(rs.getString("news"));
+        s.setNomStrategie(rs.getString("nomStrategie"));
+        s.setJustification(rs.getString("justification")); // set justification even if project is null, for potential later use
+        int idProj = rs.getInt("idProj");
+        if (!rs.wasNull()) {
+            Project p = new Project();
+            p.setIdProj(idProj);
+            p.setTitleProj(rs.getString("titleProj"));
+            s.setProjet(p);
+        }
+        int idUser = rs.getInt("idUser");
+        if (!rs.wasNull()) {
+            s.setIdUser(idUser);
+        }
+        return s;
+    }
 
-        try (Connection conn = DB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    private void validate(Strategie s, boolean create) {
+        if (s == null) throw new IllegalArgumentException("Strategie obligatoire.");
+        if (s.getNomStrategie() == null || s.getNomStrategie().isBlank()) throw new IllegalArgumentException("Nom strategie obligatoire.");
+        if (s.getProjet() == null || s.getProjet().getIdProj() <= 0) throw new IllegalArgumentException("Projet obligatoire.");
+        if (s.getVersion() <= 0) s.setVersion(1);
+        if (s.getStatut() == null) s.setStatut(StrategyStatut.EN_COURS);
+        if (s.getCreatedAt() == null) s.setCreatedAt(java.time.LocalDateTime.now());
+        if (!create && s.getId() <= 0) throw new IllegalArgumentException("idStrategie invalide.");
+    }
 
-            ps.setString(1, nomStrategie);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToStrategie(rs);
+    private String emptyToNull(String v) {
+        return v == null || v.isBlank() ? null : v.trim();
+    }
+
+    // New DB can contain accented or mojibake enum values for statusStrategie.
+    // This method reads the real enum literals from schema and picks the matching one.
+    private String resolveDbStrategyStatus(Connection cnx, StrategyStatut status) {
+        StrategyStatut safeStatus = status == null ? StrategyStatut.EN_COURS : status;
+        String sql = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS "
+                + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME='strategies' AND COLUMN_NAME='statusStrategie'";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String columnType = rs.getString(1); // enum('En_cours','Acceptée','Refusée')
+                String mapped = mapEnumLiteral(columnType, safeStatus);
+                if (mapped != null) {
+                    return mapped;
                 }
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error fetching strategy by ID: " + e.getMessage(), e);
+        } catch (SQLException ignored) {
+            // fallback below
         }
+        return safeStatus.toDb();
+    }
 
+    private String mapEnumLiteral(String columnType, StrategyStatut status) {
+        if (columnType == null || !columnType.toLowerCase(Locale.ROOT).startsWith("enum(")) {
+            return null;
+        }
+        String raw = columnType.substring(5, columnType.length() - 1); // inside enum(...)
+        String[] values = raw.split(",");
+        for (String v : values) {
+            String literal = v.trim();
+            if (literal.startsWith("'") && literal.endsWith("'") && literal.length() >= 2) {
+                literal = literal.substring(1, literal.length() - 1);
+            }
+            String normalized = normalizeLiteral(literal);
+            if (status == StrategyStatut.EN_COURS && normalized.contains("EN_COURS")) {
+                return literal;
+            }
+            if (status == StrategyStatut.ACCEPTEE && normalized.contains("ACCEP")) {
+                return literal;
+            }
+            if (status == StrategyStatut.REFUSEE && normalized.contains("REFUS")) {
+                return literal;
+            }
+        }
         return null;
     }
 
-    // Additional helper method to get strategies by status
-    public List<Strategie> getByStatut(StrategyStatut statut) {
-        List<Strategie> strategies = new ArrayList<>();
-        String sql = "SELECT * FROM strategies WHERE statusStrategie=?";
+    private String normalizeLiteral(String value) {
+        return java.text.Normalizer.normalize(value == null ? "" : value, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .replace('-', '_')
+                .trim()
+                .toUpperCase(Locale.ROOT);
+    }
 
-        try (Connection conn = DB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public List<Strategie> getByProject(int projectId) {
+        String sql = """
+    SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.news,
+           s.idProj, s.idUser, s.nomStrategie, s.justification,
+           p.titleProj
+    FROM strategies s
+    LEFT JOIN projects p ON p.idProj = s.idProj
+    WHERE s.idProj = ?
+    ORDER BY s.idStrategie DESC
+""";
 
-            ps.setString(1, statut.name());
+
+        List<Strategie> list = new ArrayList<>();
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, projectId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    strategies.add(mapResultSetToStrategie(rs));
+                    list.add(map(rs));
                 }
             }
-
+            return list;
         } catch (SQLException e) {
-            throw new RuntimeException("Error fetching strategies by status: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur lecture strategies par projet: " + e.getMessage(), e);
+        }
+    }
+
+
+    public void applyDecision(int idStrategie, boolean accepted, String justificationIfRefused, boolean detachOnRefuse) {
+
+        if (!accepted) {
+            if (justificationIfRefused == null || justificationIfRefused.trim().isEmpty()) {
+                throw new IllegalArgumentException("Le refus nécessite une justification.");
+            }
         }
 
-        return strategies;
+        String sql = detachOnRefuse
+                ? "UPDATE strategies SET statusStrategie=?, idProj = CASE WHEN ? THEN idProj ELSE NULL END, " +
+                "justification = ? WHERE idStrategie=?"
+                : "UPDATE strategies SET statusStrategie=?, justification=? WHERE idStrategie=?";
+
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            String status = accepted ? StrategyStatut.ACCEPTEE.toDb() : StrategyStatut.REFUSEE.toDb();
+            String justification = accepted ? null : justificationIfRefused.trim();
+
+            if (detachOnRefuse) {
+                ps.setString(1, status);
+                ps.setBoolean(2, accepted);     // if accepted => keep idProj, else => NULL
+                ps.setString(3, justification);
+                ps.setInt(4, idStrategie);
+            } else {
+                ps.setString(1, status);
+                ps.setString(2, justification);
+                ps.setInt(3, idStrategie);
+            }
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur mise à jour décision strategie: " + e.getMessage(), e);
+        }
+        NotificationManager.getInstance().addNotification(new Notification("Decision strategie", "Strategie #" + getById(idStrategie).getNomStrategie() + " a été " + (accepted ? "acceptée" : "refusée")));
     }
+
+    public boolean hasActiveStrategyForProject(int projectId) {
+        String sql = "SELECT COUNT(*) FROM strategies WHERE idProj = ? AND statusStrategie = ?";
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, projectId);
+            ps.setString(2, StrategyStatut.EN_COURS.toDb());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur vérification stratégie active pour projet: " + e.getMessage(), e);
+        }
+    }
+
+    /** returns current idProj in DB (nullable) */
+    private Integer getCurrentProjectId(int idStrategie) {
+        String sql = "SELECT idProj FROM strategies WHERE idStrategie=?";
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idStrategie);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return null;
+                int idProj = rs.getInt(1);
+                return rs.wasNull() ? null : idProj;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lecture idProj strategie: " + e.getMessage(), e);
+        }
+    }
+
+
+
 }

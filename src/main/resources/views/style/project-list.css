@@ -1,0 +1,227 @@
+/*
+ADVISORA STRUCTURE COMMENT
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
+Role: Project module UI layout (FXML/CSS)
+*/
+.page {
+    -fx-background-color: transparent;
+}
+
+.header {
+    -fx-background-color: transparent;
+}
+
+.title {
+    -fx-font-size: 31px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.btn-primary {
+    -fx-background-color: #E97B2C;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.35), 12, 0.22, 0, 3);
+}
+
+.btn-primary:hover {
+    -fx-background-color: #d96f26;
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.45), 14, 0.24, 0, 4);
+}
+
+.btn-ghost {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0.18, 0, 2);
+}
+
+.btn-ghost:hover {
+    -fx-background-color: white;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 12, 0.22, 0, 3);
+}
+
+.btn-danger {
+    -fx-background-color: #ea7527;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #fd6c01;
+}
+
+.tabs .tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 600;
+    -fx-padding: 6 10 6 10;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.tabs .tab:selected {
+    -fx-background-color: rgba(233,123,44,0.12);
+    -fx-text-fill: #e97b2c;
+}
+
+.search {
+    -fx-pref-width: 260;
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f1f1f;
+    -fx-prompt-text-fill: rgba(60,60,60,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 3);
+}
+
+.search:focused {
+    -fx-border-color: rgba(233,123,44,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.20), 18, 0.22, 0, 4);
+}
+
+.stats {
+    -fx-padding: 10 0 10 0;
+    -fx-spacing: 16;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 14 16 14 16;
+    -fx-min-height: 82;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
+}
+
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(40,40,40,0.70);
+    -fx-font-weight: 600;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1f1f1f;
+}
+
+.stat-icon-chip {
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-pref-width: 34;
+    -fx-pref-height: 34;
+    -fx-background-radius: 999;
+    -fx-background-insets: 0;
+    -fx-alignment: center;
+}
+
+.stat-icon-text {
+    -fx-font-size: 15px;
+}
+
+.stat-icon-orange { -fx-background-color: rgba(233,123,44,0.18); }
+.stat-icon-yellow { -fx-background-color: rgba(244,197,66,0.22); }
+.stat-icon-green  { -fx-background-color: rgba(46,163,106,0.18); }
+
+.content {
+    -fx-padding: 0;
+    -fx-min-height: 0;
+}
+
+.card-list {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.card-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12 0;
+}
+
+.card-list .list-cell:filled:selected {
+    -fx-background-color: transparent;
+}
+
+.project-card {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
+}
+
+.card-list .list-cell:filled:selected .project-card {
+    -fx-border-color: rgba(233,123,44,0.85);
+    -fx-border-width: 2;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.card-desc {
+    -fx-text-fill: #374151;
+}
+
+.card-meta {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.card-actions .button {
+    -fx-cursor: hand;
+}
+
+.status-badge {
+    -fx-padding: 4 12 4 12;
+    -fx-background-radius: 999;
+    -fx-font-weight: 800;
+}
+
+.status-pending {
+    -fx-background-color: rgba(244,197,66,0.20);
+    -fx-text-fill: #7a5a00;
+}
+
+.status-accepted {
+    -fx-background-color: rgba(46,163,106,0.18);
+    -fx-text-fill: #1f6e48;
+}
+
+.status-refused {
+    -fx-background-color: rgba(230,84,84,0.14);
+    -fx-text-fill: #b42318;
+}
+
+.status-archived {
+    -fx-background-color: rgba(107,114,128,0.16);
+    -fx-text-fill: #374151;
+}
