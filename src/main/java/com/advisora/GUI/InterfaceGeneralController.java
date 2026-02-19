@@ -62,13 +62,10 @@ public class InterfaceGeneralController {
     public void initialize() {
 
         User u = SessionContext.getCurrentUser();
-        if (u.getRole() != UserRole.ADMIN && u.getRole() != UserRole.GERANT) {
-            notificationButton.setVisible(false);
-            notificationButton.setManaged(false);
-            notificationBadge.setVisible(false);
-            notifCount.setVisible(false);
-        }
-        NotificationManager.getInstance().loadNotifications(); // ✅ important to refresh data from DB
+
+        NotificationManager.getInstance()
+                .loadNotificationsForRole(u.getRole());
+        // ✅ important to refresh data from DB
 
         updateNotificationBadge();
 
@@ -231,15 +228,19 @@ public class InterfaceGeneralController {
     @FXML
     private void handleLogout() {
         try {
+            NotificationManager.getInstance().getNotifications().clear(); // 🔥 important
             SessionContext.clear();
+
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
             Stage stage = (Stage) contentHost.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Advisora - Login");
+
         } catch (Exception ex) {
             showError("Logout", ex.getMessage());
         }
     }
+
 
     private void loadIntoContent(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));

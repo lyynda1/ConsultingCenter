@@ -1,5 +1,6 @@
 package com.advisora.Services;
 
+import com.advisora.Model.Notification;
 import com.advisora.Model.Project;
 import com.advisora.Model.Strategie;
 import com.advisora.enums.StrategyStatut;
@@ -184,6 +185,7 @@ public class ServiceStrategie implements IService<Strategie> {
         s.setTypeStrategie(TypeStrategie.fromDb(rs.getString("type")));
         s.setBudgetTotal(rs.getDouble("budgetTotal"));
         s.setGainEstime(rs.getDouble("gainEstime"));
+
         int idProj = rs.getInt("idProj");
         if (!rs.wasNull()) {
             Project p = new Project();
@@ -308,32 +310,50 @@ public class ServiceStrategie implements IService<Strategie> {
         }
 
         String sql = detachOnRefuse
-                ? "UPDATE strategies SET statusStrategie=?, idProj = CASE WHEN ? THEN idProj ELSE NULL END, " +
+                ? "UPDATE strategies SET statusStrategie=?, " +
+                "lockedAt = CASE WHEN ? THEN NOW() ELSE lockedAt END, " +
+                "idProj = CASE WHEN ? THEN idProj ELSE NULL END, " +
                 "justification = ? WHERE idStrategie=?"
-                : "UPDATE strategies SET statusStrategie=?, justification=? WHERE idStrategie=?";
+                : "UPDATE strategies SET statusStrategie=?, " +
+                "lockedAt = CASE WHEN ? THEN NOW() ELSE lockedAt END, " +
+                "justification=? WHERE idStrategie=?";
+
 
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-            String status = accepted ? StrategyStatut.ACCEPTEE.toDb() : StrategyStatut.REFUSEE.toDb();
+            String status = accepted ? StrategyStatut.ACCEPTEE.toDb()
+                    : StrategyStatut.REFUSEE.toDb();
+
             String justification = accepted ? null : justificationIfRefused.trim();
 
             if (detachOnRefuse) {
+
                 ps.setString(1, status);
-                ps.setBoolean(2, accepted);     // if accepted => keep idProj, else => NULL
+                ps.setBoolean(2, accepted);     // lockedAt
+                ps.setBoolean(3, accepted);     // idProj logic
+                ps.setString(4, justification);
+                ps.setInt(5, idStrategie);
+
+
+            } else {
+
+                ps.setString(1, status);
+                ps.setBoolean(2, accepted);     // lockedAt
                 ps.setString(3, justification);
                 ps.setInt(4, idStrategie);
-            } else {
-                ps.setString(1, status);
-                ps.setString(2, justification);
-                ps.setInt(3, idStrategie);
             }
+
 
             ps.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException("Erreur mise à jour décision strategie: " + e.getMessage(), e);
         }
+        NotificationManager.getInstance().addNotification(new Notification(
+                "Décision strategie",
+                "La strategie a été " + (accepted ? "acceptée" : "refusée")
+        ));
     }
 
     public boolean hasActiveStrategyForProject(int projectId) {

@@ -1,6 +1,7 @@
 package com.advisora.Services;
 
 import com.advisora.Model.Notification;
+import com.advisora.enums.UserRole;
 import com.advisora.utils.MyConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +11,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class NotificationManager {
@@ -42,23 +44,29 @@ public class NotificationManager {
 
     public void addNotification(Notification notification) {
 
+        notification.setTimestamp(LocalDateTime.now());
         notifications.add(0, notification);
-        // ✅ insert into DB
+        System.out.println("ADD NOTIFICATION CALLED: " + notification.getTitle());
+
+
         String sql = "INSERT INTO notification (title, description, dateNotification, isRead) VALUES (?, ?, NOW(), FALSE)";
+
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
+
             ps.setString(1, notification.getTitle());
             ps.setString(2, notification.getMessage());
             ps.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException("Erreur insertion notification: " + e.getMessage(), e);
         }
 
-        // ✅ play sound on new notification
         if (soundEnabled) {
             ding.play();
         }
     }
+
 
     public void setSoundEnabled(boolean enabled) {
         this.soundEnabled = enabled;
@@ -84,10 +92,18 @@ public class NotificationManager {
              var rs = ps.executeQuery()) {
             notifications.clear();
             while (rs.next()) {
-                Notification n = new Notification(rs.getString("title"), rs.getString("description"));
+                Notification n = new Notification(
+                        rs.getString("title"),
+                        rs.getString("description")
+                );
+
                 n.setRead(rs.getBoolean("isRead"));
+                n.setTimestamp(rs.getTimestamp("dateNotification").toLocalDateTime());
+
                 notifications.add(n);
             }
+
+
         } catch (SQLException e) {
             throw new RuntimeException("Erreur chargement notifications: " + e.getMessage(), e);
         }
@@ -107,5 +123,35 @@ public class NotificationManager {
             throw new RuntimeException("Erreur suppression notifications: " + e.getMessage(), e);
         }
     }
+
+    public void loadNotificationsForRole(UserRole role) {
+
+        if (role != UserRole.ADMIN && role != UserRole.GERANT) {
+            return; // DO NOT clear list
+        }
+
+        String sql = "SELECT * FROM notification ORDER BY dateNotification DESC";
+
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql);
+             var rs = ps.executeQuery()) {
+
+            notifications.clear();
+
+            while (rs.next()) {
+                Notification n = new Notification(
+                        rs.getString("title"),
+                        rs.getString("description")
+                );
+                n.setRead(rs.getBoolean("isRead"));
+                n.setTimestamp(rs.getTimestamp("dateNotification").toLocalDateTime());
+                notifications.add(n);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

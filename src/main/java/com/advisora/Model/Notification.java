@@ -35,4 +35,9 @@ public class Notification {
     public void setRead(boolean read) {
         isRead = read;
     }
+
+    public void setTimestamp(LocalDateTime dateNotification) {
+        this.timestamp = dateNotification;
+    }
+
 }
