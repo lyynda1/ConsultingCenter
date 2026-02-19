@@ -225,3 +225,262 @@ Role: Project module UI layout (FXML/CSS)
     -fx-background-color: rgba(107,114,128,0.16);
     -fx-text-fill: #374151;
 }
+
+.card-mid {
+    -fx-alignment: TOP_LEFT;
+}
+
+.card-divider {
+    -fx-min-width: 1;
+    -fx-pref-width: 1;
+    -fx-max-width: 1;
+    -fx-background-color: #e6e1d3; /* soft line */
+}
+
+.card-right {
+    -fx-min-width: 320;
+    -fx-pref-width: 360;
+}
+
+/* Strategy row container */
+.strategy-row{
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8 10;
+    -fx-background-color: rgba(255,255,255,0.85);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.06);
+}
+
+.strategy-name{
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1f1f1f;
+}
+
+.strategy-actions{
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* Make sure buttons never become tiny */
+.chip-no{
+    -fx-min-width: 80px;
+    -fx-pref-width: 90px;
+    -fx-max-width: 90px;
+    -fx-padding: 6 10;
+    -fx-background-radius: 999;
+    -fx-font-weight: 700;
+
+    -fx-background-color: rgba(237, 57, 57, 0.95);
+    -fx-text-fill: white;
+}
+
+.chip-ok{
+    -fx-min-width: 80px;
+    -fx-pref-width: 90px;
+    -fx-max-width: 90px;
+    -fx-padding: 6 10;
+    -fx-background-radius: 999;
+    -fx-font-weight: 700;
+
+    -fx-background-color: rgba(46, 163, 106, 0.95);
+    -fx-text-fill: white;
+}
+
+
+/* optional: smaller + softer look */
+.strategy-row:hover .strategy-name {
+    -fx-text-fill: #111;
+}
+
+/* If you want it more “subtitle” style */
+.strategies-title {
+    -fx-font-size: 14px;
+    -fx-font-style: bold;
+    -fx-font-weight: 800;
+    -fx-text-fill: #6b6b6b;
+    -fx-letter-spacing: 0.8px; /* if supported */
+}
+
+
+.link-btn {
+    -fx-background-color: transparent;
+    -fx-underline: true;
+}
+
+
+
+.chip-selected {
+    -fx-opacity: 1.0;
+}
+
+.overlay {
+    -fx-alignment: center;
+}
+
+.overlay-bg {
+    -fx-background-color: rgba(0,0,0,0.45);
+    -fx-pref-width: 99999;
+    -fx-pref-height: 99999;
+}
+
+.modal-box {
+    -fx-background-color: white;
+    -fx-padding: 14;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0.2, 0, 6);
+}
+/* the popup card itself */
+.dialog-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 22, 0.2, 0, 6);
+}
+
+
+
+
+
+
+
+/* optional: make each cell solid too */
+.dialog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 22, 0.2, 0, 6);
+}
+
+/* ListView is often transparent unless forced */
+.dialog-card .list-view,
+.dialog-card .list-view .virtual-flow,
+.dialog-card .list-view .virtual-flow .viewport {
+    -fx-background-color: white;
+}
+
+.dialog-card .list-cell {
+    -fx-background-color: white;
+}
+/* =========================
+   Close button
+   ========================= */
+/* dialog card already */
+.dialog-card{
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 20, 0.18, 0, 6);
+}
+
+/* close button nicer */
+.dialog-card .btn-close{
+    -fx-background-color: #f2f2f2;
+    -fx-background-radius: 999;
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-pref-width: 34;
+    -fx-pref-height: 34;
+    -fx-padding: 0;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #333;
+    -fx-cursor: hand;
+}
+.dialog-card .btn-close:hover{ -fx-background-color: #e8e8e8; }
+.dialog-card .btn-close:pressed{ -fx-background-color: #dddddd; }
+
+/* list: remove default blue selection background */
+.dialog-card .list-view{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.dialog-card .list-view .virtual-flow .viewport{
+    -fx-background-color: transparent;
+}
+.dialog-card .list-cell{
+    -fx-background-color: transparent;
+    -fx-padding: 8 2 8 2; /* spacing between cards */
+}
+.dialog-card .list-cell:selected{
+    -fx-background-color: transparent;
+}
+
+/* objective card look */
+.objective-card{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #ececec;
+    -fx-padding: 10 12 10 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.16, 0, 2);
+}
+
+.objective-title{
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.objective-desc{
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #3b3b3b;
+}
+
+.pill-priority{
+    -fx-background-color: #eef2ff;
+    -fx-background-radius: 999;
+    -fx-padding: 3 10 3 10;
+    -fx-font-size: 11.5px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2b2b2b;
+}
+
+/* ===== Dialog typography ===== */
+.dialog-card .dialog-title{
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.dialog-card .meta-label{
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6b6b6b;
+}
+
+.dialog-card .big-title{
+    -fx-font-size: 16px;     /* strategy name size */
+    -fx-font-weight: 800;    /* bold */
+    -fx-text-fill: #1f1f1f;
+    -fx-padding: 0 0 6 0;
+}
+
+/* count pill */
+.dialog-card .pill{
+    -fx-background-color: #eaf3f1;
+    -fx-background-radius: 999;
+    -fx-padding: 3 10 3 10;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+/* ===== Objectives text inside list cards ===== */
+.dialog-card .objective-title{
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.dialog-card .objective-desc{
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #3b3b3b;
+}
+
+
+

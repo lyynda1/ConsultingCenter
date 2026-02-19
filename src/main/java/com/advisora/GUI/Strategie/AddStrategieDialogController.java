@@ -144,6 +144,7 @@ public class AddStrategieDialogController {
                 serviceStrategie.ajouter(s);
             } else {
                 serviceStrategie.modifier(s);
+
             }
 
             onSaved.run();
@@ -183,7 +184,9 @@ public class AddStrategieDialogController {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(msg);
         }
+
         return value.trim();
+
     }
 
     private int parsePositiveInt(String value, String field) {

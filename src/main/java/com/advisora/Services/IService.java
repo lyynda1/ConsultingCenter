@@ -1,6 +1,6 @@
 /*
 ADVISORA STRUCTURE COMMENT
- param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/')
 Role: Service layer: business logic and SQL orchestration
 */
 package com.advisora.Services;

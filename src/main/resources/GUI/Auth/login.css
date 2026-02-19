@@ -13,6 +13,19 @@
     -fx-padding: 22;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.18, 0, 10);
 }
+.eye-btn{
+    -fx-background-color: transparent;
+    -fx-padding: 0 12 0 12;
+    -fx-cursor: hand;
+}
+.text-field.input, .password-field.input{
+    -fx-padding: 0.75em 3em 0.75em 0.9em;
+}
+
+/* pour laisser la place au bouton à droite */
+.text-field.input, .password-field.input {
+    -fx-padding: 0.75em 3em 0.75em 0.9em;
+}
 
 .brand-card{
     -fx-background-color: #EDE6D2;

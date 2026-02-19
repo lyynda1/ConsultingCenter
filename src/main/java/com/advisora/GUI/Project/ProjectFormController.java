@@ -64,11 +64,11 @@ public class ProjectFormController {
         try {
             // Reuse existing object in edit mode, create a new one otherwise.
             Project p = (currentProject == null) ? new Project() : currentProject;
-            p.setTitleProj(required(txtTitle.getText(), "Title is required"));
-            p.setDescriptionProj(txtDescription.getText());
-            p.setBudgetProj(parseNonNegative(txtBudget.getText(), "Budget"));
-            p.setTypeProj(txtType.getText());
-            p.setAvancementProj(parseRange(txtAvancement.getText(), 0, 100, "Avancement"));
+            p.setTitleProj(required(txtTitle.getText(), "Le titre est requis"));
+            p.setDescriptionProj(required(txtDescription.getText(), "Veuillez fournir une description"));
+            p.setBudgetProj(parseNonNegative(txtBudget.getText(), "Le budget est requis"));
+            p.setTypeProj(required(txtType.getText(), "Le type de projet est requis"));
+            p.setAvancementProj(parseRange(txtAvancement.getText(), 0, 100, "L'avancement doit être entre 0 et 100"));
 
             if (!editMode) {
                 // Creation rule: project belongs to current client and starts as PENDING.
@@ -109,25 +109,25 @@ public class ProjectFormController {
 
     private double parseNonNegative(String value, String field) {
         try {
-            double v = Double.parseDouble(required(value, field + " is required"));
+            double v = Double.parseDouble(required(value, field + " est requis"));
             if (v < 0) {
-                throw new IllegalArgumentException(field + " must be >= 0");
+                throw new IllegalArgumentException(field + " doit être >= 0");
             }
             return v;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(field + " must be a number");
+            throw new IllegalArgumentException(field + " doit être un nombre");
         }
     }
 
     private double parseRange(String value, double min, double max, String field) {
         try {
-            double v = Double.parseDouble(required(value, field + " is required"));
+            double v = Double.parseDouble(required(value, field + " est requis"));
             if (v < min || v > max) {
-                throw new IllegalArgumentException(field + " must be between " + min + " and " + max);
+                throw new IllegalArgumentException(field + " doit être entre " + min + " et " + max);
             }
             return v;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(field + " must be a number");
+            throw new IllegalArgumentException(field + " doit être un nombre");
         }
     }
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<HBox fx:id="notificationPanelRoot"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.NotificationPanelController"
+      styleClass="notification-panel-container"
+      prefWidth="200" prefHeight="250" maxHeight="250">
+
+    <VBox styleClass="notification-panel" prefWidth="200" prefHeight="250">
+        <Label fx:id="dragHandle"
+               text="Notifications"
+               styleClass="notification-header"
+               onMousePressed="#handleMousePressed"
+               onMouseDragged="#handleMouseDragged"/>
+
+        <Separator />
+
+        <ScrollPane fitToWidth="true" styleClass="notification-scroll-pane" prefHeight="200">
+            <VBox fx:id="notificationsContainer" spacing="2" styleClass="notifications-container" />
+        </ScrollPane>
+    </VBox>
+</HBox>
+
+
+

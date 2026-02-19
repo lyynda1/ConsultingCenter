@@ -16,13 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -57,23 +51,44 @@ public class StrategieListController {
     private double dragOffsetY;
 
     @FXML
+
     public void initialize() {
+
         strategieList.setItems(viewObs);
+
+        // ✅ allow dynamic cell height (otherwise labels can be clipped)
+        strategieList.setFixedCellSize(-1);
+
         strategieList.setCellFactory(lv -> new ListCell<>() {
+
+            {
+                // ✅ show ONLY graphic (your VBox card)
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+                // ✅ let cell width follow list width (helps wrapping)
+                prefWidthProperty().bind(lv.widthProperty().subtract(20)); // small margin
+            }
+
             @Override
             protected void updateItem(Strategie s, boolean empty) {
                 super.updateItem(s, empty);
+
                 if (empty || s == null) {
-                    setText(null);
                     setGraphic(null);
-                    return;
+                } else {
+                    VBox card = buildCard(s);
+
+                    // ✅ VERY IMPORTANT: give the card a width to wrap into
+                    card.maxWidthProperty().bind(prefWidthProperty());
+                    card.setFillWidth(true);
+
+                    setGraphic(card);
                 }
-                setText(null);
-                setGraphic(buildCard(s));
             }
         });
 
         txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+
         try {
             refresh();
         } catch (Exception ex) {
@@ -84,6 +99,7 @@ public class StrategieListController {
             lblSuccess.setText("0%");
         }
     }
+
 
     @FXML
     private void nouvelleStrategie(ActionEvent e) {
@@ -124,26 +140,41 @@ public class StrategieListController {
     }
 
     private VBox buildCard(Strategie s) {
+
+        // ===== HEADER =====
         Label title = new Label(safe(s.getNomStrategie()));
         title.getStyleClass().add("card-title");
 
-        Label statut = new Label(s.getStatut() == null ? "" : s.getStatut().toDb());
+        Label statut = new Label(
+                s.getStatut() == null ? "" : s.getStatut().toDb()
+        );
         statut.getStyleClass().add("badge");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+
         HBox head = new HBox(10, title, spacer, statut);
 
-        Label projet = new Label("Projet associe: " + (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
+
+        // ===== PROJECT + DATE =====
+        Label projet = new Label("Projet associé : " +
+                (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
         projet.getStyleClass().add("card-sub");
-        Label date = new Label("Creee le: " + (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
+
+        Label date = new Label("Créée le : " +
+                (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
         date.getStyleClass().add("card-sub");
 
+
+        // ===== OBJECTIVES CHIPS =====
         FlowPane objChips = new FlowPane();
         objChips.getStyleClass().add("obj-chips");
         objChips.setHgap(8);
         objChips.setVgap(8);
-        List<Objective> objectives = objectivesByStrategie.getOrDefault(s.getId(), List.of());
+
+        List<Objective> objectives =
+                objectivesByStrategie.getOrDefault(s.getId(), List.of());
+
         if (objectives.isEmpty()) {
             Label none = new Label("Aucun objectif");
             none.getStyleClass().add("obj-empty");
@@ -157,24 +188,62 @@ public class StrategieListController {
             }
         }
 
+        System.out.println("ID=" + s.getId() + " JUSTIF=[" + s.getJustification() + "]");
+
+        // ===== JUSTIFICATION =====
+        Label justificationLabel = new Label();
+        justificationLabel.getStyleClass().add("card-sub");
+        justificationLabel.setWrapText(true);
+        justificationLabel.setMaxWidth(Double.MAX_VALUE); // ✅ important
+
+        String j = s.getJustification();
+        boolean has = j != null && !j.trim().isEmpty();
+
+        justificationLabel.setText(has ? "Justification : " + j.trim() : "");
+        justificationLabel.setVisible(has);
+        justificationLabel.setManaged(has);
+
+
+
+        // ===== ACTIONS =====
         HBox actions = new HBox(8);
+
         if (canManage()) {
+
             Button edit = new Button("Modifier");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> openEditStrategieDialog(s));
+
             Button delete = new Button("Supprimer");
             delete.getStyleClass().add("btn-danger");
             delete.setOnAction(e -> deleteStrategie(s));
+
             Button addObjective = new Button("Attribuer des objectifs");
             addObjective.getStyleClass().add("btn-ghost");
             addObjective.setOnAction(e -> openAddObjectiveDialog(s));
+
             actions.getChildren().addAll(edit, delete, addObjective);
         }
 
-        VBox card = new VBox(10, head, projet, date, objChips, actions);
+
+        // ===== CARD =====
+        VBox card = new VBox(15);
         card.getStyleClass().add("card");
+
+        card.getChildren().addAll(
+                head,
+                projet,
+                date,
+                objChips,
+                justificationLabel,
+                actions
+        );
+
         return card;
     }
+
+
+
 
     private void openAddDialog() {
         try {

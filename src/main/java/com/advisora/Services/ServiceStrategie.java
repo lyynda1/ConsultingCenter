@@ -1,6 +1,5 @@
 package com.advisora.Services;
 
-import com.advisora.Model.Notification;
 import com.advisora.Model.Project;
 import com.advisora.Model.Strategie;
 import com.advisora.enums.StrategyStatut;
@@ -316,7 +315,6 @@ public class ServiceStrategie implements IService<Strategie> {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur mise à jour décision strategie: " + e.getMessage(), e);
         }
-        NotificationManager.getInstance().addNotification(new Notification("Decision strategie", "Strategie #" + getById(idStrategie).getNomStrategie() + " a été " + (accepted ? "acceptée" : "refusée")));
     }
 
     public boolean hasActiveStrategyForProject(int projectId) {
