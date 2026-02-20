@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.advisora.Services.SessionContext;
+
 public class NotificationManager {
     private static NotificationManager instance;
     private final ObservableList<Notification> notifications;
@@ -45,7 +47,9 @@ public class NotificationManager {
     public void addNotification(Notification notification) {
 
         notification.setTimestamp(LocalDateTime.now());
-        notifications.add(0, notification);
+        if (SessionContext.getCurrentRole() == UserRole.ADMIN || SessionContext.getCurrentRole() == UserRole.GERANT) {
+            notifications.add(0, notification);
+        }
         System.out.println("ADD NOTIFICATION CALLED: " + notification.getTitle());
 
 
@@ -63,7 +67,10 @@ public class NotificationManager {
         }
 
         if (soundEnabled) {
-            ding.play();
+            if (SessionContext.getCurrentRole() == UserRole.ADMIN || SessionContext.getCurrentRole() == UserRole.GERANT) {
+                ding.play();
+            }
+
         }
     }
 

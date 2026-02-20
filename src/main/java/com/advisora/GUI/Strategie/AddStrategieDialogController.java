@@ -145,7 +145,9 @@ public class AddStrategieDialogController {
             }
 
             Strategie s = editingStrategie == null ? new Strategie() : editingStrategie;
-            s.setNomStrategie(required(nomField.getText(), "Nom strategie obligatoire."));
+            String validatedName = validateStrategyName(nomField.getText());
+            validatedName = UniqueStrategie(validatedName, s.getId());
+            s.setNomStrategie(validatedName);
             s.setVersion(version);
             s.setStatut(statut);
             s.setProjet(selectedProject);
@@ -171,6 +173,47 @@ public class AddStrategieDialogController {
             a.setHeaderText("Strategie");
             a.showAndWait();
         }
+    }
+
+    private String validateStrategyName(String name) {
+        if (name == null) throw new IllegalArgumentException("Nom stratégie obligatoire.");
+        String n = name.trim();
+
+        if (n.length() < 5)
+            throw new IllegalArgumentException("Nom stratégie trop court (min 5 caractères).");
+
+        if (!n.matches("[\\p{L}0-9\\s\\-_'’]+"))
+            throw new IllegalArgumentException("Nom stratégie contient des caractères invalides.");
+
+        if (n.matches("(?i).*([\\p{L}0-9])\\1{4,}.*")) {
+            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
+        }
+        // blocks any letter repeated 5+ times in a row anywhere: "lioussssss"
+        if (n.matches("(?i).*([\\p{L}])\\1{4,}.*")) {
+            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
+        }
+        // blocks any sequence of 3+ letters repeated 2+ times anywhere: "abcabcabc"
+        if (n.matches("(?i).*(\\p{L}{2,3})\\1{2,}.*")) {
+            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
+        }
+
+        String lettersOnly = n.replaceAll("[^\\p{L}]", "").toLowerCase();
+        long distinct = lettersOnly.chars().distinct().count();
+        if (lettersOnly.length() >= 6 && distinct <= 2)
+            throw new IllegalArgumentException("Nom stratégie non valide (trop aléatoire).");
+
+        if (!n.toLowerCase().matches(".*[aeiouyàâäéèêëîïôöùûü].*"))
+            throw new IllegalArgumentException("Nom stratégie non valide (doit ressembler à un mot).");
+
+        return n; // ✅ return cleaned valid name
+    }
+
+    private String UniqueStrategie(String nomStrategie, int id) {
+        Strategie existing = serviceStrategie.getStrategieByNom(nomStrategie);
+        if (existing != null && existing.getId() != id) {
+            return nomStrategie + " (doublon)";
+        }
+        return nomStrategie;
     }
 
     private double parsePositiveDouble(String text, String s) {

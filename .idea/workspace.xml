@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="ajout de clear all pour les notifications et ajustement de la visibilité des notificatons selon role">
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="correction de la notification part 1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/SimilarityResult.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/InterfaceGeneralController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/InterfaceGeneralController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/NotificationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/NotificationManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" afterDir="false" />
     </list>
@@ -67,43 +67,44 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Maven.Advisora [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
-    "Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "dev.sweep.assistant.data.RecentlyUsedFiles": "src\\main\\java\\com\\advisora\\GUI\\Strategie\\AddStrategieDialogController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieListController.java;src\\main\\java\\com\\advisora\\GUI\\InterfaceGeneralController.java;src\\main\\java\\com\\advisora\\Services\\ServiceStrategie.java;src\\main\\java\\com\\advisora\\GUI\\Project\\ProjectListController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieInfoDialogController.java;src\\main\\java\\com\\advisora\\Model\\Strategie.java;src\\main\\resources\\css\\strategie-list.css",
-    "git-widget-placeholder": "gestionStrategie",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/MSI/Downloads/AdvisoraValidation1",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/Users/user/IdeaProjects/Advisora/src/main/java/org/example/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "sweep.chatMode": "Agent",
-    "sweep.selectedModel": "Auto",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Advisora [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;dev.sweep.assistant.data.RecentlyUsedFiles&quot;: &quot;src\\main\\java\\com\\advisora\\GUI\\Strategie\\AddStrategieDialogController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieListController.java;src\\main\\java\\com\\advisora\\GUI\\InterfaceGeneralController.java;src\\main\\java\\com\\advisora\\Services\\ServiceStrategie.java;src\\main\\java\\com\\advisora\\GUI\\Project\\ProjectListController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieInfoDialogController.java;src\\main\\java\\com\\advisora\\Model\\Strategie.java;src\\main\\resources\\css\\strategie-list.css&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;gestionStrategie&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/MSI/Downloads/AdvisoraValidation1&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/user/IdeaProjects/Advisora/src/main/java/org/example/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;sweep.chatMode&quot;: &quot;Agent&quot;,
+    &quot;sweep.selectedModel&quot;: &quot;Auto&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.advisora.Model" />
       <recent name="com.advisora.GUI" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -131,11 +132,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="Advisora" />
-      <option name="filePath" />
-      <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
@@ -165,6 +161,7 @@
       <workItem from="1770584305916" duration="817000" />
       <workItem from="1771489007200" duration="7199000" />
       <workItem from="1771500546135" duration="14384000" />
+      <workItem from="1771592940026" duration="7356000" />
     </task>
     <task id="LOCAL-00001" summary="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml">
       <option name="closed" value="true" />
@@ -206,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771541513611</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="correction de la notification part 1">
+      <option name="closed" value="true" />
+      <created>1771544279384</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1771544279384</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,7 +222,8 @@
     <MESSAGE value="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)" />
     <MESSAGE value="ajout de budget et gain estimé pour chaque strategie ainsi qu'un calcul de ROI (modification de la table Strategie) changement du desing de l'interface de gestion des strategies ainsi que le dialogue d'info sur strategie dans la gestion des projets" />
     <MESSAGE value="ajout de clear all pour les notifications et ajustement de la visibilité des notificatons selon role" />
-    <option name="LAST_COMMIT_MESSAGE" value="ajout de clear all pour les notifications et ajustement de la visibilité des notificatons selon role" />
+    <MESSAGE value="correction de la notification part 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="correction de la notification part 1" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
