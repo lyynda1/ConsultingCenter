@@ -23,6 +23,7 @@ public class User {
     String dateN;
     UserRole role;
     String expertiseArea;
+    private String imagePath;
 
     @Override
     public boolean equals(Object o) {
@@ -35,7 +36,12 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, cin, email, password, nom, prenom, numTel, dateN, role, expertiseArea);
     }
+    public boolean hasImage() {
+        return imagePath != null && !imagePath.trim().isEmpty();
+    }
 
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
     public int getId() {
         return id;
     }

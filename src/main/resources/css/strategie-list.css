@@ -121,8 +121,43 @@
 
 
 /* =========================================
+   CHART SECTION (Évolution des transactions)
+   ========================================= */
+.chart-section {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0.12, 0, 4);
+}
+
+.evolution-chart {
+    -fx-background-color: transparent;
+}
+
+.evolution-chart .chart-series-line {
+    -fx-stroke: #ea7527;
+    -fx-stroke-width: 2.5px;
+}
+
+.evolution-chart .chart-line-symbol {
+    -fx-background-color: #ea7527, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.evolution-chart .chart-legend {
+    -fx-background-color: transparent;
+}
+
+/* =========================================
    LISTVIEW CARDS
    ========================================= */
+/* Title stronger */
+/* ===== ListView: remove default blue selection + make it orange ===== */
 .card-list {
     -fx-background-color: transparent;
     -fx-padding: 0;
@@ -133,25 +168,110 @@
     -fx-padding: 0 0 12 0; /* space between cards */
 }
 
+/* kill the default blue selection fill */
 .card-list .list-cell:filled:selected,
-.card-list .list-cell:filled:selected:hover {
+.card-list .list-cell:filled:selected:hover,
+.card-list .list-cell:filled:hover {
     -fx-background-color: transparent;
 }
 
+/* Orange outline on the card when selected */
+.card-list .list-cell:filled:selected .card {
+    -fx-border-color: rgba(233,123,44,0.90);
+    -fx-border-width: 2;
+}
+
+/* Optional: soft orange glow on selection */
+.card-list .list-cell:filled:selected .card {
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.22), 18, 0.18, 0, 4);
+}
+/* Prevent rectangular selection layer artifacts */
+.card-list .list-cell {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-insets: 0;
+    -fx-border-radius: 0;
+}
+
+/* also ensure focus ring doesn't show as a sharp outline */
+.card-list:focused {
+    -fx-background-insets: 0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
 .card {
     -fx-background-color: rgba(255,255,255,0.96);
     -fx-background-radius: 14;
     -fx-border-radius: 14;
     -fx-border-color: rgba(0,0,0,0.08);
     -fx-border-width: 1;
-    -fx-padding: 14;
-
+    -fx-padding: 16 20 16 20;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
 }
+.card:hover {
+    -fx-border-color: rgba(233,123,44,0.35);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 20, 0.18, 0, 7);
+}
 
-.card-list .list-cell:filled:selected .card {
-    -fx-border-color: rgba(233, 123, 44, 0.85);
-    -fx-border-width: 2;
+.card-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+/* Meta lighter */
+.card-meta {
+    -fx-font-size: 15px;
+    -fx-text-fill: rgba(25,25,25,0.80); /* stronger */
+}
+
+
+/* Right metrics */
+.metric-line {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(40,40,40,0.85);
+    -fx-font-weight: 600;
+}
+
+.roi-value {
+    -fx-font-size: 27px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1e7d32;
+    -fx-padding: 4 0 0 0;
+}
+
+
+
+/* Actions alignment */
+.card-actions {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Softer delete button (outline) */
+.btn-danger-outline {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ea7527;
+    -fx-font-weight: 800;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(233,123,44,0.65);
+    -fx-border-width: 1.4;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.btn-danger-outline:hover {
+    -fx-background-color: rgba(233,123,44,0.10);
+    -fx-border-color: rgba(233,123,44,0.85);
+}
+
+/* Justification highlight but subtle */
+.justification {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(40,40,40,0.85);
+    -fx-background-color: rgba(0,0,0,0.035);
+    -fx-padding: 8 10;
+    -fx-background-radius: 10;
 }
 
 /* =========================================
@@ -164,6 +284,17 @@
     -fx-background-radius: 999;
     -fx-font-weight: 700;
 }
+.badge.status-accepted { -fx-background-color: rgba(46,163,106,0.18); }
+.badge.status-refused  { -fx-background-color: rgba(217,83,79,0.18);  }
+.badge.status-pending  { -fx-background-color: rgba(233,123,44,0.18); }
+
+.badge.status-accepted,
+.badge.status-refused,
+.badge.status-pending {
+    -fx-text-fill: #1f1f1f;
+    -fx-font-weight: 800;
+}
+
 
 /* =========================================
    BUTTONS (CARDS + HEADER)
@@ -287,7 +418,7 @@
     -fx-border-radius: 12;
     -fx-border-color: rgba(0,0,0,0.08);
     -fx-padding: 10;
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
 }
 
 .text-area .content {
@@ -354,4 +485,18 @@
 .icon-close:hover {
     -fx-background-color: rgba(0,0,0,0.10);
 }
+.sidebar .nav-btn {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: rgba(20,20,20,0.85);
+    -fx-padding: 10 12;
+}
+.button:focused, .text-field:focused, .menu-button:focused {
+    -fx-border-color: rgba(233,123,44,0.85);
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
 

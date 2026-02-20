@@ -1,11 +1,12 @@
 /*
 ADVISORA STRUCTURE COMMENT
- param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
+ param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/')
 Role: Domain model/entity used by business and UI layers
 */
 package com.advisora.Model;
 
 import com.advisora.enums.StrategyStatut;
+import com.advisora.enums.TypeStrategie;
 
 import java.time.LocalDateTime;
 
@@ -19,10 +20,16 @@ public class Strategie {
     private String news;
     private Project projet;
     private Integer idUser;
+    private String justification;
+    private TypeStrategie typeStrategie;
+    private double budgetTotal;
+    private double gainEstime;
 
     public Strategie() {
         this.version = 1;
         this.statut = StrategyStatut.EN_COURS;
+        this.justification = "";
+        this.typeStrategie = TypeStrategie.NULL;
     }
 
     public int getId() {
@@ -95,6 +102,37 @@ public class Strategie {
 
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
+    }
+
+    public void setJustification(String justification) {
+        this.justification = justification;
+    }
+    public String getJustification() {
+        return justification;
+    }
+
+    public TypeStrategie getTypeStrategie() {
+        return typeStrategie;
+    }
+
+    public void setTypeStrategie(TypeStrategie typeStrategie) {
+        this.typeStrategie = typeStrategie;
+    }
+
+    public double getBudgetTotal() {
+        return budgetTotal;
+    }
+
+    public void setBudgetTotal(double budgetTotal) {
+        this.budgetTotal = budgetTotal;
+    }
+
+    public double getGainEstime() {
+        return gainEstime;
+    }
+
+    public void setGainEstime(double gainEstime) {
+        this.gainEstime = gainEstime;
     }
 
     @Override

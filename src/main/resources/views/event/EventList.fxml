@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Event.EventListController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <Label text="Gestion Evenements" styleClass="module-title"/>
+
+    <TabPane>
+        <tabs>
+            <Tab text="Evenements">
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="Evenements" styleClass="module-subtitle"/>
+                        <TextField fx:id="txtSearch" promptText="Rechercher..." prefWidth="220"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Places"/>
+                        <TextField fx:id="txtReserveQty" promptText="ex: 2" prefWidth="100"/>
+                        <Button fx:id="btnReserve" text="Reserver" onAction="#onReserve" styleClass="btn-primary"/>
+                        <Button fx:id="btnAdd" text="Ajouter" onAction="#onAdd" styleClass="btn-primary"/>
+                        <Button fx:id="btnEdit" text="Modifier" onAction="#onEdit" styleClass="btn-ghost"/>
+                        <Button fx:id="btnDelete" text="Supprimer" onAction="#onDelete" styleClass="btn-ghost"/>
+                        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+                    </HBox>
+
+                    <HBox fillHeight="true" spacing="16" styleClass="stats">
+                        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                            <styleClass>
+                                <String fx:value="stat-card"/>
+                            </styleClass>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                                    <Label text="&#128197;" styleClass="stat-icon-text"/>
+                                </StackPane>
+                                <Label text="Total evenements" styleClass="stat-label"/>
+                            </HBox>
+                            <Label fx:id="lblTotalEvents" text="0" styleClass="stat-value"/>
+                        </VBox>
+
+                        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                            <styleClass>
+                                <String fx:value="stat-card"/>
+                            </styleClass>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                                    <Label text="&#128640;" styleClass="stat-icon-text"/>
+                                </StackPane>
+                                <Label text="A venir" styleClass="stat-label"/>
+                            </HBox>
+                            <Label fx:id="lblUpcomingEvents" text="0" styleClass="stat-value"/>
+                        </VBox>
+
+                        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                            <styleClass>
+                                <String fx:value="stat-card"/>
+                            </styleClass>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <StackPane styleClass="stat-icon-chip stat-icon-green">
+                                    <Label text="&#9989;" styleClass="stat-icon-text"/>
+                                </StackPane>
+                                <Label text="Places disponibles" styleClass="stat-label"/>
+                            </HBox>
+                            <Label fx:id="lblAvailableSeats" text="0" styleClass="stat-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <ListView fx:id="listEvents" VBox.vgrow="ALWAYS" styleClass="card-list"/>
+                </VBox>
+            </Tab>
+
+            <Tab text="Reservations">
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label fx:id="lblBookingTitle" text="Reservations" styleClass="module-subtitle"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnCancelBooking" text="Annuler reservation" onAction="#onCancelBooking" styleClass="btn-ghost"/>
+                        <Button text="Refresh" onAction="#onRefreshBookings" styleClass="btn-ghost"/>
+                    </HBox>
+
+                    <HBox fillHeight="true" spacing="16" styleClass="stats">
+                        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                            <styleClass>
+                                <String fx:value="stat-card"/>
+                            </styleClass>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                                    <Label text="&#128196;" styleClass="stat-icon-text"/>
+                                </StackPane>
+                                <Label text="Nombre reservations" styleClass="stat-label"/>
+                            </HBox>
+                            <Label fx:id="lblBookingCount" text="0" styleClass="stat-value"/>
+                        </VBox>
+
+                        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+                            <styleClass>
+                                <String fx:value="stat-card"/>
+                            </styleClass>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                                    <Label text="&#128230;" styleClass="stat-icon-text"/>
+                                </StackPane>
+                                <Label text="Places reservees" styleClass="stat-label"/>
+                            </HBox>
+                            <Label fx:id="lblBookingSeats" text="0" styleClass="stat-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <ListView fx:id="listBookings" VBox.vgrow="ALWAYS" styleClass="card-list"/>
+                </VBox>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>

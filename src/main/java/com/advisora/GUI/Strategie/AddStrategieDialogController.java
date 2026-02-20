@@ -6,6 +6,7 @@ import com.advisora.Services.ProjectService;
 import com.advisora.Services.ServiceStrategie;
 import com.advisora.Services.SessionContext;
 import com.advisora.enums.StrategyStatut;
+import com.advisora.enums.TypeStrategie;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -28,6 +29,9 @@ public class AddStrategieDialogController {
     @FXML private TextField nomField;
     @FXML private ComboBox<Project> projetCombo;
     @FXML private ComboBox<StrategyStatut> statutCombo;
+    @FXML private ComboBox<TypeStrategie> typeCombo;
+    @FXML private TextField budgetTotalField;
+    @FXML private TextField gainEstimeField;
     @FXML private TextField versionField;
     @FXML private HBox dragHandle;
     @FXML private Button saveBtn;
@@ -42,6 +46,11 @@ public class AddStrategieDialogController {
     public void initialize() {
         statutCombo.setItems(FXCollections.observableArrayList(StrategyStatut.values()));
         statutCombo.setValue(StrategyStatut.EN_COURS);
+        typeCombo.setItems(FXCollections.observableArrayList(TypeStrategie.values()));
+        typeCombo.setValue(TypeStrategie.NULL);
+        budgetTotalField.setText("0");
+        gainEstimeField.setText("0");
+
         versionField.setText("1");
         projetCombo.setConverter(new StringConverter<>() {
             @Override
@@ -93,7 +102,10 @@ public class AddStrategieDialogController {
         nomField.setText(strategie.getNomStrategie());
         versionField.setText(String.valueOf(strategie.getVersion()));
         statutCombo.setValue(strategie.getStatut());
+        typeCombo.setValue(strategie.getTypeStrategie());
         selectProjectById(strategie.getProjet() == null ? 0 : strategie.getProjet().getIdProj());
+        budgetTotalField.setText(String.valueOf(strategie.getBudgetTotal()));
+        gainEstimeField.setText(String.valueOf(strategie.getGainEstime()));
         if (titleLabel != null) {
             titleLabel.setText("Modifier Strategie");
         }
@@ -108,6 +120,8 @@ public class AddStrategieDialogController {
         versionField.setText("1");
         statutCombo.setValue(StrategyStatut.EN_COURS);
         projetCombo.getSelectionModel().clearSelection();
+        budgetTotalField.setText("0");
+        gainEstimeField.setText("0");
         if (titleLabel != null) {
             titleLabel.setText("Nouvelle Strategie");
         }
@@ -131,11 +145,16 @@ public class AddStrategieDialogController {
             }
 
             Strategie s = editingStrategie == null ? new Strategie() : editingStrategie;
-            s.setNomStrategie(required(nomField.getText(), "Nom strategie obligatoire."));
+            String validatedName = validateStrategyName(nomField.getText());
+            validatedName = UniqueStrategie(validatedName, s.getId());
+            s.setNomStrategie(validatedName);
             s.setVersion(version);
             s.setStatut(statut);
             s.setProjet(selectedProject);
             s.setIdUser(SessionContext.getCurrentUserId());
+            s.setTypeStrategie(typeCombo.getValue());
+            s.setBudgetTotal(parsePositiveDouble(budgetTotalField.getText(), "Budget total invalide."));
+            s.setGainEstime(parsePositiveDouble(gainEstimeField.getText(), "Gain estime invalide."));
             if (s.getCreatedAt() == null) {
                 s.setCreatedAt(LocalDateTime.now());
             }
@@ -144,6 +163,7 @@ public class AddStrategieDialogController {
                 serviceStrategie.ajouter(s);
             } else {
                 serviceStrategie.modifier(s);
+
             }
 
             onSaved.run();
@@ -152,6 +172,62 @@ public class AddStrategieDialogController {
             Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             a.setHeaderText("Strategie");
             a.showAndWait();
+        }
+    }
+
+    private String validateStrategyName(String name) {
+        if (name == null) throw new IllegalArgumentException("Nom stratégie obligatoire.");
+        String n = name.trim();
+
+        if (n.length() < 5)
+            throw new IllegalArgumentException("Nom stratégie trop court (min 5 caractères).");
+
+        if (!n.matches("[\\p{L}0-9\\s\\-_'’]+"))
+            throw new IllegalArgumentException("Nom stratégie contient des caractères invalides.");
+
+        if (n.matches("(?i).*([\\p{L}0-9])\\1{4,}.*")) {
+            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
+        }
+        // blocks any letter repeated 5+ times in a row anywhere: "lioussssss"
+        if (n.matches("(?i).*([\\p{L}])\\1{4,}.*")) {
+            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
+        }
+        // blocks any sequence of 3+ letters repeated 2+ times anywhere: "abcabcabc"
+        if (n.matches("(?i).*(\\p{L}{2,3})\\1{2,}.*")) {
+            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
+        }
+
+        String lettersOnly = n.replaceAll("[^\\p{L}]", "").toLowerCase();
+        long distinct = lettersOnly.chars().distinct().count();
+        if (lettersOnly.length() >= 6 && distinct <= 2)
+            throw new IllegalArgumentException("Nom stratégie non valide (trop aléatoire).");
+
+        if (!n.toLowerCase().matches(".*[aeiouyàâäéèêëîïôöùûü].*"))
+            throw new IllegalArgumentException("Nom stratégie non valide (doit ressembler à un mot).");
+
+        return n; // ✅ return cleaned valid name
+    }
+
+    private String UniqueStrategie(String nomStrategie, int id) {
+        Strategie existing = serviceStrategie.getStrategieByNom(nomStrategie);
+        if (existing != null && existing.getId() != id) {
+            return nomStrategie + " (doublon)";
+        }
+        return nomStrategie;
+    }
+
+    private double parsePositiveDouble(String text, String s) {
+        try {
+            double v = Double.parseDouble(required(text, s + " obligatoire."));
+            if (v < 0) {
+                throw new IllegalArgumentException(s + " doit etre >= 0.");
+            }
+            if (v > 1_000_000_000) {
+                throw new IllegalArgumentException(s + " c'est exagéré veuillez verifier.");
+            }
+            return v;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(s + " invalide.");
         }
     }
 
@@ -183,7 +259,9 @@ public class AddStrategieDialogController {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(msg);
         }
+
         return value.trim();
+
     }
 
     private int parsePositiveInt(String value, String field) {

@@ -16,13 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -57,23 +51,44 @@ public class StrategieListController {
     private double dragOffsetY;
 
     @FXML
+
     public void initialize() {
+
         strategieList.setItems(viewObs);
+
+        // ✅ allow dynamic cell height (otherwise labels can be clipped)
+        strategieList.setFixedCellSize(-1);
+
         strategieList.setCellFactory(lv -> new ListCell<>() {
+
+            {
+                // ✅ show ONLY graphic (your VBox card)
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+                // ✅ let cell width follow list width (helps wrapping)
+                prefWidthProperty().bind(lv.widthProperty().subtract(20)); // small margin
+            }
+
             @Override
             protected void updateItem(Strategie s, boolean empty) {
                 super.updateItem(s, empty);
+
                 if (empty || s == null) {
-                    setText(null);
                     setGraphic(null);
-                    return;
+                } else {
+                    VBox card = buildCard(s);
+
+                    // ✅ VERY IMPORTANT: give the card a width to wrap into
+                    card.maxWidthProperty().bind(prefWidthProperty());
+                    card.setFillWidth(true);
+
+                    setGraphic(card);
                 }
-                setText(null);
-                setGraphic(buildCard(s));
             }
         });
 
         txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+
         try {
             refresh();
         } catch (Exception ex) {
@@ -84,6 +99,7 @@ public class StrategieListController {
             lblSuccess.setText("0%");
         }
     }
+
 
     @FXML
     private void nouvelleStrategie(ActionEvent e) {
@@ -124,26 +140,92 @@ public class StrategieListController {
     }
 
     private VBox buildCard(Strategie s) {
+
+        // ===== HEADER =====
         Label title = new Label(safe(s.getNomStrategie()));
         title.getStyleClass().add("card-title");
 
-        Label statut = new Label(s.getStatut() == null ? "" : s.getStatut().toDb());
-        statut.getStyleClass().add("badge");
+        // Status + icon
+        String statusText = (s.getStatut() == null) ? "" : s.getStatut().toDb();
+        String statusIcon = switch (s.getStatut()) {
+            case ACCEPTEE -> "✅ ";
+            case REFUSEE  -> "⛔ ";
+            case EN_COURS -> "⏳ ";
+            default -> "";
+        };
+
+        Label statut = new Label(statusIcon + statusText);
+        statut.getStyleClass().addAll("badge", "status-badge");
+
+        // status color class
+        if (s.getStatut() != null) {
+            switch (s.getStatut()) {
+                case ACCEPTEE -> statut.getStyleClass().add("status-accepted");
+                case REFUSEE  -> statut.getStyleClass().add("status-refused");
+                case EN_COURS -> statut.getStyleClass().add("status-pending");
+            }
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+
         HBox head = new HBox(10, title, spacer, statut);
+        head.getStyleClass().add("card-head");
 
-        Label projet = new Label("Projet associe: " + (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
-        projet.getStyleClass().add("card-sub");
-        Label date = new Label("Creee le: " + (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
-        date.getStyleClass().add("card-sub");
 
+        // ===== LEFT META (Projet / Date / Type) =====
+        Label projet = new Label("Projet associé : " +
+                (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
+        projet.getStyleClass().add("card-meta");
+
+        Label date = new Label("Date de création : " +
+                (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
+        date.getStyleClass().add("card-meta");
+
+        Label type = new Label("Type : " +
+                (s.getTypeStrategie() == null ? "-" : safe(s.getTypeStrategie().name())));
+        type.getStyleClass().add("card-meta");
+
+        VBox metaLeft = new VBox(6, projet, date, type);
+        metaLeft.getStyleClass().add("card-meta-col");
+
+
+        // ===== RIGHT METRICS (Budget / Gain / ROI) =====
+        String budgetText = (s.getBudgetTotal() == 0) ? "-" : String.format("%,.0f DT", s.getBudgetTotal());
+        String gainText   = (s.getGainEstime() == 0) ? "-" : String.format("%,.0f DT", s.getGainEstime());
+
+        Label budget = new Label("Budget : " + budgetText);
+        budget.getStyleClass().add("metric-line");
+
+        Label gain = new Label("Gain estimé : " + gainText);
+        gain.getStyleClass().add("metric-line");
+
+        Label roi = new Label("ROI : -");
+        roi.getStyleClass().add("roi-value");
+
+        if (s.getGainEstime() != 0 && s.getBudgetTotal() != 0 && s.getBudgetTotal() != 0) {
+            double roiValue = strategieService.CalculROI(s.getGainEstime(), s.getBudgetTotal()) * 100.0;
+            roi.setText(String.format("ROI : %+,.0f%%", roiValue));
+        }
+
+        VBox metricsRight = new VBox(6, budget, gain, roi);
+        metricsRight.getStyleClass().add("metrics-col");
+
+
+        // ===== TOP GRID (left + right) =====
+        HBox topRow = new HBox(22, metaLeft, metricsRight);
+        topRow.getStyleClass().add("card-top-row");
+        HBox.setHgrow(metaLeft, Priority.ALWAYS);
+
+
+        // ===== OBJECTIVES CHIPS =====
         FlowPane objChips = new FlowPane();
         objChips.getStyleClass().add("obj-chips");
         objChips.setHgap(8);
         objChips.setVgap(8);
+
         List<Objective> objectives = objectivesByStrategie.getOrDefault(s.getId(), List.of());
+
         if (objectives.isEmpty()) {
             Label none = new Label("Aucun objectif");
             none.getStyleClass().add("obj-empty");
@@ -157,24 +239,60 @@ public class StrategieListController {
             }
         }
 
-        HBox actions = new HBox(8);
+
+        // ===== JUSTIFICATION =====
+        Label justificationLabel = new Label();
+        justificationLabel.getStyleClass().add("justification");
+        justificationLabel.setWrapText(true);
+        justificationLabel.setMaxWidth(Double.MAX_VALUE);
+
+        String j = s.getJustification();
+        boolean hasJustif = j != null && !j.trim().isEmpty();
+        justificationLabel.setText(hasJustif ? "Justification : " + j.trim() : "");
+        justificationLabel.setVisible(hasJustif);
+        justificationLabel.setManaged(hasJustif);
+
+
+        // ===== ACTIONS =====
+        HBox actions = new HBox(10);
+        actions.getStyleClass().add("card-actions");
+
         if (canManage()) {
             Button edit = new Button("Modifier");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> openEditStrategieDialog(s));
+
             Button delete = new Button("Supprimer");
-            delete.getStyleClass().add("btn-danger");
+            // softer destructive style (outlined)
+            delete.getStyleClass().add("btn-danger-outline");
             delete.setOnAction(e -> deleteStrategie(s));
+
             Button addObjective = new Button("Attribuer des objectifs");
             addObjective.getStyleClass().add("btn-ghost");
             addObjective.setOnAction(e -> openAddObjectiveDialog(s));
+
             actions.getChildren().addAll(edit, delete, addObjective);
         }
 
-        VBox card = new VBox(10, head, projet, date, objChips, actions);
+
+        // ===== CARD =====
+        VBox card = new VBox(14);
         card.getStyleClass().add("card");
+
+        card.getChildren().addAll(
+                head,
+                topRow,
+                objChips,
+                justificationLabel,
+                actions
+        );
+
         return card;
     }
+
+
+
+
 
     private void openAddDialog() {
         try {

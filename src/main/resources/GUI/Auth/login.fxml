@@ -41,7 +41,21 @@
 
                 <VBox spacing="6">
                     <Label text="Password" styleClass="label"/>
-                    <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="input"/>
+
+                    <StackPane>
+                        <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="input"/>
+
+                        <TextField fx:id="passwordVisibleField" promptText="••••••••" styleClass="input"
+                                   visible="false" managed="false"/>
+                        <Button fx:id="togglePasswordBtn" onAction="#handleTogglePassword"
+                                styleClass="eye-btn" StackPane.alignment="CENTER_RIGHT">
+                            <graphic>
+                                <ImageView fx:id="eyeIcon" fitWidth="18" fitHeight="18" preserveRatio="true"/>
+                            </graphic>
+                        </Button>
+
+                    </StackPane>
+
                     <Label fx:id="passwordError" text="" visible="false" managed="false" styleClass="field-error"/>
                 </VBox>
 
@@ -54,6 +68,7 @@
 
                 <Label fx:id="statusLabel" text="Ready." styleClass="hint"/>
             </VBox>
+
         </HBox>
     </center>
 </BorderPane>
