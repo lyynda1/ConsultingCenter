@@ -5,20 +5,17 @@ Role: GUI controller: user interactions and screen flow
 */
 package com.advisora.GUI.Project;
 
-import com.advisora.GUI.Objective.ObjectiveInfoController;
-import com.advisora.GUI.Strategie.StrategieInfoDialogController;
-import com.advisora.Model.Objective;
-import com.advisora.Model.Project;
-import com.advisora.Model.ProjectAcceptanceEstimate;
-import com.advisora.Model.ProjectDashboardData;
-import com.advisora.Model.Strategie;
-import com.advisora.Services.ProjectService;
-import com.advisora.Services.ProjectAcceptanceService;
-import com.advisora.Services.ProjectPdfExportService;
-import com.advisora.Services.ProjectStatsService;
-import com.advisora.Services.ServiceObjective;
-import com.advisora.Services.ServiceStrategie;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.projet.Project;
+import com.advisora.Model.projet.ProjectAcceptanceEstimate;
+import com.advisora.Model.projet.ProjectDashboardData;
+import com.advisora.Model.strategie.Strategie;
+import com.advisora.Services.projet.ProjectService;
+import com.advisora.Services.projet.ProjectAcceptanceService;
+import com.advisora.Services.projet.ProjectPdfExportService;
+import com.advisora.Services.projet.ProjectStatsService;
+import com.advisora.Services.strategie.ServiceObjective;
+import com.advisora.Services.strategie.ServiceStrategie;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.ProjectStatus;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.UserRole;
@@ -220,29 +217,29 @@ public class ProjectListController implements Initializable {
         actionRow.getStyleClass().add("card-actions");
 
         if (p.getStateProj() == ProjectStatus.PENDING) {
-            Label pendingLabel = new Label("En attente de d??cision du manager");
+            Label pendingLabel = new Label("En attente de décision du manager");
             pendingLabel.getStyleClass().add("btn-ghost");
             actionRow.getChildren().add(pendingLabel);
         } else {
-            Button currentDecision = new Button("Decision actuelle");
+            Button currentDecision = new Button("Décision actuelle");
             currentDecision.getStyleClass().add("btn-ghost");
             currentDecision.setOnAction(e -> onShowCurrentDecision(p));
             actionRow.getChildren().add(currentDecision);
         }
 
         if (p.getStateProj() == ProjectStatus.ACCEPTED) {
-            Button tasks = new Button("Tasks");
+            Button tasks = new Button("Tâches");
             tasks.getStyleClass().add("btn-ghost");
             tasks.setOnAction(e -> onOpenTasks(p));
             actionRow.getChildren().add(tasks);
         }
 
         if (SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
-            Button edit = new Button("Edit");
+            Button edit = new Button("Modifier");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> onEditProject(p));
 
-            Button delete = new Button("Delete");
+            Button delete = new Button("Supprimer");
             delete.getStyleClass().add("btn-ghost");
             delete.setOnAction(e -> onDeleteProject(p));
 
@@ -250,7 +247,7 @@ public class ProjectListController implements Initializable {
         }
 
         if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
-            Button decide = new Button("Decide");
+            Button decide = new Button("Décider ");
             decide.getStyleClass().add("btn-primary");
             decide.setOnAction(e -> onDecideProject(p));
             actionRow.getChildren().add(decide);
@@ -268,7 +265,7 @@ public class ProjectListController implements Initializable {
 
         // ??? Title shown once
         HBox titleRow = new HBox();
-        Label title = new Label("STRAT??GIES PROPOS??ES :");
+        Label title = new Label("strategies proposées :");
         title.getStyleClass().add("strategies-title");
 
         Region spacer = new Region();
@@ -563,7 +560,7 @@ public class ProjectListController implements Initializable {
             Parent root = loader.load();
             DecisionFormController controller = loader.getController();
             controller.initWithProjectId(selected.getIdProj());
-            openModal(root, "Decide Project");
+            openModal(root, "Décider du projet");
             loadProjectsFromService();
         } catch (Exception e) {
             showError(e.getMessage());

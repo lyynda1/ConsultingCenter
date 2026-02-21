@@ -1,9 +1,9 @@
 package com.advisora.GUI.Project;
 
-import com.advisora.Model.ProjectClientStat;
-import com.advisora.Model.ProjectDashboardData;
-import com.advisora.Model.ProjectStatsSummary;
-import com.advisora.Model.ProjectTypeStat;
+import com.advisora.Model.projet.ProjectClientStat;
+import com.advisora.Model.projet.ProjectDashboardData;
+import com.advisora.Model.projet.ProjectStatsSummary;
+import com.advisora.Model.projet.ProjectTypeStat;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

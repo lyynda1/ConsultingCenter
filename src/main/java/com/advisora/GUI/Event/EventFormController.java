@@ -1,8 +1,8 @@
 package com.advisora.GUI.Event;
 
-import com.advisora.Model.Event;
-import com.advisora.Services.EventService;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.event.Event;
+import com.advisora.Services.event.EventService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

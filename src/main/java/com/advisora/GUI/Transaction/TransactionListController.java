@@ -1,10 +1,10 @@
 package com.advisora.GUI.Transaction;
 
-import com.advisora.Model.Investment;
-import com.advisora.Model.Transaction;
-import com.advisora.Services.InvestmentService;
-import com.advisora.Services.SessionContext;
-import com.advisora.Services.TransactionService;
+import com.advisora.Model.investment.Investment;
+import com.advisora.Model.investment.Transaction;
+import com.advisora.Services.investment.InvestmentService;
+import com.advisora.Services.user.SessionContext;
+import com.advisora.Services.investment.TransactionService;
 import com.advisora.enums.transactionStatut;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,8 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

@@ -1,9 +1,9 @@
 package com.advisora.GUI.Project;
 
-import com.advisora.Model.Project;
-import com.advisora.Model.Task;
-import com.advisora.Services.SessionContext;
-import com.advisora.Services.TaskService;
+import com.advisora.Model.projet.Project;
+import com.advisora.Model.projet.Task;
+import com.advisora.Services.user.SessionContext;
+import com.advisora.Services.projet.TaskService;
 import com.advisora.enums.TaskStatus;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;

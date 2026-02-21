@@ -1,9 +1,9 @@
 package com.advisora.GUI.Investissement;
 
-import com.advisora.Model.Investment;
-import com.advisora.Services.InvestmentService;
-import com.advisora.Services.SessionContext;
-import com.advisora.Services.TransactionService;
+import com.advisora.Model.investment.Investment;
+import com.advisora.Services.investment.InvestmentService;
+import com.advisora.Services.user.SessionContext;
+import com.advisora.Services.investment.TransactionService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,13 +17,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InvestmentListController {

@@ -1,8 +1,8 @@
 package com.advisora.GUI.Ressource;
 
-import com.advisora.Model.Booking;
-import com.advisora.Services.ReservationService;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.ressource.Booking;
+import com.advisora.Services.ressource.ReservationService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -1,7 +1,7 @@
 package projet;
 
-import com.advisora.Model.Project;
-import com.advisora.Services.ProjectService;
+import com.advisora.Model.projet.Project;
+import com.advisora.Services.projet.ProjectService;
 import com.advisora.enums.ProjectStatus;
 import org.junit.jupiter.api.Test;
 

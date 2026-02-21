@@ -1,6 +1,6 @@
 package common;
 
-import com.advisora.Services.SessionContext;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

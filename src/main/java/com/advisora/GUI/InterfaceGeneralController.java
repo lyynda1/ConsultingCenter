@@ -2,10 +2,10 @@ package com.advisora.GUI;
 
 import com.advisora.GUI.Investissement.InvestmentListController;
 import com.advisora.GUI.Transaction.TransactionListController;
-import com.advisora.Model.Notification;
-import com.advisora.Model.User;
-import com.advisora.Services.NotificationManager;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.strategie.Notification;
+import com.advisora.Model.user.User;
+import com.advisora.Services.strategie.NotificationManager;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.AvatarUtil;
 import javafx.collections.ListChangeListener;

@@ -1,28 +1,27 @@
 package com.advisora.GUI.Strategie;
 
-import com.advisora.Model.Project;
-import com.advisora.Model.Strategie;
-import com.advisora.Services.ProjectService;
-import com.advisora.Services.ServiceStrategie;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.projet.Project;
+import com.advisora.Model.strategie.SimilarityResult;
+import com.advisora.Model.strategie.Strategie;
+import com.advisora.Services.projet.ProjectService;
+import com.advisora.Services.strategie.ServiceStrategie;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 public class AddStrategieDialogController {
     @FXML private Label titleLabel;
@@ -55,7 +54,7 @@ public class AddStrategieDialogController {
         projetCombo.setConverter(new StringConverter<>() {
             @Override
             public String toString(Project p) {
-                return p == null ? "" : p.getTitleProj();
+               return p == null ? "" : "#" + p.getIdProj() + " - " + p.getTitleProj();
             }
 
             @Override
@@ -64,7 +63,7 @@ public class AddStrategieDialogController {
             }
         });
 
-        List<Project> projects = projectService.getAll();
+        List<Project> projects = serviceStrategie.listProjets();
         projetCombo.setItems(FXCollections.observableArrayList(projects));
     }
 
@@ -107,7 +106,7 @@ public class AddStrategieDialogController {
         budgetTotalField.setText(String.valueOf(strategie.getBudgetTotal()));
         gainEstimeField.setText(String.valueOf(strategie.getGainEstime()));
         if (titleLabel != null) {
-            titleLabel.setText("Modifier Strategie");
+            titleLabel.setText("Modifier Stratégie");
         }
         if (saveBtn != null) {
             saveBtn.setText("Enregistrer");
@@ -123,7 +122,7 @@ public class AddStrategieDialogController {
         budgetTotalField.setText("0");
         gainEstimeField.setText("0");
         if (titleLabel != null) {
-            titleLabel.setText("Nouvelle Strategie");
+            titleLabel.setText("Nouvelle Stratégie");
         }
         if (saveBtn != null) {
             saveBtn.setText("Ajouter");
@@ -138,6 +137,7 @@ public class AddStrategieDialogController {
                 statut = StrategyStatut.EN_COURS;
             }
 
+
             int version = parsePositiveInt(versionField.getText(), "Version");
             Project selectedProject = projetCombo.getValue();
             if (selectedProject == null || selectedProject.getIdProj() <= 0) {
@@ -145,6 +145,8 @@ public class AddStrategieDialogController {
             }
 
             Strategie s = editingStrategie == null ? new Strategie() : editingStrategie;
+
+
             String validatedName = validateStrategyName(nomField.getText());
             validatedName = UniqueStrategie(validatedName, s.getId());
             s.setNomStrategie(validatedName);
@@ -174,6 +176,8 @@ public class AddStrategieDialogController {
             a.showAndWait();
         }
     }
+
+
 
     private String validateStrategyName(String name) {
         if (name == null) throw new IllegalArgumentException("Nom stratégie obligatoire.");
@@ -249,6 +253,7 @@ public class AddStrategieDialogController {
         ObservableList<Project> projects = projetCombo.getItems();
         for (Project p : projects) {
             if (p.getIdProj() == projectId) {
+
                 projetCombo.setValue(p);
                 break;
             }
