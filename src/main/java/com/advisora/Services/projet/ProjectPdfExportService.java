@@ -1,6 +1,7 @@
 package com.advisora.Services.projet;
 
 import com.advisora.Model.projet.Project;
+import com.advisora.Model.projet.ProjectBadgeScore;
 import com.advisora.Model.projet.ProjectClientStat;
 import com.advisora.Model.projet.ProjectDashboardData;
 import com.advisora.Model.projet.ProjectStatsSummary;
@@ -24,10 +25,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class ProjectPdfExportService {
     private static final SimpleDateFormat FILE_DF = new SimpleDateFormat("yyyyMMdd_HHmm");
     private static final SimpleDateFormat VIEW_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private final ProjectBadgeService badgeService = new ProjectBadgeService();
 
     public File exportVisibleProjectsReport(List<Project> visibleProjects,
                                             ProjectDashboardData dashboard,
@@ -64,7 +67,8 @@ public class ProjectPdfExportService {
 
             writeHeader(doc, role, appliedFilterLabel, appliedSearchLabel);
             writeSummary(doc, dashboard.getSummary());
-            writeProjectsTable(doc, visibleProjects);
+            Map<Integer, ProjectBadgeScore> badges = badgeService.computeForProjects(visibleProjects);
+            writeProjectsTable(doc, visibleProjects, badges);
 
             boolean managerView = role == UserRole.GERANT || role == UserRole.ADMIN;
             if (managerView) {
@@ -133,10 +137,12 @@ public class ProjectPdfExportService {
         doc.add(table);
     }
 
-    private void writeProjectsTable(Document doc, List<Project> projects) throws DocumentException {
+    private void writeProjectsTable(Document doc,
+                                    List<Project> projects,
+                                    Map<Integer, ProjectBadgeScore> badges) throws DocumentException {
         doc.add(new Paragraph("Projets visibles", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 13f)));
 
-        PdfPTable table = new PdfPTable(new float[]{1.0f, 2.7f, 1.6f, 1.4f, 1.3f, 1.3f, 1.8f});
+        PdfPTable table = new PdfPTable(new float[]{0.9f, 2.7f, 1.4f, 1.2f, 1.1f, 1.2f, 1.2f, 1.7f});
         table.setWidthPercentage(100f);
         table.setSpacingBefore(8f);
         table.setSpacingAfter(10f);
@@ -147,20 +153,23 @@ public class ProjectPdfExportService {
         addCell(table, "Budget");
         addCell(table, "Statut");
         addCell(table, "Avancement");
+        addCell(table, "Badge");
         addCell(table, "Creation");
 
         if (projects == null || projects.isEmpty()) {
             PdfPCell cell = new PdfPCell(new Phrase("Aucun projet visible."));
-            cell.setColspan(7);
+            cell.setColspan(8);
             table.addCell(cell);
         } else {
             for (Project p : projects) {
+                ProjectBadgeScore badge = badges == null ? null : badges.get(p.getIdProj());
                 addCell(table, String.valueOf(p.getIdProj()));
                 addCell(table, safe(p.getTitleProj()));
                 addCell(table, safe(p.getTypeProj()));
                 addCell(table, String.format(Locale.US, "%.2f", p.getBudgetProj()));
                 addCell(table, p.getStateProj() == null ? "-" : p.getStateProj().name());
                 addCell(table, pct(p.getAvancementProj()));
+                addCell(table, isBadgeVisible(p) ? badgeEmoji(badge) : "-");
                 addCell(table, formatTs(p.getCreatedAtProj()));
             }
         }
@@ -234,6 +243,22 @@ public class ProjectPdfExportService {
 
     private String pct(double value) {
         return String.format(Locale.US, "%.0f%%", clamp(value));
+    }
+
+    private String badgeEmoji(ProjectBadgeScore badge) {
+        if (badge == null || badge.getBadge() == null) return "-";
+        return switch (badge.getBadge().trim().toUpperCase(Locale.ROOT)) {
+            case "ARGENT" -> "🥈";
+            case "OR" -> "🥇";
+            case "PLATINE" -> "👑";
+            default -> "🥉";
+        };
+    }
+
+    private boolean isBadgeVisible(Project p) {
+        if (p == null || p.getStateProj() == null) return false;
+        return p.getStateProj() != com.advisora.enums.ProjectStatus.PENDING
+                && p.getStateProj() != com.advisora.enums.ProjectStatus.REFUSED;
     }
 
     private double clamp(double value) {

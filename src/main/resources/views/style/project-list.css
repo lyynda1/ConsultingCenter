@@ -226,6 +226,33 @@ Role: Project module UI layout (FXML/CSS)
     -fx-text-fill: #374151;
 }
 
+.pbs-badge {
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+    -fx-font-weight: 800;
+    -fx-font-size: 16px;
+}
+
+.pbs-bronze {
+    -fx-background-color: rgba(191, 120, 77, 0.18);
+    -fx-text-fill: #7a3f1f;
+}
+
+.pbs-argent {
+    -fx-background-color: rgba(148, 163, 184, 0.22);
+    -fx-text-fill: #334155;
+}
+
+.pbs-or {
+    -fx-background-color: rgba(250, 204, 21, 0.20);
+    -fx-text-fill: #854d0e;
+}
+
+.pbs-platine {
+    -fx-background-color: rgba(129, 140, 248, 0.16);
+    -fx-text-fill: #3730a3;
+}
+
 .card-mid {
     -fx-alignment: TOP_LEFT;
 }
