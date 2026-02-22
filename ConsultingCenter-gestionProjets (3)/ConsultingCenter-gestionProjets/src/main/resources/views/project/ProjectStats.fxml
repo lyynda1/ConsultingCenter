@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.advisora.GUI.Project.ProjectStatsController"
+            stylesheets="@../style/project-stats.css"
+            styleClass="stats-page">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="stats-toolbar">
+            <padding>
+                <Insets top="16" right="16" bottom="12" left="16"/>
+            </padding>
+            <Label fx:id="lblHeader" text="Statistiques graphiques" styleClass="stats-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnBack" text="Fermer" onAction="#onClose" styleClass="btn-close"/>
+        </HBox>
+    </top>
+
+    <center>
+        <GridPane hgap="14" vgap="14" styleClass="stats-grid">
+            <padding>
+                <Insets top="6" right="16" bottom="16" left="16"/>
+            </padding>
+
+            <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" spacing="8" styleClass="chart-card">
+                <Label text="Repartition des statuts" styleClass="chart-title"/>
+                <PieChart fx:id="chartStatus" prefHeight="320" legendVisible="true"/>
+            </VBox>
+
+            <VBox GridPane.rowIndex="0" GridPane.columnIndex="1" spacing="8" styleClass="chart-card">
+                <Label text="Taux d'acceptation par type" styleClass="chart-title"/>
+                <BarChart fx:id="chartTypeRate" animated="false" categoryGap="14" barGap="4">
+                    <xAxis>
+                        <CategoryAxis label="Type"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Taux (%)" lowerBound="0.0" upperBound="100.0" tickUnit="10.0"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+            <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="8" styleClass="chart-card">
+                <Label text="Indicateurs globaux" styleClass="chart-title"/>
+                <BarChart fx:id="chartGlobalKpi" animated="false" categoryGap="14" barGap="8">
+                    <xAxis>
+                        <CategoryAxis label="Indicateur"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Valeur (%)" lowerBound="0.0" upperBound="100.0" tickUnit="10.0"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+            <VBox fx:id="clientChartBox" GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="8" styleClass="chart-card">
+                <Label text="Taux d'acceptation par client" styleClass="chart-title"/>
+                <BarChart fx:id="chartClientRate" animated="false" categoryGap="14" barGap="4">
+                    <xAxis>
+                        <CategoryAxis label="Client"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Taux (%)" lowerBound="0.0" upperBound="100.0" tickUnit="10.0"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+        </GridPane>
+    </center>
+</BorderPane>

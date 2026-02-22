@@ -1,0 +1,23 @@
+/* Button Styles for Interface */
+
+.folder-button {
+    -fx-background-color: #e8e3cd;
+    -fx-text-fill: #333333;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+}
+
+.folder-button:hover {
+    -fx-background-color: #d4cfb8;
+}
+
+.folder-button:pressed {
+    -fx-background-color: #c4bfa8;
+}
+
+.folder-button:focused {
+    -fx-border-color: #8b8670;
+    -fx-border-width: 2;
+}
