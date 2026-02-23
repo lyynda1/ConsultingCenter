@@ -4,12 +4,55 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="correction de la notification part 1">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/SimilarityResult.java" afterDir="false" />
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="kk">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/ProjectBadgeScore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/Top10CompanyItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/Top10Response.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/projet/ProjectBadgeService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/projet/Top10AiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventFormController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Event/EventListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/AddInvestissementDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/AddInvestissementDialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/InvestmentListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Investissement/InvestmentListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectFormController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Project/ProjectListController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/NotificationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/NotificationManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/AddTransactionDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/AddTransactionDialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/TransactionListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Transaction/TransactionListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/investment/Investment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/invest/Investment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/investment/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/invest/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/ProjectDashboardData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/ProjectDashboardData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/projet/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/EventBookingService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/EventService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/InvestmentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/NotificationManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ProjectService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceStrategie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/ServiceUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/SessionContext.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/TransactionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/investment/InvestmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/investment/InvestmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/investment/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/investment/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Util/DB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Admin.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Booking.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Client.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Decision.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Event.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Gerant.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Investment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Objective.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Project.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Ressource.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Strategie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/Transaction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/entity/User.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +78,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="gestionProjets" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -114,6 +162,8 @@
       <recent name="C:\Users\MSI\Downloads\ConsultingCenter-gestionProjets\src\main\resources\GUI\Admin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\MSI\Downloads\AdvisoraValidation1\src\main\java\com\advisora\Services\projet" />
+      <recent name="C:\Users\MSI\Downloads\AdvisoraValidation1\src\main\java\com\advisora\Model\projet" />
       <recent name="C:\Users\MSI\Downloads\AdvisoraValidation1\src\main\resources\Assets" />
       <recent name="C:\Users\user\IdeaProjects\Advisora\src\main\java" />
       <recent name="C:\Users\user\IdeaProjects\Advisora\src\Entities" />
@@ -135,6 +185,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>

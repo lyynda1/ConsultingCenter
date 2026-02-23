@@ -3,7 +3,7 @@ ADVISORA STRUCTURE COMMENT
  param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/') 
 Role: Domain model/entity used by business and UI layers
 */
-package com.advisora.Model.investment;
+package com.advisora.Model.invest;
 
 import com.advisora.enums.transactionStatut;
 

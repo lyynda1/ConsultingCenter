@@ -173,6 +173,18 @@ public class AddStrategieDialogController {
         }
     }
 
+    private double parsePositiveDouble(String text, String s) {
+        try {
+            double v = Double.parseDouble(required(text, s + " obligatoire."));
+            if (v < 0) {
+                throw new IllegalArgumentException(s + " doit etre >= 0.");
+            }
+            return v;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(s + " invalide.");
+        }
+    }
+
     @FXML
     private void close() {
         if (onClose != null) {

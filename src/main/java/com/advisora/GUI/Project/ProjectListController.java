@@ -5,23 +5,21 @@ Role: GUI controller: user interactions and screen flow
 */
 package com.advisora.GUI.Project;
 
-import com.advisora.GUI.Objective.ObjectiveInfoController;
-import com.advisora.GUI.Strategie.StrategieInfoDialogController;
-import com.advisora.Model.Objective;
 import com.advisora.Model.projet.Project;
-import com.advisora.Model.Strategie;
 import com.advisora.Model.projet.ProjectAcceptanceEstimate;
+import com.advisora.Model.projet.ProjectBadgeScore;
 import com.advisora.Model.projet.ProjectDashboardData;
 import com.advisora.Model.strategie.Strategie;
+import com.advisora.Model.user.User;
 import com.advisora.Services.projet.ProjectService;
-import com.advisora.Services.ServiceObjective;
-import com.advisora.Services.ServiceStrategie;
 import com.advisora.Services.projet.ProjectAcceptanceService;
+import com.advisora.Services.projet.ProjectBadgeService;
 import com.advisora.Services.projet.ProjectPdfExportService;
 import com.advisora.Services.projet.ProjectStatsService;
 import com.advisora.Services.strategie.ServiceObjective;
 import com.advisora.Services.strategie.ServiceStrategie;
 import com.advisora.Services.user.SessionContext;
+import com.advisora.Services.user.UserService;
 import com.advisora.enums.ProjectStatus;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.UserRole;
@@ -54,20 +52,16 @@ import java.util.stream.Collectors;
 public class ProjectListController implements Initializable {
 
     @FXML private Button btnNewProject;
-    @FXMLprivate Button btnStats;
+    @FXML private Button btnStats;
+    @FXML private Button btnTop10;
     @FXML private Button btnExportPdf;
-    @FXMLprivate Button btnUsers;
+    @FXML private Button btnUsers;
     @FXML private ToggleButton tabAll;
     @FXML private ToggleButton tabValid;
     @FXML private ToggleButton tabPending;
     @FXML private ToggleButton tabRefused;
     @FXML private TextField txtSearch;
     @FXML private ListView<Project> projectList;
-    @FXML private StackPane overlay;
-    @FXMLprivate VBox modalBox;
-    private double dragOffsetX;
-    private double dragOffsetY;
-    private final ObservableList<Strategie> allObs = FXCollections.observableArrayList(); private final ObservableList<Strategie> viewObs = FXCollections.observableArrayList();
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
     private double dragOffsetX;
@@ -79,12 +73,16 @@ public class ProjectListController implements Initializable {
     private final ServiceStrategie strategyService = new ServiceStrategie();
     private final ServiceObjective serviceObjective = new ServiceObjective();
     private final ProjectAcceptanceService acceptanceService = new ProjectAcceptanceService();
+    private final ProjectBadgeService badgeService = new ProjectBadgeService();
     private final ProjectStatsService statsService = new ProjectStatsService();
     private final ProjectPdfExportService pdfExportService = new ProjectPdfExportService();
+    private final UserService userService = new UserService();
 
     private final ObservableList<Project> baseProjects = FXCollections.observableArrayList();
     private Consumer<Parent> contentNavigator;
     private Map<Integer, ProjectAcceptanceEstimate> pendingEstimates = new HashMap<>();
+    private Map<Integer, ProjectBadgeScore> projectBadges = new HashMap<>();
+    private Map<Integer, String> clientNamesById = new HashMap<>();
     private ProjectDashboardData dashboardData = new ProjectDashboardData();
     private List<Project> lastVisibleProjects = new ArrayList<>();
 
@@ -174,7 +172,11 @@ public class ProjectListController implements Initializable {
         desc.setWrapText(true);
         desc.getStyleClass().add("card-desc");
 
-        Label meta = new Label("Type: " + nullToDash(p.getTypeProj()) + "   |   Budget: " + p.getBudgetProj());
+        StringBuilder metaText = new StringBuilder("Type: " + nullToDash(p.getTypeProj()) + "   |   Budget: " + p.getBudgetProj());
+        if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
+            metaText.append("   |   Client: ").append(clientNameForProject(p));
+        }
+        Label meta = new Label(metaText.toString());
         meta.getStyleClass().add("card-meta");
 
         VBox left = new VBox(8, desc, meta);
@@ -199,11 +201,21 @@ public class ProjectListController implements Initializable {
         left.getStyleClass().add("card-left");
         HBox.setHgrow(left, Priority.ALWAYS);
 
-        // Status badge (keep it)
+        boolean showPbsBadge = p.getStateProj() != ProjectStatus.PENDING && p.getStateProj() != ProjectStatus.REFUSED;
+        VBox badgeBox;
         Label statusBadge = new Label(p.getStateProj() == null ? "-" : p.getStateProj().name());
         statusBadge.getStyleClass().addAll("status-badge", statusClassFor(p.getStateProj()));
 
-        VBox badgeBox = new VBox(statusBadge);
+        badgeBox = new VBox(8, statusBadge);
+        if (showPbsBadge) {
+            ProjectBadgeScore badgeScore = projectBadges.get(p.getIdProj());
+            Label pbsBadge = new Label(formatPbsLabel(badgeScore));
+            pbsBadge.getStyleClass().add("pbs-badge");
+            pbsBadge.getStyleClass().add(pbsClassFor(badgeScore == null ? null : badgeScore.getBadge()));
+            pbsBadge.setOnMouseClicked(e -> onBadgeDetails(p, badgeScore));
+            statusBadge.setOnMouseClicked(e -> onBadgeDetails(p, badgeScore));
+            badgeBox.getChildren().add(pbsBadge);
+        }
         badgeBox.getStyleClass().add("badge-box");
         badgeBox.setMinWidth(Region.USE_PREF_SIZE);
 
@@ -216,10 +228,18 @@ public class ProjectListController implements Initializable {
             Region divider = new Region();
             divider.getStyleClass().add("card-divider");
 
-            mid = new HBox(16, left, badgeBox, divider, right);
+            if (badgeBox != null) {
+                mid = new HBox(16, left, badgeBox, divider, right);
+            } else {
+                mid = new HBox(16, left, divider, right);
+            }
         } else {
             // No divider, no right panel => no empty space
-            mid = new HBox(16, left, badgeBox);
+            if (badgeBox != null) {
+                mid = new HBox(16, left, badgeBox);
+            } else {
+                mid = new HBox(16, left);
+            }
         }
         mid.getStyleClass().add("card-mid");
 
@@ -587,13 +607,16 @@ public class ProjectListController implements Initializable {
             if (SessionContext.isClient()) {
                 projects = projectService.getByClient(SessionContext.getCurrentUserId());
                 dashboardData = statsService.getForClient(SessionContext.getCurrentUserId());
+                clientNamesById = new HashMap<>();
             } else {
                 projects = projectService.getAll();
                 dashboardData = statsService.getForManager();
+                loadClientNamesMap();
             }
             baseProjects.setAll(projects);
             List<Project> pending = projects.stream().filter(pr -> pr.getStateProj() == ProjectStatus.PENDING).collect(Collectors.toList());
             pendingEstimates = acceptanceService.estimateForPending(pending);
+            projectBadges = new HashMap<>(badgeService.computeForProjects(projects));
             applyFilters();
         } catch (Exception e) {
             showError(e.getMessage());
@@ -614,27 +637,31 @@ public class ProjectListController implements Initializable {
         projectList.setItems(FXCollections.observableArrayList(filtered));
     }
 
-    private void updateStats(List<Project> projects) {
-        int total = projects == null ? 0 : projects.size();
-        long pending = projects == null ? 0 : projects.stream().filter(p -> p.getStateProj() == ProjectStatus.PENDING).count();
-        long accepted = projects == null ? 0 : projects.stream().filter(p -> p.getStateProj() == ProjectStatus.ACCEPTED).count();
-        String acceptanceRate = total == 0 ? "0%" : Math.round((accepted * 100.0) / total) + "%";
-
-        if (lblTotalProjects != null) {
-            lblTotalProjects.setText(String.valueOf(total));
-        }
-        if (lblPendingProjects != null) {
-            lblPendingProjects.setText(String.valueOf(pending));
-        }
-        if (lblAcceptanceRate != null) {
-            lblAcceptanceRate.setText(acceptanceRate);
-        }
-    }
-
     private boolean matchesSearch(Project p, String search) {
         return (p.getTitleProj() != null && p.getTitleProj().toLowerCase(Locale.ROOT).contains(search))
                 || (p.getDescriptionProj() != null && p.getDescriptionProj().toLowerCase(Locale.ROOT).contains(search))
                 || (p.getTypeProj() != null && p.getTypeProj().toLowerCase(Locale.ROOT).contains(search));
+    }
+
+    private void loadClientNamesMap() {
+        Map<Integer, String> names = new HashMap<>();
+        for (User user : userService.afficher()) {
+            if (user == null) continue;
+            int id = user.getId();
+            if (id <= 0) continue;
+            String fullName = ((user.getPrenom() == null ? "" : user.getPrenom().trim()) + " " +
+                    (user.getNom() == null ? "" : user.getNom().trim())).trim();
+            if (fullName.isBlank()) {
+                fullName = "Client #" + id;
+            }
+            names.put(id, fullName);
+        }
+        clientNamesById = names;
+    }
+
+    private String clientNameForProject(Project project) {
+        if (project == null || project.getIdClient() <= 0) return "-";
+        return clientNamesById.getOrDefault(project.getIdClient(), "Client #" + project.getIdClient());
     }
 
     private ProjectStatus getSelectedStatusFilter() {
@@ -650,6 +677,22 @@ public class ProjectListController implements Initializable {
     @FXML private void onTabPending() { applyFilters(); }
     @FXML private void onTabRefused() { applyFilters(); }
     @FXML private void onSearch()     { applyFilters(); }
+
+    @FXML
+    private void onOpenTop10() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/project/Top10Dialog.fxml"));
+            Parent root = loader.load();
+            URL cssUrl = getClass().getResource("/views/style/top10.css");
+            if (cssUrl != null) {
+                root.getStylesheets().add(cssUrl.toExternalForm());
+            }
+            openModal(root, "Top 10");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("Impossible d'ouvrir Top 10.\nCause: " + rootCauseMessage(ex));
+        }
+    }
 
     @FXML
     private void onOpenStats() {
@@ -847,6 +890,82 @@ public class ProjectListController implements Initializable {
         };
     }
 
+    private String formatPbsLabel(ProjectBadgeScore score) {
+        if (score == null || score.getBadge() == null || score.getBadge().isBlank()) {
+            return "-";
+        }
+        return badgeEmoji(score.getBadge());
+    }
+
+    private String pbsClassFor(String badge) {
+        if (badge == null) return "pbs-bronze";
+        return switch (badge.trim().toUpperCase(Locale.ROOT)) {
+            case "ARGENT" -> "pbs-argent";
+            case "OR" -> "pbs-or";
+            case "PLATINE" -> "pbs-platine";
+            default -> "pbs-bronze";
+        };
+    }
+
+    private String badgeEmoji(String badge) {
+        if (badge == null) return "🥉";
+        return switch (badge.trim().toUpperCase(Locale.ROOT)) {
+            case "ARGENT" -> "🥈";
+            case "OR" -> "🥇";
+            case "PLATINE" -> "👑";
+            default -> "🥉";
+        };
+    }
+
+    private void onBadgeDetails(Project project, ProjectBadgeScore score) {
+        if (project == null || score == null) return;
+
+        String badge = score.getBadge() == null ? "-" : score.getBadge();
+        StringBuilder details = new StringBuilder();
+        details.append("Projet: ").append(safe(project.getTitleProj())).append("\n");
+        details.append("Badge: ").append(badgeEmoji(badge)).append(" ").append(badge).append("\n");
+        details.append("Note globale: ").append(String.format(Locale.US, "%.1f", score.getPbs())).append("/100\n\n");
+
+        details.append("Pourquoi ce badge (simple):\n");
+        details.append("- Avancement dans le temps: ")
+                .append(componentComment(score.getTemporalScore()))
+                .append(" (").append(String.format(Locale.US, "%.0f", score.getTemporalScore())).append("/100)\n");
+        details.append("  Exemple: si 50% du temps est passe et vous etes a 60% d'avancement => bon point.\n");
+        details.append("- Fiabilite: ")
+                .append(componentComment(score.getReliabilityScore()))
+                .append(" (").append(String.format(Locale.US, "%.0f", score.getReliabilityScore())).append("/100)\n");
+        details.append("  Exemple: si le projet a deja ete refuse une fois => forte baisse.\n");
+        details.append("- Suivi regulier: ")
+                .append(componentComment(score.getRegularityScore()))
+                .append(" (").append(String.format(Locale.US, "%.0f", score.getRegularityScore())).append("/100)\n");
+        details.append("  Exemple: mises a jour chaque semaine => mieux que tout faire le dernier jour.\n");
+        details.append("- Stabilite: ")
+                .append(componentComment(score.getStabilityScore()))
+                .append(" (").append(String.format(Locale.US, "%.0f", score.getStabilityScore())).append("/100)\n");
+        details.append("  Exemple: souvent en retard puis a jour puis en retard => score plus bas.\n\n");
+
+        details.append("Comment lire le badge:\n");
+        details.append("- Bronze (<40): projet en difficulte\n");
+        details.append("- Argent (40-64): projet moyen\n");
+        details.append("- Or (65-84): bon projet\n");
+        details.append("- Platine (85+): excellent projet\n");
+        if (score.isHadRefusalHistory()) {
+            details.append("- Regle speciale: deja refuse => pas de Platine.\n");
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Detail badge");
+        alert.setHeaderText("Explication du badge du projet");
+        alert.setContentText(details.toString());
+        alert.showAndWait();
+    }
+
+    private String componentComment(double value) {
+        if (value >= 80.0) return "fort";
+        if (value >= 50.0) return "moyen";
+        return "faible";
+    }
+
     private void openModal(Parent root, String title) {
         Stage stage = new Stage();
         stage.setTitle(title);
@@ -861,5 +980,16 @@ public class ProjectListController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-}
 
+    private String rootCauseMessage(Throwable throwable) {
+        Throwable current = throwable;
+        while (current.getCause() != null && current.getCause() != current) {
+            current = current.getCause();
+        }
+        String msg = current.getMessage();
+        if (msg == null || msg.isBlank()) {
+            return current.getClass().getSimpleName();
+        }
+        return current.getClass().getSimpleName() + ": " + msg;
+    }
+}

@@ -1,5 +1,9 @@
 package com.advisora.GUI.Investissement;
 
+import com.advisora.Model.invest.*;
+import com.advisora.Services.investment.*;
+
+import com.advisora.Services.user.SessionContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,10 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;

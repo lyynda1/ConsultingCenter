@@ -1,7 +1,7 @@
 package com.advisora.GUI.Transaction;
 
-import com.advisora.Model.investment.Investment;
-import com.advisora.Model.investment.Transaction;
+import com.advisora.Model.invest.Investment;
+import com.advisora.Model.invest.Transaction;
 import com.advisora.Services.investment.InvestmentService;
 import com.advisora.Services.user.SessionContext;
 import com.advisora.Services.investment.TransactionService;

@@ -1,5 +1,10 @@
 package com.advisora.GUI.Event;
 
+import com.advisora.Model.event.Event;
+import com.advisora.Model.event.EventBooking;
+import com.advisora.Services.event.EventBookingService;
+import com.advisora.Services.event.EventService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
