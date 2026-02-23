@@ -1,6 +1,6 @@
 package com.advisora.GUI;
 
-import com.advisora.Services.SessionContext;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

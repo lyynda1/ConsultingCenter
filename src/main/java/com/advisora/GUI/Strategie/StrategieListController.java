@@ -2,11 +2,11 @@ package com.advisora.GUI.Strategie;
 
 import com.advisora.GUI.Objective.AddObjectifController;
 import com.advisora.GUI.Objective.ObjectiveInfoController;
-import com.advisora.Model.Objective;
-import com.advisora.Model.Strategie;
-import com.advisora.Services.ServiceObjective;
-import com.advisora.Services.ServiceStrategie;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.strategie.Objective;
+import com.advisora.Model.strategie.Strategie;
+import com.advisora.Services.strategie.ServiceObjective;
+import com.advisora.Services.strategie.ServiceStrategie;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;

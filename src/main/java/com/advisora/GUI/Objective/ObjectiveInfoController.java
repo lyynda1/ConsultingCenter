@@ -1,7 +1,7 @@
 package com.advisora.GUI.Objective;
 
-import com.advisora.Model.Objective;
-import com.advisora.Services.ServiceObjective;
+import com.advisora.Model.strategie.Objective;
+import com.advisora.Services.strategie.ServiceObjective;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

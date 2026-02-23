@@ -1,8 +1,8 @@
 package com.advisora.GUI.Ressource;
 
-import com.advisora.Model.CatalogueFournisseur;
-import com.advisora.Services.CatalogueFournisseurService;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.ressource.CatalogueFournisseur;
+import com.advisora.Services.ressource.CatalogueFournisseurService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

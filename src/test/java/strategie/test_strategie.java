@@ -1,8 +1,8 @@
 package strategie;
 
-import com.advisora.Model.Project;
-import com.advisora.Model.Strategie;
-import com.advisora.Services.ServiceStrategie;
+import com.advisora.Model.projet.Project;
+import com.advisora.Model.strategie.Strategie;
+import com.advisora.Services.strategie.ServiceStrategie;
 import com.advisora.enums.StrategyStatut;
 import org.junit.jupiter.api.Test;
 

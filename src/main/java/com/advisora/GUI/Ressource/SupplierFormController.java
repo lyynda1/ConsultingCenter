@@ -1,7 +1,7 @@
 package com.advisora.GUI.Ressource;
 
-import com.advisora.Model.CatalogueFournisseur;
-import com.advisora.Services.CatalogueFournisseurService;
+import com.advisora.Model.ressource.CatalogueFournisseur;
+import com.advisora.Services.ressource.CatalogueFournisseurService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;

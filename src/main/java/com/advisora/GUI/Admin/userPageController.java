@@ -1,7 +1,7 @@
 package com.advisora.GUI.Admin;
 
-import com.advisora.Model.User;
-import com.advisora.Services.UserService;
+import com.advisora.Model.user.User;
+import com.advisora.Services.user.UserService;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

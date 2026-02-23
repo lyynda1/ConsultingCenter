@@ -1,10 +1,5 @@
 package com.advisora.GUI.Investissement;
 
-import com.advisora.Model.Investment;
-import com.advisora.Model.Project;
-import com.advisora.Services.InvestmentService;
-import com.advisora.Services.ProjectService;
-import com.advisora.Services.SessionContext;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

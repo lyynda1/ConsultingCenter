@@ -101,20 +101,6 @@ public class ProjectService {
         });
     }
 
-    // Read one project by title (exact match, case-insensitive).
-    public Project getByTitle(String titleProj) {
-        if (titleProj == null || titleProj.isBlank()) return null;
-        return call(() -> {
-            String sql = "SELECT * FROM Projects WHERE LOWER(TRIM(titleProj)) = LOWER(TRIM(?)) LIMIT 1";
-            try (Connection cnx = MyConnection.getInstance().getConnection(); PreparedStatement ps = cnx.prepareStatement(sql)) {
-                ps.setString(1, titleProj);
-                try (ResultSet rs = ps.executeQuery()) {
-                    return rs.next() ? map(rs) : null;
-                }
-            }
-        });
-    }
-
     // Read one project by primary key.
     public Project getById(int idProj) {
         return call(() -> {

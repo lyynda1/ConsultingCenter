@@ -1,8 +1,8 @@
 package com.advisora.GUI.Profil;
 
-import com.advisora.Model.User;
-import com.advisora.Services.SessionContext;
-import com.advisora.Services.UserService;
+import com.advisora.Model.user.User;
+import com.advisora.Services.user.SessionContext;
+import com.advisora.Services.user.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
@@ -10,7 +10,6 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.nio.file.*;
-import java.util.function.Consumer;
 
 public class ProfileController {
 

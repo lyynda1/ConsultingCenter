@@ -1,14 +1,14 @@
 package com.advisora.GUI.Ressource;
 
-import com.advisora.Model.Booking;
-import com.advisora.Model.CatalogueFournisseur;
-import com.advisora.Model.Project;
-import com.advisora.Model.Ressource;
-import com.advisora.Services.CatalogueFournisseurService;
-import com.advisora.Services.ProjectService;
-import com.advisora.Services.ReservationService;
-import com.advisora.Services.RessourceService;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.ressource.Booking;
+import com.advisora.Model.ressource.CatalogueFournisseur;
+import com.advisora.Model.projet.Project;
+import com.advisora.Model.ressource.Ressource;
+import com.advisora.Services.ressource.CatalogueFournisseurService;
+import com.advisora.Services.projet.ProjectService;
+import com.advisora.Services.ressource.ReservationService;
+import com.advisora.Services.ressource.RessourceService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.RessourceStatut;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;

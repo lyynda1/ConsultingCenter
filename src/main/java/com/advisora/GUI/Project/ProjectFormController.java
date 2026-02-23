@@ -5,14 +5,15 @@ Role: GUI controller: user interactions and screen flow
 */
 package com.advisora.GUI.Project;
 
-import com.advisora.Model.Project;
-import com.advisora.Services.ProjectService;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.projet.Project;
+import com.advisora.Services.projet.ProjectService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.ProjectStatus;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -27,8 +28,6 @@ public class ProjectFormController {
     private TextField txtBudget;
     @FXML
     private TextField txtType;
-    @FXML
-    private TextField txtAvancement;
     @FXML
     private Button btnDelete;
 
@@ -54,7 +53,6 @@ public class ProjectFormController {
         txtDescription.setText(project.getDescriptionProj());
         txtBudget.setText(String.valueOf(project.getBudgetProj()));
         txtType.setText(project.getTypeProj());
-        txtAvancement.setText(String.valueOf(project.getAvancementProj()));
         btnDelete.setVisible(true);
         btnDelete.setManaged(true);
     }
@@ -64,11 +62,11 @@ public class ProjectFormController {
         try {
             // Reuse existing object in edit mode, create a new one otherwise.
             Project p = (currentProject == null) ? new Project() : currentProject;
-            p.setTitleProj(required(txtTitle.getText(), "Le titre est requis"));
-            p.setDescriptionProj(required(txtDescription.getText(), "Veuillez fournir une description"));
-            p.setBudgetProj(parseNonNegative(txtBudget.getText(), "Le budget est requis"));
-            p.setTypeProj(required(txtType.getText(), "Le type de projet est requis"));
-            p.setAvancementProj(parseRange(txtAvancement.getText(), 0, 100, "L'avancement doit être entre 0 et 100"));
+            p.setTitleProj(required(txtTitle.getText(), "Title is required"));
+            p.setDescriptionProj(txtDescription.getText());
+            p.setBudgetProj(parseNonNegative(txtBudget.getText(), "Budget"));
+            p.setTypeProj(txtType.getText());
+            p.setAvancementProj(parseRange(txtAvancement.getText(), 0, 100, "Avancement"));
 
             if (!editMode) {
                 // Creation rule: project belongs to current client and starts as PENDING.
@@ -111,23 +109,11 @@ public class ProjectFormController {
         try {
             double v = Double.parseDouble(required(value, field + " est requis"));
             if (v < 0) {
-                throw new IllegalArgumentException(field + " doit être >= 0");
+                throw new IllegalArgumentException(field + " doit etre >= 0");
             }
             return v;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(field + " doit être un nombre");
-        }
-    }
-
-    private double parseRange(String value, double min, double max, String field) {
-        try {
-            double v = Double.parseDouble(required(value, field + " est requis"));
-            if (v < min || v > max) {
-                throw new IllegalArgumentException(field + " doit être entre " + min + " et " + max);
-            }
-            return v;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(field + " doit être un nombre");
+            throw new IllegalArgumentException(field + " doit etre un nombre");
         }
     }
 

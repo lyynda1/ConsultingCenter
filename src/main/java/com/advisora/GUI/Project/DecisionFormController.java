@@ -5,9 +5,9 @@ Role: GUI controller: user interactions and screen flow
 */
 package com.advisora.GUI.Project;
 
-import com.advisora.Model.Decision;
-import com.advisora.Services.DecisionService;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.projet.Decision;
+import com.advisora.Services.projet.DecisionService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.DecisionStatus;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

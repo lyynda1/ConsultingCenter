@@ -1,15 +1,16 @@
 package com.advisora.GUI.Auth;
 
-import com.advisora.Model.User;
-import com.advisora.Services.SessionContext;
-import com.advisora.Services.UserService;
+import com.advisora.Model.user.User;
+import com.advisora.Services.user.SessionContext;
+import com.advisora.Services.user.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

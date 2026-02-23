@@ -1,7 +1,7 @@
 package com.advisora.GUI;
 
-import com.advisora.Model.Notification;
-import com.advisora.Services.NotificationManager;
+import com.advisora.Model.strategie.Notification;
+import com.advisora.Services.strategie.NotificationManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

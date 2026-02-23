@@ -2,10 +2,10 @@ package com.advisora.GUI;
 
 import com.advisora.GUI.Investissement.InvestmentListController;
 import com.advisora.GUI.Transaction.TransactionListController;
-import com.advisora.Model.Notification;
-import com.advisora.Model.User;
-import com.advisora.Services.NotificationManager;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.strategie.Notification;
+import com.advisora.Model.user.User;
+import com.advisora.Services.strategie.NotificationManager;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.AvatarUtil;
 import javafx.collections.ListChangeListener;
@@ -30,11 +30,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InterfaceGeneralController {
 
     @FXML private StackPane contentHost;
+    @FXML private Button homeBtn;
     @FXML private Button usersBtn;
+    @FXML private Button ressourceBtn;
+    @FXML private Button projectsBtn;
     @FXML private Button eventsBtn;
+    @FXML private Button strategiesBtn;
+    @FXML private Button investissementsBtn;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
 
@@ -57,11 +65,13 @@ public class InterfaceGeneralController {
 
     @FXML
     private Label notifCount;
+    private final List<Button> navButtons = new ArrayList<>();
 
     @FXML
     public void initialize() {
 
         User u = SessionContext.getCurrentUser();
+        initNavButtons();
 
         NotificationManager.getInstance()
                 .loadNotificationsForRole(u.getRole());
@@ -98,6 +108,27 @@ public class InterfaceGeneralController {
         handleOpenHome();
         AvatarUtil.makeCircular(profileImageView);
     }
+
+    private void initNavButtons() {
+        navButtons.clear();
+        if (homeBtn != null) navButtons.add(homeBtn);
+        if (usersBtn != null) navButtons.add(usersBtn);
+        if (ressourceBtn != null) navButtons.add(ressourceBtn);
+        if (projectsBtn != null) navButtons.add(projectsBtn);
+        if (eventsBtn != null) navButtons.add(eventsBtn);
+        if (strategiesBtn != null) navButtons.add(strategiesBtn);
+        if (investissementsBtn != null) navButtons.add(investissementsBtn);
+    }
+
+    private void setActiveNav(Button active) {
+        for (Button btn : navButtons) {
+            if (btn == null) continue;
+            btn.getStyleClass().remove("nav-active");
+        }
+        if (active != null && !active.getStyleClass().contains("nav-active")) {
+            active.getStyleClass().add("nav-active");
+        }
+    }
     @FXML
     private void closeOverlay() {
         overlay.setVisible(false);
@@ -126,6 +157,7 @@ public class InterfaceGeneralController {
     private void handleOpenHome() {
         try {
             loadIntoContent("/views/Home.fxml");
+            setActiveNav(homeBtn);
         } catch (Exception ex) {
             showError("Home", ex.getMessage());
         }
@@ -140,6 +172,7 @@ public class InterfaceGeneralController {
         }
         try {
             loadIntoContent("/GUI/Admin/UsersPage.fxml");
+            setActiveNav(usersBtn);
         } catch (Exception ex) {
             ex.printStackTrace();
             showError("Gestion Utilisateurs", ex.getMessage());
@@ -149,7 +182,8 @@ public class InterfaceGeneralController {
     @FXML
     private void handleOpenProjects() {
         try {
-            loadIntoContent("/views/project/ProjectList.fxml");
+            loadProjectListIntoContent();
+            setActiveNav(projectsBtn);
         } catch (Exception ex) {
             showError("Gestion Projets", ex.getMessage());
         }
@@ -159,6 +193,7 @@ public class InterfaceGeneralController {
     private void handleOpenEvents() {
         try {
             loadIntoContent("/views/event/EventList.fxml");
+            setActiveNav(eventsBtn);
         } catch (Exception ex) {
             showError("Gestion Evenements", ex);
         }
@@ -174,7 +209,9 @@ public class InterfaceGeneralController {
                 loadIntoContent("/views/resource/InventoryDashboard.fxml");
             } else {
                 showError("Gestion Ressources", "Acces refuse.");
+                return;
             }
+            setActiveNav(ressourceBtn);
         } catch (Exception ex) {
             showError("Gestion Ressources", ex.getMessage());
         }
@@ -189,6 +226,7 @@ public class InterfaceGeneralController {
                 return;
             }
             loadIntoContent("/views/strategie/interfaceStrategie.fxml");
+            setActiveNav(strategiesBtn);
         } catch (Exception ex) {
             showError("Gestion Strategies", ex.getMessage());
         }
@@ -202,6 +240,7 @@ public class InterfaceGeneralController {
             InvestmentListController ctrl = loader.getController();
             ctrl.setOnOpenTransactions(this::handleOpenTransactions);
             contentHost.getChildren().setAll(root);
+            setActiveNav(investissementsBtn);
         } catch (Exception ex) {
             showError("Gestion Investissements", ex.getMessage());
         }
@@ -215,6 +254,7 @@ public class InterfaceGeneralController {
             TransactionListController ctrl = loader.getController();
             ctrl.setOnOpenInvestissements(this::handleOpenInvestissements);
             contentHost.getChildren().setAll(root);
+            setActiveNav(investissementsBtn);
         } catch (Exception ex) {
             showError("Gestion Transactions", ex.getMessage());
         }
@@ -244,6 +284,14 @@ public class InterfaceGeneralController {
 
     private void loadIntoContent(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+        contentHost.getChildren().setAll(root);
+    }
+
+    private void loadProjectListIntoContent() throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
+        Parent root = loader.load();
+        com.advisora.GUI.Project.ProjectListController controller = loader.getController();
+        controller.setContentNavigator(view -> contentHost.getChildren().setAll(view));
         contentHost.getChildren().setAll(root);
     }
 

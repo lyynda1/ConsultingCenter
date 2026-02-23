@@ -1,7 +1,7 @@
 package resource;
 
-import com.advisora.Model.Ressource;
-import com.advisora.Services.RessourceService;
+import com.advisora.Model.ressource.Ressource;
+import com.advisora.Services.ressource.RessourceService;
 import com.advisora.enums.RessourceStatut;
 import org.junit.jupiter.api.Test;
 

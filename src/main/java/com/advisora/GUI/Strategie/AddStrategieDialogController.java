@@ -1,28 +1,27 @@
 package com.advisora.GUI.Strategie;
 
-import com.advisora.Model.Project;
-import com.advisora.Model.Strategie;
-import com.advisora.Services.ProjectService;
-import com.advisora.Services.ServiceStrategie;
-import com.advisora.Services.SessionContext;
+import com.advisora.Model.projet.Project;
+import com.advisora.Model.strategie.SimilarityResult;
+import com.advisora.Model.strategie.Strategie;
+import com.advisora.Services.projet.ProjectService;
+import com.advisora.Services.strategie.ServiceStrategie;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 public class AddStrategieDialogController {
     @FXML private Label titleLabel;
@@ -55,7 +54,7 @@ public class AddStrategieDialogController {
         projetCombo.setConverter(new StringConverter<>() {
             @Override
             public String toString(Project p) {
-                return p == null ? "" : p.getTitleProj();
+               return p == null ? "" : "#" + p.getIdProj() + " - " + p.getTitleProj();
             }
 
             @Override
@@ -64,7 +63,7 @@ public class AddStrategieDialogController {
             }
         });
 
-        List<Project> projects = projectService.getAll();
+        List<Project> projects = serviceStrategie.listProjets();
         projetCombo.setItems(FXCollections.observableArrayList(projects));
     }
 
@@ -107,7 +106,7 @@ public class AddStrategieDialogController {
         budgetTotalField.setText(String.valueOf(strategie.getBudgetTotal()));
         gainEstimeField.setText(String.valueOf(strategie.getGainEstime()));
         if (titleLabel != null) {
-            titleLabel.setText("Modifier Strategie");
+            titleLabel.setText("Modifier Stratégie");
         }
         if (saveBtn != null) {
             saveBtn.setText("Enregistrer");
@@ -123,7 +122,7 @@ public class AddStrategieDialogController {
         budgetTotalField.setText("0");
         gainEstimeField.setText("0");
         if (titleLabel != null) {
-            titleLabel.setText("Nouvelle Strategie");
+            titleLabel.setText("Nouvelle Stratégie");
         }
         if (saveBtn != null) {
             saveBtn.setText("Ajouter");
@@ -138,6 +137,7 @@ public class AddStrategieDialogController {
                 statut = StrategyStatut.EN_COURS;
             }
 
+
             int version = parsePositiveInt(versionField.getText(), "Version");
             Project selectedProject = projetCombo.getValue();
             if (selectedProject == null || selectedProject.getIdProj() <= 0) {
@@ -145,9 +145,7 @@ public class AddStrategieDialogController {
             }
 
             Strategie s = editingStrategie == null ? new Strategie() : editingStrategie;
-            String validatedName = validateStrategyName(nomField.getText());
-            validatedName = UniqueStrategie(validatedName, s.getId());
-            s.setNomStrategie(validatedName);
+            s.setNomStrategie(required(nomField.getText(), "Nom strategie obligatoire."));
             s.setVersion(version);
             s.setStatut(statut);
             s.setProjet(selectedProject);
@@ -175,62 +173,6 @@ public class AddStrategieDialogController {
         }
     }
 
-    private String validateStrategyName(String name) {
-        if (name == null) throw new IllegalArgumentException("Nom stratégie obligatoire.");
-        String n = name.trim();
-
-        if (n.length() < 5)
-            throw new IllegalArgumentException("Nom stratégie trop court (min 5 caractères).");
-
-        if (!n.matches("[\\p{L}0-9\\s\\-_'’]+"))
-            throw new IllegalArgumentException("Nom stratégie contient des caractères invalides.");
-
-        if (n.matches("(?i).*([\\p{L}0-9])\\1{4,}.*")) {
-            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
-        }
-        // blocks any letter repeated 5+ times in a row anywhere: "lioussssss"
-        if (n.matches("(?i).*([\\p{L}])\\1{4,}.*")) {
-            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
-        }
-        // blocks any sequence of 3+ letters repeated 2+ times anywhere: "abcabcabc"
-        if (n.matches("(?i).*(\\p{L}{2,3})\\1{2,}.*")) {
-            throw new IllegalArgumentException("Nom stratégie non valide (trop répétitif).");
-        }
-
-        String lettersOnly = n.replaceAll("[^\\p{L}]", "").toLowerCase();
-        long distinct = lettersOnly.chars().distinct().count();
-        if (lettersOnly.length() >= 6 && distinct <= 2)
-            throw new IllegalArgumentException("Nom stratégie non valide (trop aléatoire).");
-
-        if (!n.toLowerCase().matches(".*[aeiouyàâäéèêëîïôöùûü].*"))
-            throw new IllegalArgumentException("Nom stratégie non valide (doit ressembler à un mot).");
-
-        return n; // ✅ return cleaned valid name
-    }
-
-    private String UniqueStrategie(String nomStrategie, int id) {
-        Strategie existing = serviceStrategie.getStrategieByNom(nomStrategie);
-        if (existing != null && existing.getId() != id) {
-            return nomStrategie + " (doublon)";
-        }
-        return nomStrategie;
-    }
-
-    private double parsePositiveDouble(String text, String s) {
-        try {
-            double v = Double.parseDouble(required(text, s + " obligatoire."));
-            if (v < 0) {
-                throw new IllegalArgumentException(s + " doit etre >= 0.");
-            }
-            if (v > 1_000_000_000) {
-                throw new IllegalArgumentException(s + " c'est exagéré veuillez verifier.");
-            }
-            return v;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(s + " invalide.");
-        }
-    }
-
     @FXML
     private void close() {
         if (onClose != null) {
@@ -249,6 +191,7 @@ public class AddStrategieDialogController {
         ObservableList<Project> projects = projetCombo.getItems();
         for (Project p : projects) {
             if (p.getIdProj() == projectId) {
+
                 projetCombo.setValue(p);
                 break;
             }

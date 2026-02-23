@@ -45,13 +45,13 @@
 
                 <!-- Navigation -->
                 <VBox spacing="10" styleClass="nav">
-                    <Button onAction="#handleOpenHome" prefWidth="237" styleClass="nav-btn" text="Home" />
+                    <Button fx:id="homeBtn" onAction="#handleOpenHome" prefWidth="237" styleClass="nav-btn" text="Home" />
                     <Button fx:id="usersBtn" onAction="#handleOpenUsers" prefWidth="237" styleClass="nav-btn" text="Gestion Utilisateurs" />
-                    <Button onAction="#handleOpenRessource" prefWidth="237" styleClass="nav-btn" text="Gestion Ressources" />
-                    <Button onAction="#handleOpenProjects" prefWidth="237" styleClass="nav-btn" text="Gestion Projets" />
+                    <Button fx:id="ressourceBtn" onAction="#handleOpenRessource" prefWidth="237" styleClass="nav-btn" text="Gestion Ressources" />
+                    <Button fx:id="projectsBtn" onAction="#handleOpenProjects" prefWidth="237" styleClass="nav-btn" text="Gestion Projets" />
                     <Button fx:id="eventsBtn" onAction="#handleOpenEvents" prefWidth="237" styleClass="nav-btn" text="Evenements" />
                     <Button fx:id="strategiesBtn" onAction="#handleOpenStrategies" prefWidth="237" styleClass="nav-btn" text="Gestion Stratégies" />
-                    <Button onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="Gestion Investissements" />
+                    <Button fx:id="investissementsBtn" onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="Gestion Investissements" />
                 </VBox>
 
                 <Region VBox.vgrow="ALWAYS" />

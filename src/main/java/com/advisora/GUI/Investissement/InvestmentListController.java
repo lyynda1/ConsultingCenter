@@ -1,9 +1,5 @@
 package com.advisora.GUI.Investissement;
 
-import com.advisora.Model.Investment;
-import com.advisora.Services.InvestmentService;
-import com.advisora.Services.SessionContext;
-import com.advisora.Services.TransactionService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InvestmentListController {

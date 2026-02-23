@@ -1,8 +1,8 @@
 package com.advisora.GUI.Project;
 
-import com.advisora.Model.Decision;
-import com.advisora.Model.Project;
-import com.advisora.Services.DecisionService;
+import com.advisora.Model.projet.Decision;
+import com.advisora.Model.projet.Project;
+import com.advisora.Services.projet.DecisionService;
 import com.advisora.enums.DecisionStatus;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

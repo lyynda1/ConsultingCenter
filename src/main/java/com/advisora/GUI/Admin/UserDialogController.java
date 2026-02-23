@@ -1,12 +1,10 @@
 package com.advisora.GUI.Admin;
 
-import com.advisora.Model.User;
-import com.advisora.Services.UserService;
+import com.advisora.Model.user.User;
+import com.advisora.Services.user.UserService;
 import com.advisora.enums.UserRole;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
