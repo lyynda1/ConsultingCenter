@@ -11,6 +11,7 @@ import com.advisora.Model.projet.ProjectBadgeScore;
 import com.advisora.Model.projet.ProjectDashboardData;
 import com.advisora.Model.strategie.Strategie;
 import com.advisora.Model.user.User;
+import com.advisora.Services.projet.NewsService;
 import com.advisora.Services.projet.ProjectService;
 import com.advisora.Services.projet.ProjectAcceptanceService;
 import com.advisora.Services.projet.ProjectBadgeService;
@@ -77,6 +78,7 @@ public class ProjectListController implements Initializable {
     private final ProjectStatsService statsService = new ProjectStatsService();
     private final ProjectPdfExportService pdfExportService = new ProjectPdfExportService();
     private final UserService userService = new UserService();
+    private final NewsService newsService = new NewsService();
 
     private final ObservableList<Project> baseProjects = FXCollections.observableArrayList();
     private Consumer<Parent> contentNavigator;
@@ -264,6 +266,11 @@ public class ProjectListController implements Initializable {
             tasks.setOnAction(e -> onOpenTasks(p));
             actionRow.getChildren().add(tasks);
         }
+
+        Button news = new Button("News");
+        news.getStyleClass().add("btn-ghost");
+        news.setOnAction(e -> onOpenNews(p));
+        actionRow.getChildren().add(news);
 
         if (SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
             Button edit = new Button("Modifier");
@@ -529,6 +536,22 @@ public class ProjectListController implements Initializable {
             }
         } catch (Exception e) {
             showError(e.getMessage());
+        }
+    }
+
+    private void onOpenNews(Project project) {
+        if (project == null) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/project/ProjectNewsPanel.fxml"));
+            Parent content = loader.load();
+            NewsController controller = loader.getController();
+            controller.setOnClose(this::closeDialog);
+            controller.initWithProject(project, newsService);
+            showDialog(content);
+        } catch (Exception e) {
+            showError("Unable to open News panel: " + e.getMessage());
         }
     }
 

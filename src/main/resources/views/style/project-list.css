@@ -598,3 +598,56 @@ Role: Project module UI layout (FXML/CSS)
     -fx-border-radius: 10;
     -fx-border-color: rgba(0,0,0,0.08);
 }
+
+.news-list {
+    -fx-background-color: transparent;
+    -fx-padding: 4 0 0 0;
+}
+
+.news-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 8 0;
+}
+
+.news-item-card {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-padding: 10;
+}
+
+.news-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.news-meta {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6b7280;
+}
+
+.news-description {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #374151;
+}
+
+.news-footer {
+    -fx-alignment: center-left;
+}
+
+.news-open-btn {
+    -fx-font-weight: 700;
+}
+
+.news-error {
+    -fx-text-fill: #b42318;
+    -fx-font-weight: 700;
+}
+
+.news-empty {
+    -fx-text-fill: #6b7280;
+    -fx-font-weight: 700;
+}
