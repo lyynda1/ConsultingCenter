@@ -1,7 +1,6 @@
 package com.advisora.Services.strategie;
 
 import com.advisora.Model.strategie.Notification;
-import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.MyConnection;
 import javafx.collections.FXCollections;
@@ -11,6 +10,7 @@ import javafx.scene.media.AudioClip;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,9 +46,7 @@ public class NotificationManager {
     public void addNotification(Notification notification) {
 
         notification.setTimestamp(LocalDateTime.now());
-        if (SessionContext.getCurrentRole() == UserRole.ADMIN || SessionContext.getCurrentRole() == UserRole.GERANT) {
-            notifications.add(0, notification);
-        }
+        notifications.add(0, notification);
         System.out.println("ADD NOTIFICATION CALLED: " + notification.getTitle());
 
 
@@ -66,11 +64,34 @@ public class NotificationManager {
         }
 
         if (soundEnabled) {
-            if (SessionContext.getCurrentRole() == UserRole.ADMIN || SessionContext.getCurrentRole() == UserRole.GERANT) {
-                ding.play();
-            }
-
+            ding.play();
         }
+    }
+
+    public void createIfNotExists(String title, String message) {
+        if (title == null || title.isBlank() || message == null || message.isBlank()) return;
+
+        String checkSql = """
+                SELECT 1
+                FROM notification
+                WHERE title = ?
+                  AND description = ?
+                  AND DATE(dateNotification) = CURDATE()
+                LIMIT 1
+                """;
+
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(checkSql)) {
+            ps.setString(1, title.trim());
+            ps.setString(2, message.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur verification notification: " + e.getMessage(), e);
+        }
+
+        addNotification(new Notification(title.trim(), message.trim()));
     }
 
 
@@ -131,11 +152,6 @@ public class NotificationManager {
     }
 
     public void loadNotificationsForRole(UserRole role) {
-
-        if (role != UserRole.ADMIN && role != UserRole.GERANT) {
-            return; // DO NOT clear list
-        }
-
         String sql = "SELECT * FROM notification ORDER BY dateNotification DESC";
 
         try (Connection cnx = MyConnection.getInstance().getConnection();

@@ -1,4 +1,4 @@
-﻿package com.advisora.GUI.Project;
+package com.advisora.GUI.Project;
 
 import com.advisora.Model.projet.Top10CompanyItem;
 import com.advisora.Model.projet.Top10Response;

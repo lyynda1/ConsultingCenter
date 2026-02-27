@@ -16,12 +16,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.util.List;
 import java.util.Locale;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 public class ProjectTaskPageController {
@@ -38,6 +44,7 @@ public class ProjectTaskPageController {
 
     @FXML private TextField txtTaskTitle;
     @FXML private TextField txtTaskWeight;
+    @FXML private TextField txtTaskDuration;
     @FXML private ComboBox<TaskStatus> cbStatus;
     @FXML private Button btnSaveTask;
     @FXML private Button btnDeleteTask;
@@ -45,6 +52,7 @@ public class ProjectTaskPageController {
     private final TaskService taskService = new TaskService();
     private Project project;
     private Task selectedTask;
+    private Task draggedTask;
     private boolean canManage;
     private Runnable onBack;
 
@@ -56,16 +64,19 @@ public class ProjectTaskPageController {
         cbStatus.setValue(TaskStatus.TODO);
         setupStatusCombo();
         txtTaskWeight.setText("1");
+        txtTaskDuration.setText("1");
 
         canManage = SessionContext.getCurrentRole() == UserRole.GERANT || SessionContext.getCurrentRole() == UserRole.ADMIN;
         setupPermissions();
         setupLists();
+        setupDragAndDrop();
         reload();
     }
 
     private void setupPermissions() {
         txtTaskTitle.setDisable(!canManage);
         txtTaskWeight.setDisable(!canManage);
+        txtTaskDuration.setDisable(!canManage);
         cbStatus.setDisable(!canManage);
         btnSaveTask.setDisable(!canManage);
         btnDeleteTask.setDisable(!canManage);
@@ -110,24 +121,90 @@ public class ProjectTaskPageController {
             protected void updateItem(Task item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
+                    setOnDragDetected(null);
                     setText(null);
                     setGraphic(null);
                     return;
                 }
 
-                Label meta = new Label(statusLabel(item.getStatus()) + "  -  importance=" + item.getWeight());
-                meta.getStyleClass().add("task-card-meta");
+                Label weight = new Label("importance " + item.getWeight());
+                weight.getStyleClass().add("task-meta-pill");
+
+                Label duration = new Label("duree " + item.getDurationDays() + "j");
+                duration.getStyleClass().add("task-meta-pill");
+
+                Label createdDate = new Label(formatCreatedDate(item));
+                createdDate.getStyleClass().add("task-card-date");
+
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+                HBox metaRow = new HBox(6, weight, duration, spacer, createdDate);
+                metaRow.getStyleClass().add("task-card-meta-row");
 
                 Label title = new Label(safe(item.getTitle()));
                 title.getStyleClass().add("task-card-title");
                 title.setWrapText(true);
 
-                VBox card = new VBox(8, meta, title);
+                VBox card = new VBox(10, metaRow, title);
                 card.getStyleClass().add("task-card");
+
+                if (canManage) {
+                    setOnDragDetected(event -> {
+                        if (getItem() == null) return;
+                        Dragboard db = startDragAndDrop(TransferMode.MOVE);
+                        ClipboardContent content = new ClipboardContent();
+                        content.putString(String.valueOf(getItem().getId()));
+                        db.setContent(content);
+                        draggedTask = getItem();
+                        event.consume();
+                    });
+                    setOnDragDone(event -> draggedTask = null);
+                } else {
+                    setOnDragDetected(null);
+                    setOnDragDone(null);
+                }
 
                 setText(null);
                 setGraphic(card);
             }
+        });
+    }
+
+    private void setupDragAndDrop() {
+        installDropTarget(todoList, TaskStatus.TODO);
+        installDropTarget(inProgressList, TaskStatus.IN_PROGRESS);
+        installDropTarget(doneList, TaskStatus.DONE);
+    }
+
+    private void installDropTarget(ListView<Task> listView, TaskStatus targetStatus) {
+        listView.setOnDragOver(event -> {
+            if (!canManage || draggedTask == null) return;
+            event.acceptTransferModes(TransferMode.MOVE);
+            event.consume();
+        });
+
+        listView.setOnDragDropped(event -> {
+            if (!canManage || draggedTask == null) {
+                event.setDropCompleted(false);
+                event.consume();
+                return;
+            }
+            boolean success = false;
+            try {
+                if (draggedTask.getStatus() != targetStatus) {
+                    draggedTask.setStatus(targetStatus);
+                    taskService.updateTask(draggedTask);
+                    reload();
+                }
+                success = true;
+            } catch (Exception e) {
+                showError(e.getMessage());
+            } finally {
+                draggedTask = null;
+            }
+            event.setDropCompleted(success);
+            event.consume();
         });
     }
 
@@ -173,6 +250,7 @@ public class ProjectTaskPageController {
         }
         txtTaskTitle.setText(task.getTitle());
         txtTaskWeight.setText(String.valueOf(task.getWeight()));
+        txtTaskDuration.setText(String.valueOf(task.getDurationDays()));
         cbStatus.setValue(task.getStatus());
     }
 
@@ -183,6 +261,7 @@ public class ProjectTaskPageController {
             t.setProjectId(project.getIdProj());
             t.setTitle(required(txtTaskTitle.getText(), "title requis"));
             t.setWeight(parseWeight(txtTaskWeight.getText()));
+            t.setDurationDays(parseDurationDays(txtTaskDuration.getText()));
             t.setStatus(cbStatus.getValue() == null ? TaskStatus.TODO : cbStatus.getValue());
 
             if (selectedTask == null) {
@@ -237,6 +316,7 @@ public class ProjectTaskPageController {
     }
 
     private void reload() {
+        taskService.checkAndNotifyNearFinishTasks(project.getIdProj());
         List<Task> all = taskService.getByProject(project.getIdProj());
         setColumnItems(all);
 
@@ -271,6 +351,7 @@ public class ProjectTaskPageController {
         doneList.getSelectionModel().clearSelection();
         txtTaskTitle.clear();
         txtTaskWeight.setText("1");
+        txtTaskDuration.setText("1");
         cbStatus.setValue(TaskStatus.TODO);
     }
 
@@ -283,6 +364,18 @@ public class ProjectTaskPageController {
             return w;
         } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("importance doit etre un entier");
+        }
+    }
+
+    private int parseDurationDays(String value) {
+        try {
+            int days = Integer.parseInt(required(value, "duree requise"));
+            if (days < 1) {
+                throw new IllegalArgumentException("duree doit etre >= 1");
+            }
+            return days;
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("duree doit etre un entier");
         }
     }
 
@@ -304,6 +397,14 @@ public class ProjectTaskPageController {
             case IN_PROGRESS -> "En cours";
             case DONE -> "Termine";
         };
+    }
+
+    private String formatCreatedDate(Task task) {
+        if (task == null || task.getCreatedAt() == null) {
+            return "-";
+        }
+        LocalDate d = task.getCreatedAt().toLocalDateTime().toLocalDate();
+        return d.toString();
     }
 
     public void setOnBack(Runnable onBack) {

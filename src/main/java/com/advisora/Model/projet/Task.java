@@ -10,11 +10,14 @@ public class Task {
     private String title;
     private TaskStatus status;
     private int weight;
+    private int durationDays;
+    private java.sql.Date lastWarningDate;
     private Timestamp createdAt;
 
     public Task() {
         this.status = TaskStatus.TODO;
         this.weight = 1;
+        this.durationDays = 1;
     }
 
     public int getId() {
@@ -55,6 +58,22 @@ public class Task {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public int getDurationDays() {
+        return durationDays;
+    }
+
+    public void setDurationDays(int durationDays) {
+        this.durationDays = durationDays;
+    }
+
+    public java.sql.Date getLastWarningDate() {
+        return lastWarningDate;
+    }
+
+    public void setLastWarningDate(java.sql.Date lastWarningDate) {
+        this.lastWarningDate = lastWarningDate;
     }
 
     public Timestamp getCreatedAt() {

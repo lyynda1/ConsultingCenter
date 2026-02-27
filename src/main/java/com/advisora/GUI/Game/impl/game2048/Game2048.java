@@ -1,4 +1,4 @@
-﻿package com.advisora.GUI.Game.impl.game2048;
+package com.advisora.GUI.Game.impl.game2048;
 
 import com.advisora.GUI.Game.api.PlayableGame;
 import javafx.geometry.Pos;

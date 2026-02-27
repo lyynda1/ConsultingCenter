@@ -31,6 +31,7 @@ Role: Project module UI layout (FXML/CSS) -->
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button fx:id="btnStats" text="Statistiques" onAction="#onOpenStats" styleClass="btn-ghost"/>
                     <Button fx:id="btnTop10" text="Top 10" onAction="#onOpenTop10" styleClass="btn-ghost"/>
+                    <Button fx:id="btnEstimate" text="Estimation" onAction="#onOpenEstimation" styleClass="btn-ghost"/>
                     <Button fx:id="btnExportPdf" text="Exporter PDF" onAction="#onExportPdf">
                         <styleClass>
                             <String fx:value="btn-primary"/>

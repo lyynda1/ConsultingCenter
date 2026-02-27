@@ -1,4 +1,4 @@
-﻿package com.advisora.GUI.Game.impl.pacman;
+package com.advisora.GUI.Game.impl.pacman;
 
 import com.advisora.GUI.Game.api.PlayableGame;
 import javafx.animation.KeyFrame;

@@ -5,10 +5,13 @@ import com.advisora.GUI.Investissement.InvestmentListController;
 import com.advisora.GUI.Transaction.TransactionListController;
 import com.advisora.Model.strategie.Notification;
 import com.advisora.Model.user.User;
+import com.advisora.Services.projet.TaskService;
 import com.advisora.Services.strategie.NotificationManager;
+import com.advisora.Services.user.AuthSessionService;
 import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.AvatarUtil;
+import com.advisora.utils.LocalSessionStore;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -35,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InterfaceGeneralController {
+    private final AuthSessionService authSessionService = new AuthSessionService();
+    private final TaskService taskService = new TaskService();
 
     @FXML private StackPane contentHost;
     @FXML private Button homeBtn;
@@ -76,7 +81,7 @@ public class InterfaceGeneralController {
 
         NotificationManager.getInstance()
                 .loadNotificationsForRole(u.getRole());
-        // âœ… important to refresh data from DB
+        // Ã¢Å“â€¦ important to refresh data from DB
 
         updateNotificationBadge();
 
@@ -184,7 +189,7 @@ public class InterfaceGeneralController {
     private void handleOpenUsers() {
         UserRole r = SessionContext.getCurrentRole();
         if (r != UserRole.ADMIN) {
-            showError("Gestion Utilisateurs", "AccÃ¨s refusÃ©: ADMIN requis.");
+            showError("Gestion Utilisateurs", "AccÃƒÂ¨s refusÃƒÂ©: ADMIN requis.");
             return;
         }
         try {
@@ -199,6 +204,7 @@ public class InterfaceGeneralController {
     @FXML
     private void handleOpenProjects() {
         try {
+            taskService.checkAndNotifyNearFinishAllProjects();
             loadProjectListIntoContent();
             setActiveNav(projectsBtn);
         } catch (Exception ex) {
@@ -239,7 +245,7 @@ public class InterfaceGeneralController {
         try {
             UserRole r = SessionContext.getCurrentRole();
             if (r != UserRole.ADMIN && r != UserRole.GERANT) {
-                showError("Gestion Strategies", "AccÃ¨s refusÃ©: GERANT ou ADMIN requis.");
+                showError("Gestion Strategies", "AccÃƒÂ¨s refusÃƒÂ©: GERANT ou ADMIN requis.");
                 return;
             }
             loadIntoContent("/views/strategie/interfaceStrategie.fxml");
@@ -285,7 +291,11 @@ public class InterfaceGeneralController {
     @FXML
     private void handleLogout() {
         try {
-            NotificationManager.getInstance().getNotifications().clear(); // ðŸ”¥ important
+            String token = LocalSessionStore.load();
+            authSessionService.revokeSession(token);
+            LocalSessionStore.clear();
+
+            NotificationManager.getInstance().getNotifications().clear();
             SessionContext.clear();
 
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
@@ -349,7 +359,7 @@ public class InterfaceGeneralController {
     @FXML
     private void handleNotificationClick() {
         try {
-            // âœ… toggle close if already open
+            // Ã¢Å“â€¦ toggle close if already open
             if (notificationPanel != null && popupLayer.getChildren().contains(notificationPanel)) {
                 popupLayer.getChildren().remove(notificationPanel);
                 notificationPanel = null;
@@ -378,7 +388,7 @@ public class InterfaceGeneralController {
             // aligned with button left
             double y = p.getY() + 6;  // below button
 
-            // âœ… keep inside window
+            // Ã¢Å“â€¦ keep inside window
             double maxX = popupLayer.getWidth() - panelW - 10;
             double maxY = popupLayer.getHeight() - panelH - 10;
             x = Math.max(10, Math.min(x, maxX));
@@ -386,7 +396,7 @@ public class InterfaceGeneralController {
 
             notificationPanel.relocate(x, y);
 
-            // âœ… close when clicking outside (without breaking other clicks)
+            // Ã¢Å“â€¦ close when clicking outside (without breaking other clicks)
             popupLayer.setOnMousePressed(e -> {
                 if (notificationPanel != null &&
                         !notificationPanel.getBoundsInParent().contains(e.getX(), e.getY())) {
@@ -432,3 +442,4 @@ public class InterfaceGeneralController {
     }
 
 }
+

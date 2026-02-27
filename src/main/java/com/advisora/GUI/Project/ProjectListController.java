@@ -55,6 +55,7 @@ public class ProjectListController implements Initializable {
     @FXML private Button btnNewProject;
     @FXML private Button btnStats;
     @FXML private Button btnTop10;
+    @FXML private Button btnEstimate;
     @FXML private Button btnExportPdf;
     @FXML private Button btnUsers;
     @FXML private ToggleButton tabAll;
@@ -113,6 +114,9 @@ public class ProjectListController implements Initializable {
     private void setupRoleUI() {
         boolean canCreateProject = SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN;
         btnNewProject.setDisable(!canCreateProject);
+        if (btnEstimate != null) {
+            btnEstimate.setDisable(!canCreateProject);
+        }
         if (btnExportPdf != null) {
             btnExportPdf.setDisable(false);
         }
@@ -714,6 +718,37 @@ public class ProjectListController implements Initializable {
         } catch (Exception ex) {
             ex.printStackTrace();
             showError("Impossible d'ouvrir Top 10.\nCause: " + rootCauseMessage(ex));
+        }
+    }
+
+    @FXML
+    private void onOpenEstimation() {
+        if (!(SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN)) {
+            showError("Only CLIENT or ADMIN can run estimation.");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/project/EstimationDialog.fxml"));
+            Parent root = loader.load();
+            EstimationDialogController controller = loader.getController();
+            if (contentNavigator != null) {
+                controller.setOnBack(() -> {
+                    try {
+                        FXMLLoader projectLoader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
+                        Parent projectRoot = projectLoader.load();
+                        ProjectListController projectController = projectLoader.getController();
+                        projectController.setContentNavigator(contentNavigator);
+                        contentNavigator.accept(projectRoot);
+                    } catch (Exception ex) {
+                        showError(ex.getMessage());
+                    }
+                });
+                contentNavigator.accept(root);
+            } else {
+                openModal(root, "Estimation");
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
         }
     }
 
