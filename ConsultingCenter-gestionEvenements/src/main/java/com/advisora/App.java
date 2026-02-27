@@ -22,8 +22,7 @@ public class App extends Application {
         primaryStage.setTitle("Advisora - Login");
 
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(1600);
-        primaryStage.setMinHeight(1000);
+
         primaryStage.show();
     }
 }

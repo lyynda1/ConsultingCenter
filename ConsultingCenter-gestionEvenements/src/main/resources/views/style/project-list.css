@@ -226,6 +226,33 @@ Role: Project module UI layout (FXML/CSS)
     -fx-text-fill: #374151;
 }
 
+.pbs-badge {
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+    -fx-font-weight: 800;
+    -fx-font-size: 16px;
+}
+
+.pbs-bronze {
+    -fx-background-color: rgba(191, 120, 77, 0.18);
+    -fx-text-fill: #7a3f1f;
+}
+
+.pbs-argent {
+    -fx-background-color: rgba(148, 163, 184, 0.22);
+    -fx-text-fill: #334155;
+}
+
+.pbs-or {
+    -fx-background-color: rgba(250, 204, 21, 0.20);
+    -fx-text-fill: #854d0e;
+}
+
+.pbs-platine {
+    -fx-background-color: rgba(129, 140, 248, 0.16);
+    -fx-text-fill: #3730a3;
+}
+
 .card-mid {
     -fx-alignment: TOP_LEFT;
 }
@@ -293,7 +320,7 @@ Role: Project module UI layout (FXML/CSS)
     -fx-text-fill: #111;
 }
 
-/* If you want it more “subtitle” style */
+/* If you want it more ???subtitle??? style */
 .strategies-title {
     -fx-font-size: 14px;
     -fx-font-style: bold;
@@ -481,6 +508,146 @@ Role: Project module UI layout (FXML/CSS)
     -fx-font-weight: 400;
     -fx-text-fill: #3b3b3b;
 }
+.summary-row {
+    -fx-background-color: rgba(0,0,0,0.02);
+    -fx-background-radius: 14;
+    -fx-padding: 10 12;
+}
+
+.meta-value {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1f1f1f;
+}
+
+.metrics-col {
+    -fx-min-width: 220;
+    -fx-pref-width: 240;
+}
 
 
 
+
+.estimate-box {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 10;
+}
+
+.estimate-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.estimate-bar {
+    -fx-accent: #E97B2C;
+}
+
+.estimate-score {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #374151;
+}
+
+.estimate-reason {
+    -fx-font-size: 11.5px;
+    -fx-text-fill: #6b7280;
+}
+
+.export-btn {
+    -fx-font-weight: 800;
+    -fx-min-width: 132;
+}
+
+.stats-extended {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-padding: 12;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.08);
+}
+
+.kpi-chip {
+    -fx-background-color: rgba(233,123,44,0.14);
+    -fx-text-fill: #7a4a1f;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 5 10;
+    -fx-background-radius: 999;
+}
+
+.kpi-chip-value {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-text-fill: #1f1f1f;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-padding: 5 10;
+    -fx-border-color: rgba(0,0,0,0.12);
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+}
+
+.breakdown-box {
+    -fx-background-color: rgba(255,255,255,0.8);
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.08);
+}
+
+.news-list {
+    -fx-background-color: transparent;
+    -fx-padding: 4 0 0 0;
+}
+
+.news-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 8 0;
+}
+
+.news-item-card {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-padding: 10;
+}
+
+.news-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1f1f1f;
+}
+
+.news-meta {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6b7280;
+}
+
+.news-description {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #374151;
+}
+
+.news-footer {
+    -fx-alignment: center-left;
+}
+
+.news-open-btn {
+    -fx-font-weight: 700;
+}
+
+.news-error {
+    -fx-text-fill: #b42318;
+    -fx-font-weight: 700;
+}
+
+.news-empty {
+    -fx-text-fill: #6b7280;
+    -fx-font-weight: 700;
+}

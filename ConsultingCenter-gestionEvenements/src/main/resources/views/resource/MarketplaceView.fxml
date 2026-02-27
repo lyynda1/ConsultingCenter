@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.MarketplaceController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="toolbar-card">
+        <Label text="Mini Shop C2C" styleClass="module-title"/>
+        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="wallet-balance-box">
+            <StackPane styleClass="coin-chip">
+                <Label text="◎" styleClass="coin-chip-text"/>
+            </StackPane>
+            <Label fx:id="lblWalletBalance" text="0.000 coins" styleClass="wallet-pill"/>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Recharger wallet" onAction="#onOpenWalletWindow" styleClass="btn-primary"/>
+        <Button text="Publier une annonce" onAction="#onOpenSellWindow" styleClass="btn-primary"/>
+        <Button text="Mes annonces" onAction="#onOpenMyListingsWindow" styleClass="btn-ghost"/>
+        <Button text="Refresh shop" onAction="#onRefresh" styleClass="btn-ghost"/>
+    </HBox>
+    <Label text="Parcours avis: apres un achat confirme, allez dans Mes achats pour noter la ressource (1-5 etoiles + commentaire)." styleClass="hint"/>
+
+    <TabPane fx:id="tabShop" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+            <Tab text="Acheter">
+                <content>
+                    <VBox spacing="10">
+                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="surface-strip">
+                            <Label text="Recherche produit"/>
+                            <TextField fx:id="txtBuySearch" promptText="Nom produit, fournisseur, vendeur..." prefWidth="360"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Annonces actives:" styleClass="hint"/>
+                            <Label fx:id="lblMarketListings" text="0" styleClass="hint"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="surface-strip">
+                            <Label text="Quantite"/>
+                            <TextField fx:id="txtBuyQuantity" promptText="ex: 1" prefWidth="100"/>
+                            <Button fx:id="btnBuyListing" text="Passer au checkout" onAction="#onBuyListing" styleClass="btn-primary"/>
+                            <Label fx:id="lblBuyRule" text="Selectionnez une annonce." styleClass="hint"/>
+                        </HBox>
+                        <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+                            <ListView fx:id="listMarketBuy" prefHeight="470" styleClass="card-list"/>
+                        </VBox>
+                    </VBox>
+                </content>
+            </Tab>
+
+            <Tab text="Mes achats">
+                <content>
+                    <VBox spacing="10">
+                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Historique achats marketplace" styleClass="module-subtitle"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Total achats:" styleClass="hint"/>
+                            <Label fx:id="lblMyOrdersCount" text="0" styleClass="hint"/>
+                        </HBox>
+                        <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+                            <ListView fx:id="listMyMarketOrders" prefHeight="450" styleClass="card-list"/>
+                        </VBox>
+                        <Separator/>
+                        <VBox spacing="8" styleClass="wizard-box review-panel">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Donner un avis sur l'achat selectionne" styleClass="module-subtitle"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblReviewRule" text="Selectionnez une commande CONFIRMED." styleClass="hint"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="review-stars-box">
+                                <Label text="Note"/>
+                                <Button fx:id="btnStar1" text="★" userData="1" onAction="#onSelectReviewStars" styleClass="star-btn"/>
+                                <Button fx:id="btnStar2" text="★" userData="2" onAction="#onSelectReviewStars" styleClass="star-btn"/>
+                                <Button fx:id="btnStar3" text="★" userData="3" onAction="#onSelectReviewStars" styleClass="star-btn"/>
+                                <Button fx:id="btnStar4" text="★" userData="4" onAction="#onSelectReviewStars" styleClass="star-btn"/>
+                                <Button fx:id="btnStar5" text="★" userData="5" onAction="#onSelectReviewStars" styleClass="star-btn"/>
+                                <Label fx:id="lblReviewStarsValue" text="5/5" styleClass="hint"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Commentaire"/>
+                                <TextArea fx:id="txtReviewComment" prefRowCount="2" prefWidth="520" promptText="Votre commentaire (optionnel)"/>
+                                <Button fx:id="btnSubmitReview" text="Envoyer avis" onAction="#onSubmitReview" styleClass="btn-primary"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </content>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>

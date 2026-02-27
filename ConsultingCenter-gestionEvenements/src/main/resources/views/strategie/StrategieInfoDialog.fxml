@@ -9,38 +9,82 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxWidth="700" minWidth="460" prefWidth="600" spacing="12" styleClass="dialog-card" stylesheets="@../style/project-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Strategie.StrategieInfoDialogController">
+<VBox styleClass="dialog-card"  spacing="12" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../style/project-list.css"
+      fx:controller="com.advisora.GUI.Strategie.StrategieInfoDialogController"
+      prefWidth="600"
+      maxWidth="600"
+      maxHeight="650">
 
-
-    <!-- title bar -->
-    <HBox fx:id="dragHandle" alignment="CENTER" spacing="10" styleClass="dialog-header">
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label text="Détail Stratégie" styleClass="dialog-title"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="btnClose" text="✕" onAction="#close" styleClass="btn-close"/>
-    </HBox>
-
-
-    <VBox spacing="6">
-        <Label prefHeight="25.0" prefWidth="97.0" styleClass="meta-label" text="Stratégie :">
-         <font>
-            <Font size="16.0" />
-         </font></Label>
-        <Label fx:id="lblStrategieName" styleClass="big-title" wrapText="true" />
-    </VBox>
-
+    <!-- header -->
     <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label prefHeight="25.0" prefWidth="83.0" styleClass="meta-label" text="Objectifs:">
-         <font>
-            <Font size="16.0" />
-         </font></Label>
-        <Label fx:id="lblObjectiveCount" styleClass="pill" />
+        <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+            <Label text="Détails stratégie" styleClass="dialog-title"/>
+        </HBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnClose" text="✕" styleClass="btn-close" onAction="#close"/>
     </HBox>
 
-    <ListView fx:id="listObjectives" prefHeight="320" />
+    <!-- strategy name -->
+    <Label fx:id="lblStrategieName" styleClass="big-title" text="-" />
 
-    <padding>
-        <Insets bottom="14" left="14" right="14" top="14" />
-    </padding>
+    <!-- summary block -->
+    <HBox spacing="12" styleClass="summary-row">
+
+        <!-- left meta -->
+        <VBox spacing="6" HBox.hgrow="ALWAYS">
+            <HBox spacing="8">
+                <Label text="Projet :" styleClass="meta-label"/>
+                <Label fx:id="lblProjet" styleClass="meta-value" text="-" wrapText="true"/>
+            </HBox>
+
+            <HBox spacing="8">
+                <Label text="Créée le :" styleClass="meta-label"/>
+                <Label fx:id="lblCreatedAt" styleClass="meta-value" text="-" />
+            </HBox>
+
+            <HBox spacing="8">
+                <Label text="Type :" styleClass="meta-label"/>
+                <Label fx:id="lblType" styleClass="meta-value" text="-" />
+            </HBox>
+
+            <HBox spacing="8">
+                <Label text="Statut :" styleClass="meta-label"/>
+                <Label fx:id="lblStatut" styleClass="status-badge" text="-" />
+            </HBox>
+        </VBox>
+
+        <!-- divider -->
+        <Region styleClass="card-divider"/>
+
+        <!-- right metrics -->
+        <VBox spacing="6" styleClass="metrics-col">
+            <HBox spacing="8">
+                <Label text="Budget :" styleClass="meta-label"/>
+                <Label fx:id="lblBudget" styleClass="metric-line" text="-" />
+            </HBox>
+
+            <HBox spacing="8">
+                <Label text="Gain estimé :" styleClass="meta-label"/>
+                <Label fx:id="lblGain" styleClass="metric-line" text="-" />
+            </HBox>
+
+            <Label fx:id="lblRoi" styleClass="roi-value" text="ROI : -" />
+        </VBox>
+    </HBox>
+
+    <!-- justification (optional) -->
+    <Label fx:id="lblJustification" styleClass="justification" wrapText="true" visible="false" managed="false"/>
+
+    <!-- objectives header -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Objectifs" styleClass="meta-label"/>
+        <Label fx:id="lblObjectiveCount" styleClass="pill" text="0"/>
+    </HBox>
+
+    <!-- list -->
+    <ListView fx:id="listObjectives" VBox.vgrow="ALWAYS" prefHeight="300"
+              maxHeight="400"/>
 
 </VBox>
+

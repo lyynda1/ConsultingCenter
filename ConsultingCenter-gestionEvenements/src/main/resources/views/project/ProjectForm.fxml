@@ -32,9 +32,6 @@
 
         <Label text="Type" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <TextField fx:id="txtType" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-        <Label text="Avancement %" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtAvancement" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="8" styleClass="form-actions">

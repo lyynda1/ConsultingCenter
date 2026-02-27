@@ -11,17 +11,65 @@
       styleClass="module-root">
     <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
-    <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label text="Liste Ressources" styleClass="module-title"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label text="Fournisseur"/>
-        <ComboBox fx:id="comboSupplier" prefWidth="260"/>
-        <Button text="Ajouter" onAction="#onAdd" styleClass="btn-primary"/>
-        <Button text="Modifier" onAction="#onEdit" styleClass="btn-ghost"/>
-        <Button text="Supprimer" onAction="#onDelete" styleClass="btn-ghost"/>
-        <Button text="Historique reservations" onAction="#onHistory" styleClass="btn-ghost"/>
-        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
-    </HBox>
+    <VBox spacing="10" styleClass="toolbar-card toolbar-resource-list">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="resource-action-row">
+            <Label text="Liste Ressources" styleClass="module-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Ajouter" onAction="#onAdd" styleClass="btn-primary"/>
+            <Button text="Modifier" onAction="#onEdit" styleClass="btn-ghost"/>
+            <Button text="Supprimer" onAction="#onDelete" styleClass="btn-ghost"/>
+            <MenuButton text="Select" styleClass="resource-select-menu">
+                <graphic>
+                    <Label text="&#9776;" styleClass="menu-item-icon"/>
+                </graphic>
+                <items>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Label text="ACTIONS" styleClass="menu-section-title"/>
+                        </content>
+                    </CustomMenuItem>
+                    <MenuItem text="Historique reservations" onAction="#onHistory">
+                        <graphic>
+                            <Label text="&#128203;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="Statistiques" onAction="#onStatistics">
+                        <graphic>
+                            <Label text="&#128202;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="Analyse IA" onAction="#onAnalyzeAi">
+                        <graphic>
+                            <Label text="AI" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="Export PDF" onAction="#onExportPdf">
+                        <graphic>
+                            <Label text="&#128462;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="Refresh" onAction="#onRefresh">
+                        <graphic>
+                            <Label text="&#8635;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </MenuButton>
+        </HBox>
+
+        <HBox fx:id="filterPanel" alignment="CENTER_LEFT" spacing="10" styleClass="resource-filter-row" visible="true" managed="true">
+            <Label text="Fournisseur"/>
+            <ComboBox fx:id="comboSupplier" prefWidth="240"/>
+            <Label text="Statut"/>
+            <ComboBox fx:id="comboStatusFilter" prefWidth="170"/>
+            <Label text="Recherche dynamique"/>
+            <TextField fx:id="txtSearchResources" promptText="Nom, fournisseur, statut, projet, prix..." HBox.hgrow="ALWAYS"/>
+            <Label text="Prix"/>
+            <ComboBox fx:id="comboPriceFilter" prefWidth="150"/>
+            <Label text="Stock"/>
+            <ComboBox fx:id="comboStockFilter" prefWidth="150"/>
+        </HBox>
+    </VBox>
 
     <HBox fillHeight="true" spacing="16" styleClass="stats">
         <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
@@ -68,4 +116,3 @@
 
     <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
 </VBox>
-

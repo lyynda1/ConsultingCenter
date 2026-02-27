@@ -1,0 +1,141 @@
+/* Global look */
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f6f1e1;   /* warm beige */
+}
+
+/* Titles */
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+.section-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Primary green button (+ Nouvelle Stratégie) */
+.primary-button {
+    -fx-background-color: #1f8f4d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+}
+.primary-button:hover {
+    -fx-background-color: #27a45a;
+}
+
+/* Small stat cards */
+.stat-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-padding: 12 18 12 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0, 0, 3);
+}
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #777777;
+}
+.stat-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+/* Table card */
+.table-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 18;
+    -fx-padding: 12 16 12 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 16, 0, 0, 4);
+}
+
+/* TableView base */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+/* Header */
+.table-view .column-header-background {
+    -fx-background-color: #faf7ef;
+    -fx-background-radius: 12 12 0 0;
+}
+.table-view .column-header, .table-view .filler {
+    -fx-size: 32px;
+    -fx-border-color: transparent transparent #e3decf transparent;
+}
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #666666;
+    -fx-font-size: 12px;
+}
+
+/* Rows */
+.table-view .table-row-cell {
+    -fx-cell-size: 44px;
+    -fx-border-color: transparent transparent #f0ebe0 transparent;
+}
+.table-view .table-row-cell:odd {
+    -fx-background-color: #ffffff;
+}
+.table-view .table-row-cell:even {
+    -fx-background-color: #fbf8f1;
+}
+.table-view .table-row-cell:hover {
+    -fx-background-color: #f2f7f5;
+}
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e6f4ec;
+}
+
+/* Status chips */
+.status-chip {
+    -fx-padding: 2 10 2 10;
+    -fx-background-radius: 999;
+    -fx-font-size: 11px;
+}
+.status-accepted {
+    -fx-background-color: #d8f5dd;
+    -fx-text-fill: #1f8f4d;
+}
+.status-pending {
+    -fx-background-color: #fff2d1;
+    -fx-text-fill: #a66a00;
+}
+.status-inprogress {
+    -fx-background-color: #ffe4c7;
+    -fx-text-fill: #b55611;
+}
+
+/* Action icon buttons (edit/delete/view) */
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+    -fx-cursor: hand;
+}
+.icon-button:hover {
+    -fx-background-color: #f3f0e6;
+    -fx-background-radius: 999;
+}
+
+/* Pagination */
+.pagination-label {
+    -fx-text-fill: #777777;
+    -fx-font-size: 11px;
+}
+.pagination-button {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0ddcf;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 2 8 2 8;
+}
+.pagination-button:hover {
+    -fx-background-color: #f0ede6;
+}

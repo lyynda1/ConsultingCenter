@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="pageRoot" styleClass="page-root" stylesheets="@/css/strategie-list.css"
+           xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.advisora.GUI.Transaction.TransactionListController">
+
+    <BorderPane fx:id="mainPane" styleClass="page">
+
+        <top>
+            <VBox spacing="12" styleClass="header">
+                <padding><Insets bottom="12" left="18" right="18" top="18" /></padding>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="title" text="Gestion des Transactions">
+                        <font><Font name="System Bold" size="31.0" /></font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button onAction="#openInvestissements" styleClass="btn-ghost" text="Investissements" />
+                    <Button onAction="#nouvelleTransaction" styleClass="btn-primary" text="+ Nouvelle Transaction" />
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher une transaction..." styleClass="search" />
+                    <MenuButton styleClass="btn-ghost" text="Filtrer ▾">
+                        <items>
+                            <MenuItem onAction="#onSortDateDesc" text="Date récente" />
+                            <MenuItem onAction="#onSortDateAsc" text="Date ancienne" />
+                            <SeparatorMenuItem />
+                            <MenuItem onAction="#onSortMontantDesc" text="Montant décroissant" />
+                            <MenuItem onAction="#onSortMontantAsc" text="Montant croissant" />
+                            <SeparatorMenuItem />
+                            <MenuItem onAction="#onSortIdAsc" text="ID croissant" />
+                            <MenuItem onAction="#onSortIdDesc" text="ID décroissant" />
+                        </items>
+                    </MenuButton>
+                </HBox>
+
+                <HBox fillHeight="true" spacing="16" styleClass="stats">
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS" styleClass="stat-card,stat-total">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane>
+                                <Label text="📋" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="Total Transactions" />
+                        </HBox>
+                        <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
+                    </VBox>
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS" styleClass="stat-card,stat-pending">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane>
+                                <Label text="⏳" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="En attente" />
+                        </HBox>
+                        <Label fx:id="lblPending" styleClass="stat-value" text="0" />
+                    </VBox>
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS" styleClass="stat-card,stat-success">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane>
+                                <Label text="✅" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="Réussies" />
+                        </HBox>
+                        <Label fx:id="lblSuccess" styleClass="stat-value" text="0" />
+                    </VBox>
+                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS" styleClass="stat-card,stat-total">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane>
+                                <Label text="💵" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
+                            </StackPane>
+                            <Label styleClass="stat-label" text="Total investi" />
+                        </HBox>
+                        <Label fx:id="lblTotalInvesti" styleClass="stat-value" text="0" />
+                    </VBox>
+                </HBox>
+            </VBox>
+        </top>
+
+        <center>
+            <VBox fillWidth="true" styleClass="content">
+                <padding><Insets bottom="18" left="18" right="18" top="14" /></padding>
+                <ListView fx:id="transactionList" styleClass="card-list" VBox.vgrow="ALWAYS" />
+            </VBox>
+        </center>
+    </BorderPane>
+
+    <StackPane fx:id="overlay" visible="false" managed="false" styleClass="overlay">
+        <VBox fx:id="modalBox" styleClass="dialog-host" />
+    </StackPane>
+</StackPane>

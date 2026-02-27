@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.advisora.GUI.Game.GameHubController"
+            stylesheets="@../style/game-hub.css"
+            styleClass="gamehub-root">
+
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="gamehub-top">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+            <Label text="Game Hub" styleClass="gamehub-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnPlay" text="Jouer" onAction="#onPlay">
+                <styleClass>
+                    <String fx:value="btn"/>
+                    <String fx:value="btn-warn"/>
+                </styleClass>
+            </Button>
+            <Button fx:id="btnReset" text="Reinitialiser" onAction="#onReset">
+                <styleClass>
+                    <String fx:value="btn"/>
+                    <String fx:value="btn-outline"/>
+                </styleClass>
+            </Button>
+            <Button fx:id="btnBack" text="Retour Home" onAction="#onBack">
+                <styleClass>
+                    <String fx:value="btn"/>
+                    <String fx:value="btn-outline"/>
+                </styleClass>
+            </Button>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox spacing="8" styleClass="gamehub-left" prefWidth="280">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+            <Label text="Jeux disponibles" styleClass="gamehub-subtitle"/>
+            <ListView fx:id="gameList" styleClass="gamehub-list" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="gameHost" styleClass="gamehub-center"/>
+    </center>
+
+    <bottom>
+        <HBox styleClass="gamehub-bottom" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="12" bottom="10" left="12"/>
+            </padding>
+            <Label fx:id="lblStatus" text="Ready" styleClass="gamehub-status"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

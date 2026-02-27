@@ -26,9 +26,18 @@ Role: Project module UI layout (FXML/CSS) -->
                     <Insets top="18" right="18" bottom="12" left="18"/>
                 </padding>
 
-                <HBox alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Gerer vos projets" styleClass="title"/>
                     <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnStats" text="Statistiques" onAction="#onOpenStats" styleClass="btn-ghost"/>
+                    <Button fx:id="btnTop10" text="Top 10" onAction="#onOpenTop10" styleClass="btn-ghost"/>
+                    <Button fx:id="btnEstimate" text="Estimation" onAction="#onOpenEstimation" styleClass="btn-ghost"/>
+                    <Button fx:id="btnExportPdf" text="Exporter PDF" onAction="#onExportPdf">
+                        <styleClass>
+                            <String fx:value="btn-primary"/>
+                            <String fx:value="export-btn"/>
+                        </styleClass>
+                    </Button>
                     <Button fx:id="btnUsers" text="Utilisateurs" onAction="#onOpenUsers" styleClass="btn-ghost"/>
                     <Button fx:id="btnNewProject" text="Nouveau projet" onAction="#onAdd" styleClass="btn-primary"/>
                 </HBox>
@@ -59,49 +68,6 @@ Role: Project module UI layout (FXML/CSS) -->
                     </MenuButton>
                 </HBox>
 
-                <HBox fillHeight="true" spacing="16" styleClass="stats">
-                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
-                        <styleClass>
-                            <String fx:value="stat-card"/>
-                            <String fx:value="stat-total"/>
-                        </styleClass>
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <StackPane styleClass="stat-icon-chip stat-icon-orange">
-                                <Label text="&#128202;" styleClass="stat-icon-text"/>
-                            </StackPane>
-                            <Label text="Total Projets" styleClass="stat-label"/>
-                        </HBox>
-                        <Label fx:id="lblTotalProjects" text="0" styleClass="stat-value"/>
-                    </VBox>
-
-                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
-                        <styleClass>
-                            <String fx:value="stat-card"/>
-                            <String fx:value="stat-pending"/>
-                        </styleClass>
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <StackPane styleClass="stat-icon-chip stat-icon-yellow">
-                                <Label text="&#128101;" styleClass="stat-icon-text"/>
-                            </StackPane>
-                            <Label text="En attente d'approbation" styleClass="stat-label"/>
-                        </HBox>
-                        <Label fx:id="lblPendingProjects" text="0" styleClass="stat-value"/>
-                    </VBox>
-
-                    <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
-                        <styleClass>
-                            <String fx:value="stat-card"/>
-                            <String fx:value="stat-success"/>
-                        </styleClass>
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <StackPane styleClass="stat-icon-chip stat-icon-green">
-                                <Label text="&#10004;" styleClass="stat-icon-text"/>
-                            </StackPane>
-                            <Label text="Taux d'acceptation" styleClass="stat-label"/>
-                        </HBox>
-                        <Label fx:id="lblAcceptanceRate" text="0%" styleClass="stat-value"/>
-                    </VBox>
-                </HBox>
             </VBox>
         </top>
 

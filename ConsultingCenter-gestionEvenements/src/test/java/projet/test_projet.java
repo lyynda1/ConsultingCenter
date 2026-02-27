@@ -1,7 +1,7 @@
 package projet;
 
-import com.advisora.Model.Project;
-import com.advisora.Services.ProjectService;
+import com.advisora.Model.projet.Project;
+import com.advisora.Services.projet.ProjectService;
 import com.advisora.enums.ProjectStatus;
 import org.junit.jupiter.api.Test;
 
@@ -56,15 +56,6 @@ public class test_projet {
         assertEquals("Budget >= 0", ex.getMessage());
     }
 
-    // Validation guard: progress must stay between 0 and 100.
-    @Test
-    void validate_create_rejects_invalid_avancement() {
-        Project p = validProject();
-        p.setAvancementProj(120);
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> invokeValidate(p, true));
-        assertEquals("Avancement between 0 and 100", ex.getMessage());
-    }
-
     // Validation guard: client id is mandatory and must be > 0.
     @Test
     void validate_create_rejects_invalid_client_id() {
@@ -94,18 +85,6 @@ public class test_projet {
         invokeValidate(p, false);
     }
 
-    // Boundary checks:
-    // avancement exactly 0 and 100 must be accepted.
-    @Test
-    void validate_accepts_avancement_boundaries() throws Exception {
-        Project p = validProject();
-        p.setAvancementProj(0);
-        invokeValidate(p, true);
-
-        p.setAvancementProj(100);
-        invokeValidate(p, true);
-    }
-
     // Enum mapping should accept whitespace and mixed case.
     @Test
     void project_status_mapping_accepts_whitespace_and_case() {
@@ -121,7 +100,6 @@ public class test_projet {
         p.setDescriptionProj("Projet test");
         p.setBudgetProj(1000.0);
         p.setTypeProj("IT");
-        p.setAvancementProj(25);
         p.setIdClient(2);
         return p;
     }
