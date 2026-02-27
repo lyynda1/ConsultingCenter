@@ -93,7 +93,7 @@
                             <graphic>
                                 <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                                     <image>
-                                        <Image url="@../Assets/vecteezy_bell-notification-icon-set-of-4-design-element-suitable-for_13421145.png" />
+                                        <Image url="@../Assets/bell.png" />
                                     </image>
                                 </ImageView>
                             </graphic>

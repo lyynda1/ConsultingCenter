@@ -1,6 +1,5 @@
 package com.advisora.GUI.Investissement;
 
-import com.advisora.Model.invest.*;
 import com.advisora.Model.projet.Project;
 import com.advisora.Services.investment.InvestmentService;
 import com.advisora.Services.projet.ProjectService;

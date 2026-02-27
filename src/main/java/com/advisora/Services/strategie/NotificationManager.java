@@ -9,9 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.media.AudioClip;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class NotificationManager {
     private final AudioClip ding;
     private boolean soundEnabled = true;
 
-    private NotificationManager() {
+    public NotificationManager() {
         notifications = FXCollections.observableArrayList();
 
         URL url = getClass().getResource("/Assets/notify.wav");
@@ -132,32 +130,64 @@ public class NotificationManager {
 
     public void loadNotificationsForRole(UserRole role) {
 
-        if (role != UserRole.ADMIN && role != UserRole.GERANT) {
-            return; // DO NOT clear list
+        // Only the two roles that are allowed to view notifications may proceed.
+        if (role == null || !(role == UserRole.ADMIN || role == UserRole.GERANT)) {
+            return;                      // we never touch the list for disallowed roles
         }
 
-        String sql = "SELECT * FROM notification ORDER BY dateNotification DESC";
+        final String titlePattern1 = "%approbation%"; // to be matched for ADMIN
+        final String titlePattern2 = "%inactif%";     // to be matched for ADMIN
+
+        final String sql;
+        if (role == UserRole.ADMIN) {
+            // For ADMIN: title LIKE %approbation% OR title LIKE %inactif%
+            sql = "SELECT * FROM notification "
+                    + "WHERE LOWER(title) LIKE ? OR LOWER(title) LIKE ? "
+                    + "ORDER BY dateNotification DESC";
+        } else { // GERANT
+            // For GERANT: title NOT LIKE %approbation%
+            sql = "SELECT * FROM notification "
+                    + "WHERE LOWER(title) NOT LIKE ? "
+                    + "ORDER BY dateNotification DESC";
+        }
 
         try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(sql);
-             var rs = ps.executeQuery()) {
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-            notifications.clear();
+            if (role == UserRole.ADMIN) {
+                ps.setString(1, titlePattern1);
+                ps.setString(2, titlePattern2);
+            } else { // GERANT
+                ps.setString(1, titlePattern1); // the only placeholder used
+            }
 
-            while (rs.next()) {
-                Notification n = new Notification(
-                        rs.getString("title"),
-                        rs.getString("description")
-                );
-                n.setRead(rs.getBoolean("isRead"));
-                n.setTimestamp(rs.getTimestamp("dateNotification").toLocalDateTime());
-                notifications.add(n);
+            try (ResultSet rs = ps.executeQuery()) {
+
+                // We know the role is allowed – now we can safely clear the list.
+                notifications.clear();
+
+                while (rs.next()) {
+                    Notification n = new Notification(
+                            rs.getString("title"),
+                            rs.getString("description")
+                    );
+
+                    n.setRead(rs.getBoolean("isRead"));
+
+                    Timestamp ts = rs.getTimestamp("dateNotification");
+                    if (ts != null) {
+                        n.setTimestamp(ts.toLocalDateTime());
+                    }
+
+                    notifications.add(n);
+                }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            // Inform the caller what role caused the failure.
+            throw new RuntimeException(
+                    "Failed to load notifications for role " + role, e);
         }
     }
-
 
 }

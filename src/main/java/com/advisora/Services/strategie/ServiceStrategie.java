@@ -11,7 +11,6 @@ import com.advisora.utils.MyConnection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextInputDialog;
 
 import java.sql.*;
 import java.util.*;
@@ -57,24 +56,25 @@ public class ServiceStrategie implements IService<Strategie> {
             // Save justification inside strategy
         }
 
-        String sql = "INSERT INTO strategies (versions, statusStrategie, CreatedAtS, lockedAt, idProj, idUser, nomStrategie, type, budgetTotal, gainEstime) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO strategies ( statusStrategie, CreatedAtS, lockedAt, idProj, idUser, nomStrategie, type, budgetTotal, gainEstime,DureeTerme) "
+                + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, strategie.getVersion());
-            ps.setString(2, "En_cours"); // default status for new strategy
-            ps.setTimestamp(3, Timestamp.valueOf(strategie.getCreatedAt()));
-            ps.setTimestamp(4, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
-            ps.setInt(5, strategie.getProjet().getIdProj());
+
+            ps.setString(1, "En_cours"); // default status for new strategy
+            ps.setTimestamp(2, Timestamp.valueOf(strategie.getCreatedAt()));
+            ps.setTimestamp(3, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
+            ps.setInt(4, strategie.getProjet().getIdProj());
             if (strategie.getIdUser() == null) {
-                ps.setNull(6, Types.INTEGER);
+                ps.setNull(5, Types.INTEGER);
             } else {
-                ps.setInt(6, strategie.getIdUser());
+                ps.setInt(5, strategie.getIdUser());
             }
-            ps.setString(7, strategie.getNomStrategie().trim());
-            ps.setString(8, strategie.getTypeStrategie().name().toUpperCase(Locale.ROOT));
-            ps.setDouble(9, strategie.getBudgetTotal());
-            ps.setDouble(10, strategie.getGainEstime());
+            ps.setString(6, strategie.getNomStrategie().trim());
+            ps.setString(7, strategie.getTypeStrategie().name().toUpperCase(Locale.ROOT));
+            ps.setDouble(8, strategie.getBudgetTotal());
+            ps.setDouble(9, strategie.getGainEstime());
+            ps.setString(10, strategie.getDureeTerme());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -108,8 +108,8 @@ public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public List<Strategie> afficher() {
-        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.type, s.budgetTotal, s.gainEstime, " +
-                "s.idProj, s.idUser, s.nomStrategie, s.justification " +
+        String sql = "SELECT s.idStrategie, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.type, s.budgetTotal, s.gainEstime, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.justification, s.DureeTerme," +
                 "p.titleProj " +
                 "FROM strategies s " +
                 "LEFT JOIN projects p ON p.idProj = s.idProj " +
@@ -148,38 +148,39 @@ public class ServiceStrategie implements IService<Strategie> {
             strategie.setStatut(statusToSave);
         }
 
-        String sql = "UPDATE strategies SET versions=?, statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=?, type=?, budgetTotal=?, gainEstime=? " +
+        String sql = "UPDATE strategies SET , statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=?, type=?, budgetTotal=?, gainEstime=? ,DureeTerme=?" +
                 "WHERE idStrategie=?";
 
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-            ps.setInt(1, strategie.getVersion());
-            ps.setString(2, resolveDbStrategyStatus(cnx, statusToSave));
-            ps.setTimestamp(3, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
+            ps.setString(1, resolveDbStrategyStatus(cnx, statusToSave));
+            ps.setTimestamp(2, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
 
             // 4) idProj
             if (newProjId == null) ps.setNull(4, Types.INTEGER);
-            else ps.setInt(4, newProjId);
+            else ps.setInt(3, newProjId);
 
             // 5) idUser
             if (strategie.getIdUser() == null) ps.setNull(5, Types.INTEGER);
-            else ps.setInt(5, strategie.getIdUser());
+            else ps.setInt(4, strategie.getIdUser());
 
             // 6) nomStrategie
-            ps.setString(6, strategie.getNomStrategie().trim());
+            ps.setString(5, strategie.getNomStrategie().trim());
 
             // 7) justification
-            ps.setString(7, (justification == null || justification.isBlank()) ? null : justification.trim());
+            ps.setString(6, (justification == null || justification.isBlank()) ? null : justification.trim());
 
             // 8) type
-            ps.setString(8, strategie.getTypeStrategie().name());
+            ps.setString(7, strategie.getTypeStrategie().name());
 
             // 9) budgetTotal
-            ps.setDouble(9, strategie.getBudgetTotal());
+            ps.setDouble(8, strategie.getBudgetTotal());
 
             // 10) gainEstime
-            ps.setDouble(10, strategie.getGainEstime());
+            ps.setDouble(9, strategie.getGainEstime());
+
+            ps.setString(10, strategie.getDureeTerme().trim() );
 
             // 11) idStrategie (WHERE)
             ps.setInt(11, strategie.getId());
@@ -209,8 +210,8 @@ public class ServiceStrategie implements IService<Strategie> {
     }
 
     public Strategie getById(int idStrategie) {
-        String sql = "SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.budgetTotal, s.gainEstime, " +
-                "s.idProj, s.idUser, s.nomStrategie, s.type, s.justification, " +
+        String sql = "SELECT s.idStrategie, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.budgetTotal, s.gainEstime, " +
+                "s.idProj, s.idUser, s.nomStrategie, s.type, s.justification, s.DureeTerme," +
                 "p.titleProj " +
                 "FROM strategies s " +
                 "LEFT JOIN projects p ON p.idProj = s.idProj " +
@@ -233,7 +234,6 @@ public class ServiceStrategie implements IService<Strategie> {
     private Strategie map(ResultSet rs) throws SQLException {
         Strategie s = new Strategie();
         s.setId(rs.getInt("idStrategie"));
-        s.setVersion(rs.getInt("versions"));
         s.setStatut(StrategyStatut.fromDb(rs.getString("statusStrategie")));
         Timestamp created = rs.getTimestamp("CreatedAtS");
         s.setCreatedAt(created == null ? null : created.toLocalDateTime());
@@ -244,6 +244,8 @@ public class ServiceStrategie implements IService<Strategie> {
         s.setTypeStrategie(TypeStrategie.fromDb(rs.getString("type")));
         s.setBudgetTotal(rs.getDouble("budgetTotal"));
         s.setGainEstime(rs.getDouble("gainEstime"));
+        s.getDureeTerme();
+         // convert ms to days
         int idProj = rs.getInt("idProj");
         if (!rs.wasNull()) {
             Project p = new Project();
@@ -278,7 +280,6 @@ public class ServiceStrategie implements IService<Strategie> {
         if (s == null) throw new IllegalArgumentException("Strategie obligatoire.");
         if (s.getNomStrategie() == null || s.getNomStrategie().isBlank()) throw new IllegalArgumentException("Nom strategie obligatoire.");
         if (s.getProjet() == null || s.getProjet().getIdProj() <= 0) throw new IllegalArgumentException("Projet obligatoire.");
-        if (s.getVersion() <= 0) s.setVersion(1);
         if (s.getStatut() == null) s.setStatut(StrategyStatut.EN_COURS);
         if (s.getCreatedAt() == null) s.setCreatedAt(java.time.LocalDateTime.now());
         if (!create && s.getId() <= 0) throw new IllegalArgumentException("idStrategie invalide.");
@@ -287,6 +288,15 @@ public class ServiceStrategie implements IService<Strategie> {
         if (s.getBudgetTotal() > 1000000000) throw new IllegalArgumentException("Budget total trop élevé (max 1 milliard) il faut faire une demande de financement pour les projets de cette envergure.");
         if (s.getGainEstime() < 0) throw new IllegalArgumentException("Gain estime >= 0");
         if (s.getGainEstime() > 1000000000) throw new IllegalArgumentException("Gain estime trop élevé veuillez revoir votre estimation.");
+        try {
+            int duree = Integer.parseInt(s.getDureeTerme());
+            if (duree <= 0) {
+                throw new IllegalArgumentException("Durée du terme doit être supérieure à 0");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Durée du terme doit être un nombre entier représentant le nombre de jours.");
+        }
+
     }
 
     private String emptyToNull(String v) {
@@ -349,8 +359,8 @@ public class ServiceStrategie implements IService<Strategie> {
 
     public List<Strategie> getByProject(int projectId) {
         String sql = """
-    SELECT s.idStrategie, s.versions, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.budgetTotal, s.gainEstime,
-           s.idProj, s.idUser, s.nomStrategie, s.type,s.justification,
+    SELECT s.idStrategie, s.statusStrategie, s.CreatedAtS, s.lockedAt, s.budgetTotal, s.gainEstime,
+           s.idProj, s.idUser, s.nomStrategie, s.type,s.justification,s.DureeTerme,
            p.titleProj
     FROM strategies s
     LEFT JOIN projects p ON p.idProj = s.idProj
@@ -667,5 +677,17 @@ public class ServiceStrategie implements IService<Strategie> {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lecture objectives strategie: " + e.getMessage(), e);
         }
+    }
+
+    public void ValidationStrategie(Strategie s) {
+        String sql = "UPDATE strategies SET approbation=? WHERE idStrategie=?";
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+                PreparedStatement ps = cnx.prepareStatement(sql)) {
+                ps.setBoolean(1, s.getApprobation());
+                ps.setInt(2, s.getId());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException("Erreur validation strategie: " + e.getMessage(), e);
+            }
     }
 }

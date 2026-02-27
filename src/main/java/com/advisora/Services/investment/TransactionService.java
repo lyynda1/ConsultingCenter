@@ -1,6 +1,6 @@
 package com.advisora.Services.investment;
 
-import com.advisora.Model.invest.Transaction;
+import com.advisora.Model.investment.Transaction;
 import com.advisora.Services.IService;
 import com.advisora.enums.transactionStatut;
 import com.advisora.utils.MyConnection;

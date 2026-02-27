@@ -1,6 +1,6 @@
 package com.advisora.Services.investment;
 
-import com.advisora.Model.invest.Investment;
+import com.advisora.Model.investment.Investment;
 import com.advisora.Services.IService;
 import com.advisora.utils.MyConnection;
 

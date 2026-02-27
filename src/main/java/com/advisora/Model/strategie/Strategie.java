@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Strategie {
     private int id;
     private String nomStrategie;
-    private int version;
+
     private StrategyStatut statut;
     private LocalDateTime createdAt;
     private LocalDateTime lockedAt;
@@ -25,10 +25,12 @@ public class Strategie {
     private TypeStrategie typeStrategie;
     private double budgetTotal;
     private double gainEstime;
-
+    private String justifStrategie;
+    private String dureeTerme;
+    private boolean Approbation;
 
     public Strategie() {
-        this.version = 1;
+
         this.statut = StrategyStatut.EN_COURS;
         this.justification = "";
         this.typeStrategie = TypeStrategie.NULL;
@@ -50,13 +52,6 @@ public class Strategie {
         this.nomStrategie = nomStrategie;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
 
     public StrategyStatut getStatut() {
         return statut;
@@ -142,5 +137,25 @@ public class Strategie {
         return "#" + id + " - " + (nomStrategie == null ? "" : nomStrategie);
     }
 
+    public void setJustifStrategie(String trim) {
+        this.justifStrategie = trim;
+    }
+    public String getJustifStrategie() {
+        return justifStrategie;
+    }
 
+
+    public String getDureeTerme() {
+        return this.dureeTerme;
+    }
+    public void setDureeTerme(String dureeTerme) {
+        this.dureeTerme = dureeTerme;
+    }
+
+    public Boolean getApprobation() {
+        return this.Approbation;
+    }
+    public void setApprobation(Boolean approbation) {
+        this.Approbation = approbation;
+    }
 }

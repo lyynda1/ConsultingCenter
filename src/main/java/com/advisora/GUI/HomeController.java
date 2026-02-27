@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 
 public class HomeController {
     @FXML private Label lblRoleWelcome;
+    private Runnable onOpenGames;
 
     @FXML
     public void initialize() {
@@ -18,5 +19,15 @@ public class HomeController {
         };
         lblRoleWelcome.setText(roleText);
     }
-}
 
+    public void setOnOpenGames(Runnable onOpenGames) {
+        this.onOpenGames = onOpenGames;
+    }
+
+    @FXML
+    private void onOpenGames() {
+        if (onOpenGames != null) {
+            onOpenGames.run();
+        }
+    }
+}
