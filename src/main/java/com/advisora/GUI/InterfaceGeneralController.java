@@ -80,7 +80,7 @@ public class InterfaceGeneralController {
         initNavButtons();
 
         NotificationManager.getInstance()
-                .loadNotificationsForRole(u.getRole());
+                .loadNotificationsForUser(u.getRole(), u.getId());
         // Ã¢Å“â€¦ important to refresh data from DB
 
         updateNotificationBadge();
@@ -204,7 +204,11 @@ public class InterfaceGeneralController {
     @FXML
     private void handleOpenProjects() {
         try {
-            taskService.checkAndNotifyNearFinishAllProjects();
+            if (SessionContext.getCurrentRole() == UserRole.CLIENT) {
+                taskService.checkAndNotifyNearFinishForClientProjects(SessionContext.getCurrentUserId());
+            } else {
+                taskService.checkAndNotifyNearFinishAllProjects();
+            }
             loadProjectListIntoContent();
             setActiveNav(projectsBtn);
         } catch (Exception ex) {
@@ -442,4 +446,3 @@ public class InterfaceGeneralController {
     }
 
 }
-

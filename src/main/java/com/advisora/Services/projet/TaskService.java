@@ -132,7 +132,7 @@ public class TaskService {
                         "' statut=" + status +
                         ", fin prevue=" + dueDate +
                         ". Verifier avec le client si cette tache est finie.";
-                NotificationManager.getInstance().createIfNotExists(title, message);
+                NotificationManager.getInstance().createIfNotExists(title, message, null, projectId);
                 updateTaskWarningDate(task.getId(), today);
                 task.setLastWarningDate(Date.valueOf(today));
             }
@@ -149,6 +149,31 @@ public class TaskService {
                     int projectId = rs.getInt("project_id");
                     if (projectId > 0) {
                         checkAndNotifyNearFinishTasks(projectId);
+                    }
+                }
+            }
+            return null;
+        });
+    }
+
+    public void checkAndNotifyNearFinishForClientProjects(int clientId) {
+        if (clientId <= 0) throw new IllegalArgumentException("client_id invalide");
+        call(() -> {
+            String sql = """
+                    SELECT DISTINCT t.project_id
+                    FROM task t
+                    JOIN Projects p ON p.idProj = t.project_id
+                    WHERE p.idClient = ?
+                    """;
+            try (Connection cnx = MyConnection.getInstance().getConnection();
+                 PreparedStatement ps = cnx.prepareStatement(sql)) {
+                ps.setInt(1, clientId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int projectId = rs.getInt("project_id");
+                        if (projectId > 0) {
+                            checkAndNotifyNearFinishTasks(projectId);
+                        }
                     }
                 }
             }
