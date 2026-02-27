@@ -18,6 +18,7 @@ import java.util.List;
 public class NotificationManager {
     private static NotificationManager instance;
     private final ObservableList<Notification> notifications;
+    private Boolean audienceColumnsAvailableCache = null;
 
     // ✅ sound
     private final AudioClip ding;
@@ -44,19 +45,26 @@ public class NotificationManager {
     }
 
     public void addNotification(Notification notification) {
+        addNotification(notification, null);
+    }
 
+    public void addNotification(Notification notification, UserRole targetRole) {
+        if (notification == null) return;
         notification.setTimestamp(LocalDateTime.now());
         notifications.add(0, notification);
         System.out.println("ADD NOTIFICATION CALLED: " + notification.getTitle());
 
-
-        String sql = "INSERT INTO notification (title, description, dateNotification, isRead) VALUES (?, ?, NOW(), FALSE)";
-
         try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
-
+             PreparedStatement ps = cnx.prepareStatement(buildInsertSql(cnx, targetRole != null))) {
             ps.setString(1, notification.getTitle());
             ps.setString(2, notification.getMessage());
+            if (hasAudienceColumns(cnx)) {
+                if (targetRole == null) {
+                    ps.setNull(3, java.sql.Types.VARCHAR);
+                } else {
+                    ps.setString(3, targetRole.name());
+                }
+            }
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -69,21 +77,23 @@ public class NotificationManager {
     }
 
     public void createIfNotExists(String title, String message) {
+        createIfNotExists(title, message, null);
+    }
+
+    public void createIfNotExists(String title, String message, UserRole targetRole) {
         if (title == null || title.isBlank() || message == null || message.isBlank()) return;
 
-        String checkSql = """
-                SELECT 1
-                FROM notification
-                WHERE title = ?
-                  AND description = ?
-                  AND DATE(dateNotification) = CURDATE()
-                LIMIT 1
-                """;
-
         try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(checkSql)) {
+             PreparedStatement ps = cnx.prepareStatement(buildCheckSql(cnx, targetRole != null))) {
             ps.setString(1, title.trim());
             ps.setString(2, message.trim());
+            if (hasAudienceColumns(cnx)) {
+                if (targetRole == null) {
+                    ps.setNull(3, java.sql.Types.VARCHAR);
+                } else {
+                    ps.setString(3, targetRole.name());
+                }
+            }
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return;
             }
@@ -91,7 +101,7 @@ public class NotificationManager {
             throw new RuntimeException("Erreur verification notification: " + e.getMessage(), e);
         }
 
-        addNotification(new Notification(title.trim(), message.trim()));
+        addNotification(new Notification(title.trim(), message.trim()), targetRole);
     }
 
 
@@ -152,26 +162,99 @@ public class NotificationManager {
     }
 
     public void loadNotificationsForRole(UserRole role) {
-        String sql = "SELECT * FROM notification ORDER BY dateNotification DESC";
-
         try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(sql);
-             var rs = ps.executeQuery()) {
-
-            notifications.clear();
-
-            while (rs.next()) {
-                Notification n = new Notification(
-                        rs.getString("title"),
-                        rs.getString("description")
-                );
-                n.setRead(rs.getBoolean("isRead"));
-                n.setTimestamp(rs.getTimestamp("dateNotification").toLocalDateTime());
-                notifications.add(n);
+             PreparedStatement ps = cnx.prepareStatement(buildLoadByRoleSql(cnx, role));
+             ) {
+            if (role != null && hasAudienceColumns(cnx)) {
+                ps.setString(1, role.name());
             }
+            try (var rs = ps.executeQuery()) {
 
+                notifications.clear();
+
+                while (rs.next()) {
+                    Notification n = new Notification(
+                            rs.getString("title"),
+                            rs.getString("description")
+                    );
+                    n.setRead(rs.getBoolean("isRead"));
+                    n.setTimestamp(rs.getTimestamp("dateNotification").toLocalDateTime());
+                    notifications.add(n);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private String buildInsertSql(Connection cnx, boolean withRole) throws SQLException {
+        if (withRole && hasAudienceColumns(cnx)) {
+            return "INSERT INTO notification (title, description, dateNotification, isRead, target_role) VALUES (?, ?, NOW(), FALSE, ?)";
+        }
+        return "INSERT INTO notification (title, description, dateNotification, isRead) VALUES (?, ?, NOW(), FALSE)";
+    }
+
+    private String buildCheckSql(Connection cnx, boolean withRole) throws SQLException {
+        if (withRole && hasAudienceColumns(cnx)) {
+            return """
+                    SELECT 1
+                    FROM notification
+                    WHERE title = ?
+                      AND description = ?
+                      AND target_role = ?
+                      AND DATE(dateNotification) = CURDATE()
+                    LIMIT 1
+                    """;
+        }
+        return """
+                SELECT 1
+                FROM notification
+                WHERE title = ?
+                  AND description = ?
+                  AND DATE(dateNotification) = CURDATE()
+                LIMIT 1
+                """;
+    }
+
+    private String buildLoadByRoleSql(Connection cnx, UserRole role) throws SQLException {
+        if (role != null && hasAudienceColumns(cnx)) {
+            return """
+                    SELECT * FROM notification
+                    WHERE target_role IS NULL OR target_role = ?
+                    ORDER BY dateNotification DESC
+                    """;
+        }
+        return "SELECT * FROM notification ORDER BY dateNotification DESC";
+    }
+
+    private boolean hasAudienceColumns(Connection cnx) throws SQLException {
+        if (audienceColumnsAvailableCache != null) {
+            return audienceColumnsAvailableCache;
+        }
+        ensureAudienceColumns(cnx);
+        String sql = "SELECT 1 FROM information_schema.columns " +
+                "WHERE table_schema = DATABASE() AND table_name = 'notification' " +
+                "AND column_name = 'target_role' LIMIT 1";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             var rs = ps.executeQuery()) {
+            audienceColumnsAvailableCache = rs.next();
+            return audienceColumnsAvailableCache;
+        }
+    }
+
+    private void ensureAudienceColumns(Connection cnx) throws SQLException {
+        String checkSql = "SELECT 1 FROM information_schema.columns " +
+                "WHERE table_schema = DATABASE() AND table_name = 'notification' " +
+                "AND column_name = 'target_role' LIMIT 1";
+        try (PreparedStatement check = cnx.prepareStatement(checkSql);
+             ResultSet rs = check.executeQuery()) {
+            if (rs.next()) {
+                return;
+            }
+        }
+        try (PreparedStatement alter = cnx.prepareStatement(
+                "ALTER TABLE notification ADD COLUMN target_role VARCHAR(20) NULL AFTER isRead")) {
+            alter.executeUpdate();
         }
     }
 

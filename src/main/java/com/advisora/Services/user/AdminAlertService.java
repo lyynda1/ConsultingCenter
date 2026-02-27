@@ -1,6 +1,7 @@
 package com.advisora.Services.user;
 
 import com.advisora.Services.strategie.NotificationManager;
+import com.advisora.enums.UserRole;
 import com.advisora.utils.MyConnection;
 
 import java.sql.Connection;
@@ -33,7 +34,7 @@ public class AdminAlertService {
                 String title = "Inactivite gerant";
                 String desc = "Le gerant " + nom + " " + prenom + " (" + email + ") est inactif depuis 4 jours.";
 
-                notif.createIfNotExists(title, desc);
+                notif.createIfNotExists(title, desc, UserRole.ADMIN);
             }
 
             notif.notifyChanged();
