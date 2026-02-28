@@ -18,6 +18,14 @@ public class User {
     String email;
     String password;
     String nom;
+    private String facePath;
+
+    public String getFacePath() { return facePath; }
+    public void setFacePath(String facePath) { this.facePath = facePath; }
+
+    public boolean hasFace() {
+        return facePath != null && !facePath.trim().isEmpty();
+    }
     String prenom;
     String numTel;
     String dateN;

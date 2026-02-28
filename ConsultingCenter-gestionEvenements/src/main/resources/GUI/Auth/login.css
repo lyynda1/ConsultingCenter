@@ -1,30 +1,19 @@
+/* ========= App Background ========= */
 .app{
     -fx-font-family: "Inter", "Segoe UI", Arial;
     -fx-font-size: 13px;
     -fx-background-color: #F6F3E7;
 }
 
+/* ========= Cards ========= */
 .card{
     -fx-background-color: rgba(255,255,255,0.92);
     -fx-background-radius: 18;
     -fx-border-radius: 18;
     -fx-border-color: rgba(0,0,0,0.06);
     -fx-border-width: 1;
-    -fx-padding: 22;
+    -fx-padding: 24;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.18, 0, 10);
-}
-.eye-btn{
-    -fx-background-color: transparent;
-    -fx-padding: 0 12 0 12;
-    -fx-cursor: hand;
-}
-.text-field.input, .password-field.input{
-    -fx-padding: 0.75em 3em 0.75em 0.9em;
-}
-
-/* pour laisser la place au bouton à droite */
-.text-field.input, .password-field.input {
-    -fx-padding: 0.75em 3em 0.75em 0.9em;
 }
 
 .brand-card{
@@ -37,37 +26,32 @@
     -fx-min-width: 360;
 }
 
+/* ========= Titles / Text ========= */
 .brand-title{
     -fx-text-fill: #111827;
     -fx-font-weight: 900;
     -fx-font-size: 18px;
 }
-
 .brand-sub{
     -fx-text-fill: #6B7280;
     -fx-font-size: 12px;
 }
-
 .card-title{
     -fx-text-fill: #111827;
     -fx-font-weight: 900;
     -fx-font-size: 18px;
 }
+.label{ -fx-text-fill: #1F2937; }
+.muted{ -fx-text-fill: #6B7280; -fx-font-size: 12px; }
+.hint{ -fx-text-fill: #6B7280; -fx-font-size: 12px; }
 
-.label{
-    -fx-text-fill: #1F2937;
+.field-error{
+    -fx-text-fill: #d32f2f;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
 }
 
-.muted{
-    -fx-text-fill: #6B7280;
-    -fx-font-size: 12px;
-}
-
-.hint{
-    -fx-text-fill: #6B7280;
-    -fx-font-size: 12px;
-}
-
+/* ========= Inputs ========= */
 .input{
     -fx-background-color: rgba(255,255,255,0.95);
     -fx-text-fill: #111827;
@@ -77,6 +61,11 @@
     -fx-border-color: rgba(0,0,0,0.10);
     -fx-border-width: 1;
     -fx-padding: 10 12 10 12;
+}
+
+/* space for the eye button */
+.text-field.input, .password-field.input{
+    -fx-padding: 0.75em 3em 0.75em 0.9em;
 }
 
 .input:focused{
@@ -89,36 +78,154 @@
     -fx-border-width: 1.5;
 }
 
-.field-error{
-    -fx-text-fill: #d32f2f;
-    -fx-font-size: 11px;
-    -fx-font-weight: 700;
+/* ========= Divider ========= */
+.divider-line{
+    -fx-pref-height: 1;
+    -fx-min-height: 1;
+    -fx-background-color: rgba(0,0,0,0.10);
 }
 
+/* ========= Buttons (force remove Modena grey look) ========= */
+.button{
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.button .text{ -fx-fill: -fx-text-fill; }
+
+/* Login (Green) */
 .btn-primary{
-    -fx-cursor: hand;
-    -fx-font-weight: 900;
-    -fx-background-radius: 12;
-    -fx-padding: 10 14 10 14;
     -fx-background-color: #2E7D60;
     -fx-text-fill: white;
-}
-
-.btn-primary:hover{
-    -fx-background-color: #276B53;
-}
-
-.btn-outline{
-    -fx-cursor: hand;
     -fx-font-weight: 900;
-    -fx-background-radius: 12;
-    -fx-padding: 10 14 10 14;
-    -fx-background-color: transparent;
+    -fx-background-radius: 14;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+.btn-primary:hover{ -fx-background-color: #276B53; }
+
+/* Ghost pill (Clear + social buttons) */
+.btn-ghost{
+    -fx-background-color: white;
     -fx-text-fill: #111827;
-    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-font-weight: 800;
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(31,31,31,0.14);
+    -fx-border-radius: 14;
     -fx-border-width: 1;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+.btn-ghost:hover{ -fx-background-color: rgba(31,31,31,0.04); }
+
+/* Full width primary */
+.btn-block{ -fx-max-width: Infinity; }
+
+/* Eye icon button */
+.icon-btn{
+    -fx-background-color: transparent;
+    -fx-background-radius: 12;
+    -fx-padding: 4 10 4 10;
+    -fx-cursor: hand;
+}
+.icon-btn:hover{ -fx-background-color: rgba(31,31,31,0.05); }
+
+/* Social area */
+.social-box{
+    -fx-fill-width: true;
 }
 
-.btn-outline:hover{
-    -fx-background-color: rgba(0,0,0,0.04);
+/* Make social buttons WIDE, centered, nice spacing */
+.social-box .button.btn-ghost{
+    -fx-max-width: Infinity;
+    -fx-pref-height: 46;
+    -fx-alignment: CENTER;          /* overall centered */
+    -fx-content-display: LEFT;      /* icon before text */
+    -fx-graphic-text-gap: 12;
+}
+
+/* Clickable link label */
+.link-label{
+    -fx-text-fill: #2E7D60;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.link-label:hover{ -fx-underline: true; }
+.link-black{
+    -fx-text-fill: #111827; /* black-ish */
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+.link-black:hover{
+    -fx-underline: true;
+    -fx-opacity: 0.9;
+}
+
+.link-green{
+    -fx-text-fill: #2E7D60;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.link-green:hover{
+    -fx-underline: true;
+    -fx-opacity: 0.95;
+}
+/* ========= Auth Small Pages ========= */
+.auth-wrap{
+    -fx-alignment: center;
+}
+
+.auth-card{
+    -fx-max-width: 460;
+}
+
+/* Info / success message (for code sent / success reset) */
+.info{
+    -fx-text-fill: #2E7D60;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+/* Optional: slightly nicer secondary hint */
+.hint-strong{
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+/* ========= Checkbox (Remember me) ========= */
+.check-box{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+.check-box{
+    -fx-font-size: 10px;
+    -fx-opacity: 0.95;
+}
+.check-box .box{
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-background-radius: 6;
+    -fx-border-radius: 4;
+    -fx-border-color: rgba(0,0,0,0.18);
+    -fx-border-width: 1;
+    -fx-padding: 3;
+}
+
+.check-box:hover .box{
+    -fx-border-color: rgba(46,125,96,0.45);
+}
+
+.check-box:selected .box{
+    -fx-background-color: #2E7D60;
+    -fx-border-color: #2E7D60;
+}
+
+.check-box:selected .mark{
+    -fx-background-color: white;
+}
+
+/* Focus ring clean (like your buttons) */
+.check-box:focused .box{
+    -fx-effect: dropshadow(gaussian, rgba(46,125,96,0.25), 10, 0.20, 0, 0);
 }

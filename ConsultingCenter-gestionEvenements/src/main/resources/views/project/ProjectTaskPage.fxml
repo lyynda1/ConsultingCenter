@@ -78,7 +78,14 @@
 
             <TextField fx:id="txtTaskTitle" promptText="Task title" styleClass="task-input"/>
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <TextField fx:id="txtTaskWeight" promptText="Importance" styleClass="task-input task-weight-input"/>
+                <VBox spacing="4">
+                    <Label text="Importance" styleClass="task-field-label"/>
+                    <TextField fx:id="txtTaskWeight" promptText="Importance" styleClass="task-input task-weight-input"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Duree (jours)" styleClass="task-field-label"/>
+                    <TextField fx:id="txtTaskDuration" promptText="Duree (jours)" styleClass="task-input task-weight-input"/>
+                </VBox>
                 <ComboBox fx:id="cbStatus" prefWidth="220" styleClass="task-status-combo"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="New" onAction="#onNewTask" styleClass="task-btn-ghost"/>

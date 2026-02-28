@@ -91,22 +91,36 @@
 
 .task-card {
     -fx-background-color: rgba(255,255,255,0.98);
-    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-color: rgba(17,24,39,0.12);
     -fx-border-width: 1;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 11 12 12 12;
+    -fx-effect: dropshadow(gaussian, rgba(17,24,39,0.06), 8, 0.16, 0, 2);
 }
 
-.task-card-meta {
+.task-card-meta-row {
+    -fx-alignment: center-left;
+}
+
+.task-meta-pill {
+    -fx-background-color: rgba(233,123,44,0.13);
+    -fx-text-fill: #8D4B16;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 999;
+    -fx-padding: 3 8 3 8;
+}
+
+.task-card-date {
     -fx-text-fill: #6B7280;
-    -fx-font-size: 12px;
-    -fx-font-weight: 600;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
 }
 
 .task-card-title {
     -fx-text-fill: #111827;
-    -fx-font-size: 14px;
+    -fx-font-size: 14.5px;
     -fx-font-weight: 800;
 }
 
@@ -130,6 +144,12 @@
 
 .task-weight-input {
     -fx-pref-width: 140;
+}
+
+.task-field-label {
+    -fx-text-fill: #4B5563;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
 }
 
 .task-status-combo {

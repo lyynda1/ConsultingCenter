@@ -1,8 +1,5 @@
 package com.advisora.Services.ressource;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -17,6 +14,9 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class ShopPaymentGatewayService {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final HttpClient HTTP = HttpClient.newBuilder()
@@ -26,8 +26,10 @@ public class ShopPaymentGatewayService {
     private static final String STRIPE_CHECKOUT_CREATE_URL = "https://api.stripe.com/v1/checkout/sessions";
     private static final String STRIPE_CHECKOUT_VERIFY_URL = "https://api.stripe.com/v1/checkout/sessions/";
     private static final String STRIPE_PAYMENT_INTENT_VERIFY_URL = "https://api.stripe.com/v1/payment_intents/";
-    private static final String DEFAULT_STRIPE_PUBLISHABLE_KEY = "";
-    private static final String DEFAULT_STRIPE_SECRET_KEY = "";
+    private static final String DEFAULT_STRIPE_PUBLISHABLE_KEY =
+            "api remplacee pour securite, merci de configurer votre propre cle dans les variables d'environnement STRIPE_PUBLISHABLE_KEY ou STRIPE_KEY";
+    private static final String DEFAULT_STRIPE_SECRET_KEY =
+            "api remplacee pour securite, merci de configurer votre propre cle dans les variables d'environnement STRIPE_SECRET_KEY ou STR";
 
     public PaymentInitResult createPayment(String provider, double amountMoney, String clientRef) {
         String prefix = normalizeProviderPrefix(provider);

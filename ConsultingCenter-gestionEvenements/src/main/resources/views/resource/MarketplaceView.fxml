@@ -23,6 +23,7 @@
         <Button text="Publier une annonce" onAction="#onOpenSellWindow" styleClass="btn-primary"/>
         <Button text="Mes annonces" onAction="#onOpenMyListingsWindow" styleClass="btn-ghost"/>
         <Button text="Refresh shop" onAction="#onRefresh" styleClass="btn-ghost"/>
+        <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
     </HBox>
     <Label text="Parcours avis: apres un achat confirme, allez dans Mes achats pour noter la ressource (1-5 etoiles + commentaire)." styleClass="hint"/>
 

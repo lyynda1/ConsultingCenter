@@ -7,6 +7,7 @@ import com.advisora.Model.strategie.Strategie;
 import com.advisora.Services.IService;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
+import com.advisora.enums.UserRole;
 import com.advisora.utils.MyConnection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -424,10 +425,10 @@ public class ServiceStrategie implements IService<Strategie> {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur mise à jour décision strategie: " + e.getMessage(), e);
         }
-        NotificationManager.getInstance().addNotification(new Notification(
-                "Décision strategie",
-                "La strategie a été " + (accepted ? "acceptée" : "refusée")
-        ));
+        String title = "Décision strategie";
+        String message = "La strategie a été " + (accepted ? "acceptée" : "refusée");
+        NotificationManager.getInstance().addNotification(new Notification(title, message), UserRole.GERANT);
+        NotificationManager.getInstance().addNotification(new Notification(title, message), UserRole.ADMIN);
     }
 
     public boolean hasActiveStrategyForProject(int projectId) {

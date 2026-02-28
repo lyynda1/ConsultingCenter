@@ -5,9 +5,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.String?>
 
 <BorderPane prefHeight="720" prefWidth="1280"
-            stylesheets="@login.css"
+            stylesheets="@/GUI/Auth/login.css"
             styleClass="app"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -19,56 +20,111 @@
                 <Insets top="24" right="24" bottom="24" left="24"/>
             </padding>
 
+            <!-- Brand card -->
             <VBox alignment="CENTER" spacing="12" styleClass="brand-card">
                 <ImageView fitHeight="120" preserveRatio="true">
                     <image>
-                        <Image url="@../Admin/icons/ADVISORA.png" />
+                        <Image url="@/GUI/Admin/icons/ADVISORA.png"/>
                     </image>
                 </ImageView>
                 <Label text="Welcome back" styleClass="brand-title"/>
                 <Label text="Connect to continue" styleClass="brand-sub"/>
             </VBox>
 
-            <VBox spacing="14" styleClass="card" prefWidth="420">
+            <!-- Login card -->
+            <VBox spacing="16" styleClass="card" prefWidth="440">
+
                 <Label text="Login" styleClass="card-title"/>
                 <Label text="Enter your email and password" styleClass="muted"/>
 
+
+                <!-- Email -->
                 <VBox spacing="6">
                     <Label text="Email" styleClass="label"/>
                     <TextField fx:id="emailField" promptText="ex: aa@example.com" styleClass="input"/>
                     <Label fx:id="emailError" text="" visible="false" managed="false" styleClass="field-error"/>
                 </VBox>
 
+                <!-- Password -->
                 <VBox spacing="6">
                     <Label text="Password" styleClass="label"/>
 
                     <StackPane>
                         <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="input"/>
+                        <TextField fx:id="passwordVisibleField" promptText="••••••••"
+                                   styleClass="input" visible="false" managed="false"/>
 
-                        <TextField fx:id="passwordVisibleField" promptText="••••••••" styleClass="input"
-                                   visible="false" managed="false"/>
                         <Button fx:id="togglePasswordBtn" onAction="#handleTogglePassword"
-                                styleClass="eye-btn" StackPane.alignment="CENTER_RIGHT">
+                                styleClass="icon-btn" StackPane.alignment="CENTER_RIGHT">
                             <graphic>
                                 <ImageView fx:id="eyeIcon" fitWidth="18" fitHeight="18" preserveRatio="true"/>
                             </graphic>
                         </Button>
-
                     </StackPane>
-
+                    <HBox alignment="CENTER_LEFT">
+                        <CheckBox fx:id="rememberMe" text="Remember me (7 days)" />
+                    </HBox>
                     <Label fx:id="passwordError" text="" visible="false" managed="false" styleClass="field-error"/>
                 </VBox>
 
                 <Label fx:id="loginError" text="" visible="false" managed="false" styleClass="field-error"/>
 
-                <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button text="Clear" onAction="#handleClear" styleClass="btn-outline"/>
-                    <Button text="Login" onAction="#handleLogin" styleClass="btn-primary"/>
+                <!-- Primary action -->
+                <Button text="Login" onAction="#handleLogin">
+                    <styleClass>
+                        <String fx:value="btn-primary"/>
+                        <String fx:value="btn-block"/>
+                    </styleClass>
+                </Button>
+
+                <!-- Secondary row -->
+                <HBox alignment="CENTER_RIGHT" spacing="12">
+                    <Label text="Clear" styleClass="link-black" onMouseClicked="#handleClear"/>
+                    <!-- REAL LINK LABEL -->
+                    <Label text="Create account" onMouseClicked="#handleOpenSignup" styleClass="link-label"/>
+                    <Label text="Forgot password?" onMouseClicked="#handleOpenForgotPassword" styleClass="link-green"/>
                 </HBox>
 
-                <Label fx:id="statusLabel" text="Ready." styleClass="hint"/>
-            </VBox>
+                <!-- Divider -->
+                <HBox alignment="CENTER" spacing="12">
+                    <Region styleClass="divider-line" HBox.hgrow="ALWAYS"/>
+                    <Label text="or continue with" styleClass="muted"/>
+                    <Region styleClass="divider-line" HBox.hgrow="ALWAYS"/>
+                </HBox>
 
+                <!-- Social / Face -->
+                <VBox spacing="10" styleClass="social-box" fillWidth="true">
+                    <Button onAction="#handleFaceLogin" styleClass="btn-ghost">
+                        <graphic>
+                            <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                                <image><Image url="@/GUI/Admin/icons/face.png"/></image>
+                            </ImageView>
+                        </graphic>
+                        <text>Sign in with Face</text>
+                    </Button>
+
+                    <Button onAction="#handleGoogleLogin" styleClass="btn-ghost">
+                        <graphic>
+                            <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                                <image><Image url="@/GUI/Admin/icons/google.png"/></image>
+                            </ImageView>
+                        </graphic>
+                        <text>Sign in with Google</text>
+                    </Button>
+
+                    <Button onAction="#handleFacebookLogin" styleClass="btn-ghost">
+                        <graphic>
+                            <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                                <image><Image url="@/GUI/Admin/icons/facebook.png"/></image>
+                            </ImageView>
+                        </graphic>
+                        <text>Sign in with Facebook</text>
+                    </Button>
+                </VBox>
+
+                <Label fx:id="statusLabel" text="Ready." styleClass="hint"/>
+
+            </VBox>
         </HBox>
     </center>
 </BorderPane>

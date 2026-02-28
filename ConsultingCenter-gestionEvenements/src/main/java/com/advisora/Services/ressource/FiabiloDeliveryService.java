@@ -1,8 +1,5 @@
 package com.advisora.Services.ressource;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -18,9 +15,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class FiabiloDeliveryService {
     private static final String API_URL = "https://www.fiabilo.tn/api/v1/post.php";
-    private static final String DEFAULT_TOKEN = "fabrikamod-NWBOH9SL0HLH2PTAZNXJ96UQGEDWTSBO";
+    private static final String DEFAULT_TOKEN = "api remplace pour sécurité";
     private static final String DEFAULT_CP = "1000";
 
     private static final ObjectMapper JSON = new ObjectMapper();

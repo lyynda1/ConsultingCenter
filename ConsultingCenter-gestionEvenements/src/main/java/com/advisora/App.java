@@ -6,6 +6,9 @@ Role: Application bootstrap/entrypoint
 
 package com.advisora;
 
+import com.advisora.Services.projet.TaskService;
+import com.advisora.Services.user.AdminAlertService;
+import com.advisora.Services.user.UserService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +18,10 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
+        seedDefaultAdmin();
+        seedDemoTasksForNotifications();
+        scanAdminAlerts();
+
         String startView = "/GUI/Auth/login.fxml";
         FXMLLoader loader = new FXMLLoader(getClass().getResource(startView));
         Parent root = loader.load();
@@ -24,5 +31,42 @@ public class App extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+    }
+
+    private void seedDefaultAdmin() {
+        String adminEmail = System.getenv("ADVISORA_ADMIN_EMAIL");
+        if (adminEmail == null || adminEmail.isBlank()) adminEmail = "admin@advisora.local";
+
+        String adminPassword = System.getenv("ADVISORA_ADMIN_PASSWORD");
+        if (adminPassword == null || adminPassword.isBlank()) adminPassword = "Admin123!";
+
+        try {
+            new UserService().ensureDefaultAdminAccount(adminEmail, adminPassword);
+            System.out.println("[BOOT] admin account ensured for email: " + adminEmail);
+        } catch (Exception e) {
+            System.err.println("[BOOT] admin seed skipped: " + e.getMessage());
+        }
+    }
+
+    private void scanAdminAlerts() {
+        try {
+            new AdminAlertService().scanInactiveManagers();
+            System.out.println("[BOOT] admin alerts scan complete");
+        } catch (Exception e) {
+            System.err.println("[BOOT] admin alerts scan skipped: " + e.getMessage());
+        }
+    }
+
+    private void seedDemoTasksForNotifications() {
+        String enabled = System.getenv("ADVISORA_SEED_TASK_ALERTS");
+        boolean run = enabled == null || enabled.isBlank() || "1".equals(enabled) || "true".equalsIgnoreCase(enabled);
+        if (!run) return;
+
+        try {
+            int n = new TaskService().seedDemoTasksForNotifications();
+            System.out.println("[BOOT] demo tasks for notifications inserted: " + n);
+        } catch (Exception e) {
+            System.err.println("[BOOT] demo task seed skipped: " + e.getMessage());
+        }
     }
 }

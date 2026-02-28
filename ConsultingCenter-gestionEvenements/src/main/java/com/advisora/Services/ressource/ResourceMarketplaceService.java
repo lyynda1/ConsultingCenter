@@ -38,6 +38,7 @@ public class ResourceMarketplaceService {
     private static final String DELIVERY_STATUS_PREPARING = "EN_PREPARATION";
     private static final String DELIVERY_STATUS_SENT = "ENVOYEE";
     private static final String OPENVERSE_IMAGE_API = "https://api.openverse.org/v1/images/";
+    private static final String WIKIMEDIA_IMAGE_API = "https://commons.wikimedia.org/w/api.php";
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final HttpClient HTTP = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -1161,50 +1162,184 @@ public class ResourceMarketplaceService {
         return "resource";
     }
 
-    private String buildMarketplaceImageUrl(String resourceName) {
-        String base = (resourceName == null || resourceName.isBlank()) ? "resource product" : resourceName.trim();
-        String query = base + " product item ecommerce";
-        String encoded = URLEncoder.encode(query, StandardCharsets.UTF_8);
-        return "https://loremflickr.com/640/360/" + encoded + "?lock=" + Math.abs(query.hashCode());
+    private String buildMarketplaceImageUrl(String resourceName, String note) {
+        String tags = buildLoremFlickrTags(resourceName, note);
+        if (tags.isBlank()) {
+            tags = "product,item,ecommerce";
+        }
+        return "https://loremflickr.com/640/360/" + tags + "?lock=" + Math.abs(tags.hashCode());
+    }
+
+    public String resolveMarketplaceImageForDisplay(String currentImageUrl, String resourceName, String note) {
+        String direct = normalizeImageUrl(currentImageUrl);
+        if (!isBlank(direct) && isLocalUploadedImage(direct)) {
+            return direct;
+        }
+        return resolveMarketplaceImageUrl(resourceName, note);
     }
 
     private String resolveMarketplaceImageUrl(String resourceName, String note) {
-        String query = buildOpenverseQuery(resourceName, note);
-        if (!query.isBlank()) {
+        List<String> queries = buildOpenverseQueryCandidates(resourceName, note);
+        for (String query : queries) {
             String cacheKey = query.toLowerCase(Locale.ROOT);
             String cached = openverseCache.get(cacheKey);
-            if (cached != null && !cached.isBlank()) {
+            if (!isBlank(cached)) {
                 return cached;
             }
+
             String apiImage = fetchOpenverseImage(query);
-            if (apiImage != null && !apiImage.isBlank()) {
+            if (isBlank(apiImage)) {
+                apiImage = fetchWikimediaImage(query);
+            }
+            if (!isBlank(apiImage)) {
                 openverseCache.put(cacheKey, apiImage);
                 return apiImage;
             }
         }
-        return buildMarketplaceImageUrl(resourceName);
+        return buildMarketplaceImageUrl(resourceName, note);
     }
 
-    private String buildOpenverseQuery(String resourceName, String note) {
+    private List<String> buildOpenverseQueryCandidates(String resourceName, String note) {
         String name = normalizeQueryPart(resourceName);
         String description = normalizeQueryPart(note);
-        LinkedHashSet<String> chunks = new LinkedHashSet<>();
+        LinkedHashSet<String> out = new LinkedHashSet<>();
+        LinkedHashSet<String> aliases = inferSemanticImageAliases(name + " " + description);
+
+        for (String alias : aliases) {
+            out.add(alias + " product photo");
+            out.add(alias + " isolated product");
+            out.add(alias + " ecommerce item");
+        }
+
         if (!name.isBlank()) {
-            chunks.add(name);
+            out.add(name + " product");
+            out.add(name);
         }
         if (!description.isBlank()) {
-            String shortDesc = description.length() > 80 ? description.substring(0, 80) : description;
-            chunks.add(shortDesc);
+            out.add(truncateWords(description, 6) + " product");
         }
-        chunks.add("product");
-        return String.join(" ", chunks).trim();
+        if (!name.isBlank() && !description.isBlank()) {
+            out.add(name + " " + truncateWords(description, 4));
+        }
+        out.add("product item");
+
+        List<String> queries = new ArrayList<>();
+        for (String q : out) {
+            String cleaned = normalizeQueryPart(q);
+            if (!cleaned.isBlank()) {
+                queries.add(cleaned);
+            }
+        }
+        return queries;
+    }
+
+    private String buildLoremFlickrTags(String resourceName, String note) {
+        LinkedHashSet<String> tags = new LinkedHashSet<>();
+        String base = normalizeQueryPart(resourceName);
+        String extra = normalizeQueryPart(note);
+        LinkedHashSet<String> aliases = inferSemanticImageAliases(base + " " + extra);
+
+        for (String alias : aliases) {
+            for (String token : alias.split("\\s+")) {
+                String t = token.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9-]", "");
+                if (t.length() >= 3) {
+                    tags.add(t);
+                }
+                if (tags.size() >= 5) {
+                    break;
+                }
+            }
+            if (tags.size() >= 5) {
+                break;
+            }
+        }
+
+        for (String token : (base + " " + truncateWords(extra, 3)).trim().split("\\s+")) {
+            String t = token.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9-]", "");
+            if (t.length() >= 3) {
+                tags.add(t);
+            }
+            if (tags.size() >= 5) {
+                break;
+            }
+        }
+
+        tags.add("product");
+        tags.add("item");
+        return String.join(",", tags);
+    }
+
+    private LinkedHashSet<String> inferSemanticImageAliases(String text) {
+        LinkedHashSet<String> aliases = new LinkedHashSet<>();
+        String lower = safeLower(normalizeQueryPart(text));
+
+        if (containsAny(lower, "montre", "watch", "swatch", "horloge")) {
+            aliases.add("watch");
+            aliases.add("wristwatch");
+        }
+        if (containsAny(lower, "bois", "wood", "timber", "lumber")) {
+            aliases.add("wood material");
+            aliases.add("timber plank");
+        }
+        if (containsAny(lower, "ordinateur", "laptop", "computer", "pc")) {
+            aliases.add("laptop");
+            aliases.add("computer device");
+        }
+        if (containsAny(lower, "projecteur", "projector", "beamer")) {
+            aliases.add("projector");
+        }
+        if (containsAny(lower, "imprimante", "printer")) {
+            aliases.add("printer");
+        }
+        if (containsAny(lower, "telephone", "phone", "smartphone", "mobile")) {
+            aliases.add("smartphone");
+        }
+        if (containsAny(lower, "table", "desk")) {
+            aliases.add("desk table");
+        }
+        if (containsAny(lower, "chaise", "chair", "seat")) {
+            aliases.add("chair furniture");
+        }
+        if (containsAny(lower, "camera", "cam", "photo")) {
+            aliases.add("camera device");
+        }
+        if (containsAny(lower, "casque", "headset", "headphone")) {
+            aliases.add("headphones");
+        }
+        return aliases;
+    }
+
+    private boolean containsAny(String text, String... keywords) {
+        if (isBlank(text) || keywords == null) {
+            return false;
+        }
+        for (String keyword : keywords) {
+            if (keyword != null && !keyword.isBlank() && text.contains(keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String truncateWords(String text, int maxWords) {
+        if (isBlank(text) || maxWords <= 0) {
+            return "";
+        }
+        String[] tokens = text.trim().split("\\s+");
+        int size = Math.min(tokens.length, maxWords);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            if (i > 0) sb.append(' ');
+            sb.append(tokens[i]);
+        }
+        return sb.toString().trim();
     }
 
     private String fetchOpenverseImage(String query) {
         try {
             String endpoint = OPENVERSE_IMAGE_API
                     + "?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
-                    + "&format=json&page_size=20";
+                    + "&page_size=20&mature=false";
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(endpoint))
                     .timeout(Duration.ofSeconds(15))
@@ -1241,6 +1376,103 @@ public class ResourceMarketplaceService {
         } catch (Exception ignored) {
             return null;
         }
+    }
+
+    private String fetchWikimediaImage(String query) {
+        try {
+            String endpoint = WIKIMEDIA_IMAGE_API
+                    + "?action=query"
+                    + "&generator=search"
+                    + "&gsrnamespace=6"
+                    + "&gsrlimit=20"
+                    + "&prop=imageinfo"
+                    + "&iiprop=url"
+                    + "&iiurlwidth=640"
+                    + "&format=json"
+                    + "&origin=*"
+                    + "&gsrsearch=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(endpoint))
+                    .timeout(Duration.ofSeconds(15))
+                    .header("Accept", "application/json")
+                    .header("User-Agent", "Advisora-MiniShop/1.0")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                return null;
+            }
+
+            JsonNode pages = JSON.readTree(response.body()).path("query").path("pages");
+            if (!pages.isObject()) {
+                return null;
+            }
+
+            int bestScore = Integer.MIN_VALUE;
+            String bestUrl = null;
+            var fields = pages.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> page = fields.next();
+                JsonNode node = page.getValue();
+                JsonNode imageInfo = node.path("imageinfo");
+                if (!imageInfo.isArray() || imageInfo.isEmpty()) {
+                    continue;
+                }
+                JsonNode first = imageInfo.get(0);
+                String thumb = text(first, "thumburl");
+                String direct = text(first, "url");
+                String candidate = !isBlank(thumb) ? thumb : direct;
+                if (!isProbableImageUrl(candidate)) {
+                    continue;
+                }
+                int score = scoreWikimediaCandidate(node, candidate, query);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestUrl = candidate;
+                }
+            }
+            return bestUrl;
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private int scoreWikimediaCandidate(JsonNode item, String url, String query) {
+        String title = safeLower(text(item, "title"));
+        String q = safeLower(query);
+        int score = 0;
+
+        for (String token : q.split("\\s+")) {
+            if (token.length() >= 3 && title.contains(token)) {
+                score += 2;
+            }
+        }
+
+        JsonNode imageInfo = item.path("imageinfo");
+        if (imageInfo.isArray() && !imageInfo.isEmpty()) {
+            JsonNode first = imageInfo.get(0);
+            int width = first.path("thumbwidth").asInt(first.path("width").asInt(0));
+            if (width >= 1200) score += 3;
+            else if (width >= 800) score += 2;
+            else if (width >= 500) score += 1;
+        }
+
+        String loweredUrl = safeLower(url);
+        if (loweredUrl.contains(".svg") || loweredUrl.contains("icon") || loweredUrl.contains("logo")) {
+            score -= 4;
+        }
+        if (title.contains("logo") || title.contains("icon") || title.contains("symbol")
+                || title.contains("vector") || title.contains("illustration")
+                || title.contains("meme") || title.contains("poster")) {
+            score -= 5;
+        }
+        if (title.contains("product") || title.contains("item") || title.contains("watch")
+                || title.contains("laptop") || title.contains("phone") || title.contains("table")) {
+            score += 2;
+        }
+        return score;
     }
 
     private String pickImageUrl(JsonNode item) {
@@ -1332,6 +1564,13 @@ public class ResourceMarketplaceService {
         }
         String u = safeLower(url);
         return u.startsWith("http://") || u.startsWith("https://");
+    }
+
+    private boolean isLocalUploadedImage(String url) {
+        String u = safeLower(url);
+        return u.startsWith("file:/")
+                || u.contains("/uploads/marketplace/")
+                || u.contains("\\uploads\\marketplace\\");
     }
 
     private String cleanupOpenverseMediaUrl(String url) {

@@ -72,12 +72,16 @@ public class MarketplaceController {
     private final ObservableList<ResourceMarketListing> marketBuyData = FXCollections.observableArrayList();
     private final ObservableList<ResourceMarketOrder> myOrdersData = FXCollections.observableArrayList();
     private final Map<String, Image> imageCache = new HashMap<>();
+    private final Map<Integer, String> resolvedImageUrlCache = new HashMap<>();
+    private final Map<Integer, String> reviewDraftByOrderId = new HashMap<>();
     private final Map<Integer, List<ResourceMarketReview>> recentReviewsByListing = new HashMap<>();
     private Timeline marketAutoRefreshTimeline;
     private String lastMarketSnapshot = "";
     private String lastOrdersSnapshot = "";
     private double currentWalletBalance;
     private int selectedReviewStars = 5;
+    private int activeReviewOrderId = -1;
+    private boolean suppressReviewDraftWrite;
 
     @FXML
     public void initialize() {
@@ -113,9 +117,13 @@ public class MarketplaceController {
                     setGraphic(buildMarketOrderCard(item));
                 }
             });
-            listMyMarketOrders.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> updateReviewActionState(newV));
+            listMyMarketOrders.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+                rememberReviewDraft(oldV);
+                updateReviewActionState(newV);
+            });
 
             setupReviewStarsUi();
+            bindReviewDraftListener();
 
             if (txtBuySearch != null) {
                 txtBuySearch.textProperty().addListener((obs, oldV, newV) -> applyBuyFilter(newV));
@@ -141,6 +149,21 @@ public class MarketplaceController {
     @FXML
     private void onRefresh() {
         refreshAll();
+    }
+
+    @FXML
+    private void onClose() {
+        Window window = null;
+        if (tabShop != null && tabShop.getScene() != null) {
+            window = tabShop.getScene().getWindow();
+        } else if (listMarketBuy != null && listMarketBuy.getScene() != null) {
+            window = listMarketBuy.getScene().getWindow();
+        } else if (lblStatus != null && lblStatus.getScene() != null) {
+            window = lblStatus.getScene().getWindow();
+        }
+        if (window instanceof Stage stage) {
+            stage.close();
+        }
     }
 
     @FXML
@@ -223,6 +246,7 @@ public class MarketplaceController {
             if (txtReviewComment != null) {
                 txtReviewComment.clear();
             }
+            reviewDraftByOrderId.remove(selectedOrder.getIdOrder());
             refreshAll();
             restoreOrderSelection(selectedOrderId);
             updateReviewActionState(listMyMarketOrders == null ? null : listMyMarketOrders.getSelectionModel().getSelectedItem());
@@ -260,6 +284,8 @@ public class MarketplaceController {
         String marketSnapshot = buildMarketSnapshot(marketListings);
         if (!marketSnapshot.equals(lastMarketSnapshot)) {
             lastMarketSnapshot = marketSnapshot;
+            imageCache.clear();
+            resolvedImageUrlCache.clear();
             allMarketBuyData.setAll(marketListings);
             applyBuyFilter(txtBuySearch == null ? null : txtBuySearch.getText());
             restoreSelection(selectedListingId);
@@ -407,12 +433,28 @@ public class MarketplaceController {
     }
 
     private String resolveImageUrl(ResourceMarketListing listing) {
-        String direct = safe(listing.getImageUrl());
-        if (!direct.isBlank()) {
-            return direct;
+        String cached = resolvedImageUrlCache.get(listing.getIdListing());
+        if (cached != null && !cached.isBlank()) {
+            return cached;
         }
-        String fallbackKey = safe(listing.getResourceName());
-        return "https://loremflickr.com/640/360/" + fallbackKey.replace(" ", ",") + "?lock=" + listing.getIdListing();
+
+        String resolved = marketplaceService.resolveMarketplaceImageForDisplay(
+                listing.getImageUrl(),
+                listing.getResourceName(),
+                listing.getNote()
+        );
+        if (resolved == null || resolved.isBlank()) {
+            String seed = (safe(listing.getResourceName()) + " " + safe(listing.getFournisseurName()))
+                    .toLowerCase(Locale.ROOT)
+                    .replaceAll("[^a-z0-9\\s-]", " ")
+                    .replaceAll("\\s+", " ")
+                    .trim();
+            String fallbackKey = seed.isBlank() ? "product,item,ecommerce" : seed.replace(" ", ",");
+            resolved = "https://loremflickr.com/640/360/" + fallbackKey + "?lock=" + listing.getIdListing();
+        }
+        resolvedImageUrlCache.put(listing.getIdListing(), resolved);
+        listing.setImageUrl(resolved);
+        return resolved;
     }
 
     private String marketStatusClass(String status) {
@@ -735,28 +777,32 @@ public class MarketplaceController {
             return;
         }
         if (selected == null) {
+            activeReviewOrderId = -1;
             lblReviewRule.setText("Selectionnez une commande CONFIRMED.");
             setReviewStarsValue(5);
-            if (txtReviewComment != null) {
-                txtReviewComment.clear();
-            }
             return;
         }
         if (canReview) {
+            int currentOrderId = selected.getIdOrder();
+            boolean sameOrder = activeReviewOrderId == currentOrderId;
             int stars = hasReview(selected) ? selected.getReviewStars() : 5;
             setReviewStarsValue(stars);
             if (txtReviewComment != null) {
-                txtReviewComment.setText(hasReview(selected) ? safe(selected.getReviewComment()) : "");
+                if (!sameOrder) {
+                    String existingComment = hasReview(selected) ? safe(selected.getReviewComment()) : "";
+                    String draft = reviewDraftByOrderId.get(currentOrderId);
+                    String displayComment = draft == null ? existingComment : draft;
+                    setReviewCommentText(displayComment);
+                }
             }
+            activeReviewOrderId = currentOrderId;
             lblReviewRule.setText(hasReview(selected)
                     ? "Avis deja donne. Vous pouvez le modifier et re-envoyer."
                     : "Vous pouvez noter cette ressource maintenant (1 a 5 etoiles).");
             return;
         }
+        activeReviewOrderId = selected.getIdOrder();
         lblReviewRule.setText("Avis indisponible: statut " + safe(selected.getStatus()) + ".");
-        if (txtReviewComment != null) {
-            txtReviewComment.clear();
-        }
     }
 
     private void promptReviewAfterCheckout(int orderId) {
@@ -782,7 +828,7 @@ public class MarketplaceController {
         restoreOrderSelection(orderId);
         setReviewStarsValue(5);
         if (txtReviewComment != null) {
-            txtReviewComment.clear();
+            setReviewCommentText(reviewDraftByOrderId.getOrDefault(orderId, ""));
             txtReviewComment.requestFocus();
         }
         if (lblReviewRule != null) {
@@ -811,6 +857,51 @@ public class MarketplaceController {
             return Math.max(0, qty);
         } catch (NumberFormatException ex) {
             return 0;
+        }
+    }
+
+    private void bindReviewDraftListener() {
+        if (txtReviewComment == null) {
+            return;
+        }
+        txtReviewComment.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (suppressReviewDraftWrite) {
+                return;
+            }
+            if (listMyMarketOrders == null) {
+                return;
+            }
+            ResourceMarketOrder selected = listMyMarketOrders.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                return;
+            }
+            reviewDraftByOrderId.put(selected.getIdOrder(), newValue == null ? "" : newValue);
+        });
+    }
+
+    private void rememberReviewDraft(ResourceMarketOrder order) {
+        if (order == null || txtReviewComment == null) {
+            return;
+        }
+        reviewDraftByOrderId.put(order.getIdOrder(), txtReviewComment.getText() == null ? "" : txtReviewComment.getText());
+    }
+
+    private void setReviewCommentText(String value) {
+        if (txtReviewComment == null) {
+            return;
+        }
+        String next = value == null ? "" : value;
+        String current = txtReviewComment.getText() == null ? "" : txtReviewComment.getText();
+        if (current.equals(next)) {
+            return;
+        }
+        int caret = txtReviewComment.getCaretPosition();
+        suppressReviewDraftWrite = true;
+        try {
+            txtReviewComment.setText(next);
+            txtReviewComment.positionCaret(Math.min(caret, next.length()));
+        } finally {
+            suppressReviewDraftWrite = false;
         }
     }
 

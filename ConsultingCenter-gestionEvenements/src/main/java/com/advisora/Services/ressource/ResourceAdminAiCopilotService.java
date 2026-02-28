@@ -1,12 +1,5 @@
 package com.advisora.Services.ressource;
 
-import com.advisora.Model.ressource.Ressource;
-import com.advisora.enums.RessourceStatut;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -23,6 +16,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.advisora.Model.ressource.Ressource;
+import com.advisora.enums.RessourceStatut;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class ResourceAdminAiCopilotService {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final HttpClient HTTP = HttpClient.newBuilder()
@@ -33,6 +33,9 @@ public class ResourceAdminAiCopilotService {
     private static final String OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
     private static final String DEFAULT_PROVIDER = "openai";
     private static final String DEFAULT_MODEL = "gpt-5";
+    // Temporary hardcoded key for team integration (move back to env before production).
+    private static final String DEFAULT_OPENAI_API_KEY =
+            "api remplacee pour securite, merci de configurer votre propre cle dans les variables d'environnement OPENAI_API_KEY ou OPENAI_KEY";
     private static final String ANALYSIS_VERSION = "COPILOT_R1";
 
     private static final int LOW_STOCK_THRESHOLD = 5;
@@ -493,6 +496,9 @@ public class ResourceAdminAiCopilotService {
         String key = config("OPENAI_API_KEY");
         if (isBlank(key)) {
             key = config("OPENAI_KEY");
+        }
+        if (isBlank(key)) {
+            key = DEFAULT_OPENAI_API_KEY;
         }
         return key;
     }
