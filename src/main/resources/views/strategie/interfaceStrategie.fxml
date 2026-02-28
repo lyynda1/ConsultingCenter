@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.CheckBox?>
 <StackPane fx:id="pageRoot" styleClass="page-root" stylesheets="@/css/strategie-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Strategie.StrategieListController">
 
     <!-- MAIN PAGE -->
@@ -38,7 +39,18 @@
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Region HBox.hgrow="ALWAYS" />
-                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher une stratégie..." styleClass="search" />
+
+                    <!-- ✅ ADMIN ONLY: show pending only -->
+                    <CheckBox fx:id="chkPendingOnly"
+                              text="En attente seulement"
+                              onAction="#onTogglePendingOnly"
+                              visible="false"
+                              managed="false"
+                              styleClass="pending-toggle"/>
+
+                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch"
+                               promptText="Rechercher une stratégie..." styleClass="search" />
+
                     <MenuButton styleClass="btn-ghost" text="Filtrer">
                         <items>
                             <MenuItem onAction="#onSortNomAsc" text="Nom A → Z" />
@@ -46,7 +58,6 @@
                             <SeparatorMenuItem />
                             <MenuItem onAction="#onSortDateDesc" text="Date récente" />
                             <MenuItem onAction="#onSortDateAsc" text="Date ancienne" />
-
                         </items>
                     </MenuButton>
                 </HBox>

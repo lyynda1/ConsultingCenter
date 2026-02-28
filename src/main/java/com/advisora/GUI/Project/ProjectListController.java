@@ -23,8 +23,11 @@ import com.advisora.Services.user.UserService;
 import com.advisora.enums.ProjectStatus;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.UserRole;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -64,6 +67,7 @@ public class ProjectListController implements Initializable {
     @FXML private ListView<Project> projectList;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
+
     private double dragOffsetX;
     private double dragOffsetY;
     private final ObservableList<Strategie> allObs = FXCollections.observableArrayList();
@@ -77,6 +81,9 @@ public class ProjectListController implements Initializable {
     private final ProjectStatsService statsService = new ProjectStatsService();
     private final ProjectPdfExportService pdfExportService = new ProjectPdfExportService();
     private final UserService userService = new UserService();
+    private final ProgressIndicator recommendSpinner = new ProgressIndicator();
+    private boolean recommendBusy = false;
+
 
     private final ObservableList<Project> baseProjects = FXCollections.observableArrayList();
     private Consumer<Parent> contentNavigator;
@@ -99,6 +106,8 @@ public class ProjectListController implements Initializable {
         projectList.setItems(FXCollections.observableArrayList());
 
         loadProjectsFromService();
+        recommendSpinner.setMaxSize(80, 80);
+        recommendSpinner.setVisible(false);
     }
 
     public void setContentNavigator(Consumer<Parent> contentNavigator) {
@@ -242,10 +251,19 @@ public class ProjectListController implements Initializable {
             }
         }
         mid.getStyleClass().add("card-mid");
-
-        // Actions row (same logic)
         HBox actionRow = new HBox(8);
         actionRow.getStyleClass().add("card-actions");
+        // Actions row (same logic)
+        if (!SessionContext.isClient() ) {
+
+        Button recommendBtn = new Button("Prévoir stratégie");
+        recommendBtn.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> recommendBusy));
+        recommendBtn.getStyleClass().add("btn-ghost"); // keep look‑and‑feel
+
+            recommendBtn.setOnAction(e -> runRecommendation(p));
+            actionRow.getChildren().add(recommendBtn);
+        }
 
         if (p.getStateProj() == ProjectStatus.PENDING) {
             Label pendingLabel = new Label("En attente de décision du manager");
@@ -283,6 +301,14 @@ public class ProjectListController implements Initializable {
             decide.setOnAction(e -> onDecideProject(p));
             actionRow.getChildren().add(decide);
         }
+
+        // ── 4️⃣  Actions row (same logic), add new button ----------
+
+
+
+// 🌟 NEW: “Recommend strategy” button
+
+
 
         VBox card = new VBox(10, head, mid, actionRow);
         card.getStyleClass().add("project-card");
@@ -992,4 +1018,105 @@ public class ProjectListController implements Initializable {
         }
         return current.getClass().getSimpleName() + ": " + msg;
     }
+
+    public void onRecommend(ActionEvent actionEvent) {
+        Project selected = projectList.getSelectionModel().getSelectedItem();
+
+        runRecommendation(selected);
+    }
+
+    private void openStrategyConfirmDialog(Strategie draft) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/StrategieInfoDialog.fxml"));
+            Parent content = loader.load();
+
+            com.advisora.GUI.Strategie.StrategieInfoDialogController c = loader.getController();
+            c.setOnClose(this::closeDialog);
+            c.initWithStrategie(draft);
+            c.enableRecommendationActions(true); // show confirm/ignore buttons
+
+            c.setOnConfirm(() -> {
+                try {
+                    strategyService.confirmRecommendedStrategy(draft); // ✅ save here
+                    closeDialog();
+                    refresh(); // ✅ refresh ONLY after saving
+                    new Alert(Alert.AlertType.INFORMATION, "Stratégie enregistrée.", ButtonType.OK).showAndWait();
+                } catch (Exception ex) {
+                    showError("Enregistrement impossible: " + ex.getMessage());
+                }
+            });
+
+            c.setOnIgnore(() -> closeDialog()); // ✅ no save, no refresh
+
+            enableDrag(c.getDragHandle(), modalBox);
+            showDialog(content);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("Impossible d’ouvrir la stratégie : " + ex.getMessage());
+        }
+    }
+
+    private void runRecommendation(Project project) {
+        if (project == null || project.getIdProj() <= 0) {
+            showError("Aucun projet sélectionné.");
+            return;
+        }
+        if (recommendBusy) return;
+        recommendBusy = true;
+
+        overlay.getChildren().add(recommendSpinner);
+        recommendSpinner.setVisible(true);
+        overlay.setManaged(true);
+        overlay.setVisible(true);
+
+        Task<Strategie> task = new Task<>() {
+            @Override
+            protected Strategie call() {
+                // ✅ ONLY build a draft (no DB insert)
+                return strategyService.recommendDraftStrategy(project);
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            recommendBusy = false;
+            hideRecommendSpinner();
+
+            Strategie draft = task.getValue();
+            if (draft == null) {
+                showError("La recommandation n’a pas généré de stratégie.");
+                return;
+            }
+
+            // ✅ open confirm dialog (still not saved)
+            openStrategyConfirmDialog(draft);
+        });
+
+        task.setOnFailed(e -> {
+            recommendBusy = false;
+            hideRecommendSpinner();
+
+            Throwable th = task.getException();
+            showError("Erreur recommandation:\n" + (th == null ? "Erreur inconnue" : rootCauseMessage(th)));
+            if (th != null) th.printStackTrace();
+        });
+
+        Thread th = new Thread(task, "recommend-strategy");
+        th.setDaemon(true);
+        th.start();
+    }
+
+    private void hideRecommendSpinner() {
+        recommendSpinner.setVisible(false);
+        overlay.getChildren().remove(recommendSpinner);
+
+        // ✅ only hide overlay if you are NOT showing a modalBox dialog
+        // If your overlay is also used for modal dialogs, check whether modalBox has content.
+        boolean modalOpen = (modalBox != null && !modalBox.getChildren().isEmpty());
+        if (!modalOpen) {
+            overlay.setVisible(false);
+            overlay.setManaged(false);
+        }
+    }
+
 }

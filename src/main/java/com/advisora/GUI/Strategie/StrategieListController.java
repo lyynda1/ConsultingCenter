@@ -25,6 +25,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -40,6 +42,7 @@ public class StrategieListController {
     @FXML private Label lblSuccess;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
+    @FXML private CheckBox chkPendingOnly;
 
     private final ServiceStrategie strategieService = new ServiceStrategie();
     private final ServiceObjective objectiveService = new ServiceObjective();
@@ -50,6 +53,8 @@ public class StrategieListController {
     private double dragOffsetX;
     private double dragOffsetY;
 
+    private boolean addSpin = false;
+
     @FXML
 
     public void initialize() {
@@ -58,6 +63,7 @@ public class StrategieListController {
 
         // ✅ allow dynamic cell height (otherwise labels can be clipped)
         strategieList.setFixedCellSize(-1);
+
 
         strategieList.setCellFactory(lv -> new ListCell<>() {
 
@@ -88,6 +94,21 @@ public class StrategieListController {
         });
 
         txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+        UserRole role = SessionContext.getCurrentRole();
+        boolean isAdmin = (role == UserRole.ADMIN);
+
+// toggle seulement pour ADMIN
+        if (chkPendingOnly != null) {
+            chkPendingOnly.setVisible(isAdmin);
+            chkPendingOnly.setManaged(isAdmin);
+
+            // option: par défaut l’admin peut choisir (false = tout voir)
+            chkPendingOnly.setSelected(false);
+
+            chkPendingOnly.selectedProperty().addListener((o, oldV, newV) -> {
+                applyFilter(txtSearch == null ? "" : txtSearch.getText());
+            });
+        }
 
         try {
             refresh();
@@ -138,6 +159,10 @@ public class StrategieListController {
         comparator = Comparator.comparing(this::getCreatedAtSafe, this::compareDateAsc);
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
     }
+    @FXML
+    private void onTogglePendingOnly(ActionEvent e) {
+        applyFilter(txtSearch == null ? "" : txtSearch.getText());
+    }
 
     private VBox buildCard(Strategie s) {
 
@@ -151,6 +176,7 @@ public class StrategieListController {
             case ACCEPTEE -> "✅ ";
             case REFUSEE  -> "⛔ ";
             case EN_COURS -> "⏳ ";
+            case Non_affectée -> "⚪ ";
             default -> "";
         };
 
@@ -253,6 +279,8 @@ public class StrategieListController {
         justificationLabel.setManaged(hasJustif);
 
 
+
+
         // ===== ACTIONS =====
         HBox actions = new HBox(10);
         actions.getStyleClass().add("card-actions");
@@ -263,7 +291,6 @@ public class StrategieListController {
             edit.setOnAction(e -> openEditStrategieDialog(s));
 
             Button delete = new Button("Supprimer");
-            // softer destructive style (outlined)
             delete.getStyleClass().add("btn-danger-outline");
             delete.setOnAction(e -> deleteStrategie(s));
 
@@ -272,6 +299,23 @@ public class StrategieListController {
             addObjective.setOnAction(e -> openAddObjectiveDialog(s));
 
             actions.getChildren().addAll(edit, delete, addObjective);
+        }
+
+// ✅ ADMIN ONLY: accept/refuse (only if pending)
+        if (isAdmin() && s.getStatut() == StrategyStatut.EN_ATTENTE) {
+            Region grow = new Region();
+            HBox.setHgrow(grow, Priority.ALWAYS);
+            actions.getChildren().add(grow);
+
+            Button accept = new Button("Accepter");
+            accept.getStyleClass().add("btn-success"); // ajoute dans css
+            accept.setOnAction(e -> acceptStrategie(s));
+
+            Button refuse = new Button("Refuser");
+            refuse.getStyleClass().add("btn-danger");
+            refuse.setOnAction(e -> refuseStrategie(s));
+
+            actions.getChildren().addAll(accept, refuse);
         }
 
 
@@ -296,7 +340,12 @@ public class StrategieListController {
 
     private void openAddDialog() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/AddStrategie.fxml"));
+            var url = getClass().getResource("/views/strategie/AddStrategie.fxml");
+            if (url == null) {
+                showError("FXML introuvable: /views/strategie/AddStrategie.fxml (vérifie src/main/resources)");
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(url);
             Parent content = loader.load();
             AddStrategieDialogController c = loader.getController();
             c.setOnClose(this::closeDialog);
@@ -308,8 +357,14 @@ public class StrategieListController {
             c.resetForm();
             enableDrag(c.getDragHandle(), modalBox);
             showDialog(content);
-        } catch (Exception ex) {
-            showError("Impossible d'ouvrir le formulaire: " + ex.getMessage());
+         } catch (Exception ex) {
+            ex.printStackTrace(); // <-- MOST IMPORTANT
+
+            Throwable root = ex;
+            while (root.getCause() != null) root = root.getCause();
+
+            showError("Impossible d'ouvrir le formulaire:\n" + root.getClass().getName()
+                    + "\n" + root.getMessage());
         }
     }
 
@@ -444,16 +499,26 @@ public class StrategieListController {
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
         updateStats(list);
     }
+    private boolean isAdmin() {
+        return SessionContext.getCurrentRole() == UserRole.ADMIN;
+    }
 
     private void applyFilter(String q) {
         String search = q == null ? "" : q.trim().toLowerCase(Locale.ROOT);
+
+        UserRole role = SessionContext.getCurrentRole();
+        boolean isAdmin = (role == UserRole.ADMIN);
+        boolean pendingOnly = isAdmin && chkPendingOnly != null && chkPendingOnly.isSelected();
+
         List<Strategie> filtered = allObs.stream()
+                .filter(s -> !pendingOnly || s.getStatut() == StrategyStatut.EN_ATTENTE) // ✅ pending filter
                 .filter(s -> search.isBlank()
                         || safe(s.getNomStrategie()).toLowerCase(Locale.ROOT).contains(search)
                         || (s.getProjet() != null && safe(s.getProjet().getTitleProj()).toLowerCase(Locale.ROOT).contains(search))
                         || (s.getStatut() != null && s.getStatut().toDb().toLowerCase(Locale.ROOT).contains(search)))
                 .sorted(comparator)
                 .toList();
+
         viewObs.setAll(filtered);
     }
 
@@ -499,4 +564,49 @@ public class StrategieListController {
         alert.setHeaderText("Gestion strategies");
         alert.showAndWait();
     }
+
+    private void acceptStrategie(Strategie s) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Accepter cette stratégie ?\nID: " + s.getId(),
+                ButtonType.OK, ButtonType.CANCEL);
+        confirm.setHeaderText("Validation Admin");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
+        try {
+            strategieService.updateStatut(s.getId(), StrategyStatut.Non_affectée);
+            refresh();
+        } catch (Exception ex) {
+            showError("Impossible d'accepter: " + ex.getMessage());
+        }
+    }
+
+    private void refuseStrategie(Strategie s) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Refus Admin");
+        dialog.setHeaderText("Refuser cette stratégie");
+        dialog.setContentText("Motif (optionnel):");
+
+        String motif = dialog.showAndWait().orElse("").trim();
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Confirmer le refus ?\nID: " + s.getId(),
+                ButtonType.OK, ButtonType.CANCEL);
+        confirm.setHeaderText("Validation Admin");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
+        try {
+            // si tu veux stocker la justification de refus:
+            // strategieService.updateStatutAndJustification(s.getId(), StrategyStatut.REFUSEE, motif);
+
+            strategieService.updateStatut(s.getId(), StrategyStatut.REFUSEE);
+
+            // option: si tu as un champ justification et tu veux le mettre:
+            // if (!motif.isBlank()) strategieService.updateJustification(s.getId(), motif);
+
+            refresh();
+        } catch (Exception ex) {
+            showError("Impossible de refuser: " + ex.getMessage());
+        }
+    }
+
 }

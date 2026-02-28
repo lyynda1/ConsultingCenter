@@ -29,6 +29,8 @@ Role: Project module UI layout (FXML/CSS) -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Gerer vos projets" styleClass="title"/>
                     <Region HBox.hgrow="ALWAYS"/>
+
+
                     <Button fx:id="btnStats" text="Statistiques" onAction="#onOpenStats" styleClass="btn-ghost"/>
                     <Button fx:id="btnTop10" text="Top 10" onAction="#onOpenTop10" styleClass="btn-ghost"/>
                     <Button fx:id="btnExportPdf" text="Exporter PDF" onAction="#onExportPdf">

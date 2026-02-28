@@ -38,6 +38,7 @@ public class RiskService {
     public RiskResult checkTitle(String strategyTitle) throws Exception {
         String t = norm(strategyTitle);
 
+
         boolean economy = hasAny(t,
                 // EN
                 "price","pricing","budget","investment","loan","cost","profit","revenue","salary",
@@ -60,15 +61,26 @@ public class RiskService {
                 "صحة","وباء","جائحة","تفشي","كوفيد","سفر","سياحة","حدث","مرض","فيروس"
         );
 
+
         List<ExternalEvent> active = store.getActiveEvents();
+        System.out.println("title norm = " + t);
+        System.out.println("economy=" + economy + " health=" + health);
+
+        for (ExternalEvent e : active) {
+            System.out.println("eventType=" + e.getEventType() + " severity=" + e.getSeverity() + " name=" + e.getEventName());
+        }
 
         RiskResult r = new RiskResult();
         StringBuilder sb = new StringBuilder();
 
         for (ExternalEvent e : active) {
+            String et = norm(e.getEventType()); // reuse your norm()
+            boolean isEconomyType = et.contains("economy") || et.contains("economic") || et.contains("economie");
+            boolean isHealthType  = et.contains("health")  || et.contains("sanitaire") || et.contains("sante");
+
             boolean relevant =
-                    (economy && "ECONOMY".equalsIgnoreCase(e.getEventType())) ||
-                            (health && "HEALTH".equalsIgnoreCase(e.getEventType()));
+                    (economy && isEconomyType) ||
+                            (health && isHealthType);
 
             if (!relevant) continue;
 
@@ -83,6 +95,11 @@ public class RiskService {
         r.message = sb.length() == 0
                 ? "Aucun événement externe actif ne correspond à ce titre."
                 : sb.toString();
+
+// if keywords indicate risk topic, raise at least WARNING
+        if (economy || health) {
+            r.maxSeverity = Severity.WARNING;
+        }
 
         return r;
     }

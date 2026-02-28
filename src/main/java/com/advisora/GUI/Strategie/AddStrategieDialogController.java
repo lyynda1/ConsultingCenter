@@ -16,6 +16,7 @@ import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
 import com.advisora.utils.news.NewsJsonStore;
 import com.advisora.utils.news.OllamaClient;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -42,6 +44,8 @@ public class AddStrategieDialogController {
     @FXML private ComboBox<TypeStrategie> typeCombo;
     @FXML private TextField budgetTotalField;
     @FXML private TextField gainEstimeField;
+    @FXML private StackPane overlay;
+
 
     @FXML private HBox dragHandle;
     @FXML private TextField terme;
@@ -53,11 +57,21 @@ public class AddStrategieDialogController {
     private Runnable onSaved = () -> {};
     private Runnable onClose = () -> {};
     private Strategie editingStrategie;
+    private final ProgressIndicator Spinner = new ProgressIndicator();
+    private boolean load = false;
 
     @FXML
     public void initialize() {
         statutCombo.setItems(FXCollections.observableArrayList(StrategyStatut.values()));
-        statutCombo.setValue(StrategyStatut.EN_COURS);
+
+        if (saveBtn != null) {
+            saveBtn.disableProperty().bind(Bindings.createBooleanBinding(() -> load));
+        }
+
+        if (overlay != null) {
+            overlay.setVisible(false);
+            overlay.setManaged(false);
+        }
         ObservableList<TypeStrategie> filteredList =
                 FXCollections.observableArrayList(TypeStrategie.values())
                         .filtered(item -> item != TypeStrategie.NULL); // Replace NULL with your actual enum value
@@ -83,6 +97,14 @@ public class AddStrategieDialogController {
 
         List<Project> projects = serviceStrategie.listProjets();
         projetCombo.setItems(FXCollections.observableArrayList(projects));
+    }
+
+    private void setLoading(boolean v) {
+        load = v;
+        if (overlay != null) {
+            overlay.setVisible(v);
+            overlay.setManaged(v);
+        }
     }
 
     public Node getDragHandle() {
@@ -149,6 +171,7 @@ public class AddStrategieDialogController {
 
     @FXML
     private void save() {
+        setLoading(true);
         try {
             StrategyStatut statut = statutCombo.getValue();
             if (statut == null) {
@@ -157,9 +180,7 @@ public class AddStrategieDialogController {
 
 
             Project selectedProject = projetCombo.getValue();
-            if (selectedProject == null || selectedProject.getIdProj() <= 0) {
-                throw new IllegalArgumentException("Projet obligatoire.");
-            }
+
 
             Strategie s = editingStrategie == null ? new Strategie() : editingStrategie;
 
@@ -194,9 +215,19 @@ public class AddStrategieDialogController {
                 // 1) Macro (keywords + events active)
                 RiskService riskService = RiskContext.getRiskService();
                 RiskService.RiskResult rr = riskService.checkTitle(title);
+                System.out.println("[CHECKTITLE] title=" + title);
+                System.out.println("[CHECKTITLE] maxSeverity=" + rr.maxSeverity);
+                System.out.println("[CHECKTITLE] msg=" + rr.message);
+                System.out.println("[CHECKTITLE] activeEventsCount=" + riskService.getActiveEvents().size());
 
                 String improvedMsg = "Analyse macro : " + rr.maxSeverity;
                 Severity finalSeverity = rr.maxSeverity;
+                ProgressIndicator pi = new ProgressIndicator();
+                pi.setMaxSize(100, 100);
+                // Will be styled by your CSS
+                overlay.getChildren().add(pi);
+                overlay.setManaged(true);
+                overlay.setVisible(true);
 
 
 
@@ -322,6 +353,8 @@ public class AddStrategieDialogController {
             Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             a.setHeaderText("Strategie");
             a.showAndWait();
+        }finally {
+            setLoading(false);
         }
     }
 

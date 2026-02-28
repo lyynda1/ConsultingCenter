@@ -31,6 +31,30 @@ public class StrategieInfoDialogController {
     @FXML private Label lblGain;
     @FXML private Label lblRoi;
     @FXML private Label lblJustification;
+    @FXML private Label lblTerm;
+
+
+
+
+
+    @FXML private HBox recommendActionsBox;
+
+    private Runnable onConfirm;
+    private Runnable onIgnore;
+
+    public void setOnConfirm(Runnable r) { this.onConfirm = r; }
+    public void setOnIgnore(Runnable r) { this.onIgnore = r; }
+
+    @FXML private void onConfirm() { if (onConfirm != null) onConfirm.run(); }
+    @FXML private void onIgnore() { if (onIgnore != null) onIgnore.run(); }
+
+    // ✅ call this to enable confirm/ignore mode
+    public void enableRecommendationActions(boolean enable) {
+        if (recommendActionsBox != null) {
+            recommendActionsBox.setVisible(enable);
+            recommendActionsBox.setManaged(enable);
+        }
+    }
 
 
     private final ServiceObjective objectiveService = new ServiceObjective();
@@ -113,6 +137,8 @@ public class StrategieInfoDialogController {
         } else {
             lblRoi.setText("ROI : -");
         }
+
+        lblTerm.setText(s.getDureeTerme() == null ? "-" : s.getDureeTerme() + " jours");
 
         // justification
         String j = s.getJustification();

@@ -6,7 +6,7 @@
   "unit" : "articles/48h",
   "severity" : "CRITICAL",
   "description" : "Economy news volume in last 48h = 50\nThis is a macro risk signal. Detailed news is fetched based on the strategy title.",
-  "startDate" : "2026-02-27T12:33:57.7058574",
+  "startDate" : "2026-02-28T14:35:08.3634966",
   "endDate" : null,
   "active" : true
 }, {
@@ -18,6 +18,6 @@
   "severity" : "INFO",
   "description" : "WHO Disease Outbreak News (recent) = 0\n\nNo recent outbreak titles available.\n",
   "startDate" : null,
-  "endDate" : "2026-02-27T12:33:58.0885126",
+  "endDate" : "2026-02-28T14:35:08.7492326",
   "active" : false
 } ]

@@ -4,11 +4,14 @@ package com.advisora.utils.news;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
+import java.util.Optional;
 
 public class OllamaClient {
     private static final ObjectMapper OM = new ObjectMapper();
@@ -16,12 +19,13 @@ public class OllamaClient {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
+
     private final String apiKey;
     private final String model;
 
     // Example model: "gemini-1.5-flash"
     public OllamaClient(String apiKey, String model) {
-        this.apiKey = "AIzaSyDrXYk97DUPKfGHWCbRwi6-9Y4KlgDTLvo";
+        this.apiKey = "AIzaSyDLjltBxGdJ5jmlz2ETYVkVmkwoVIZjqJU";
         this.model = model;
     }
 
@@ -67,5 +71,28 @@ public class OllamaClient {
                 .get(0)
                 .path("text")
                 .asText("");
+    }
+
+
+
+    /**
+     * Convenience – just feed a prompt that expects a JSON response.
+     */
+
+
+    public Optional<JsonNode> generateJson(String prompt)
+            throws Exception {
+
+        String raw = generate(prompt);
+
+        // Many LLMs wrap JSON in ```json ``` fences – strip them.
+        String cleaned = raw.replaceAll("(?m)^\\s*```\n?json\\s*\\n?|\\s*\\n?```\\s*$", "");
+
+        try {
+            return Optional.of(OM.readTree(cleaned));
+        } catch (Exception e) {
+            System.err.println("Failed to parse Gemini JSON: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 }

@@ -5,87 +5,74 @@ import com.advisora.Model.projet.Project;
 import com.advisora.Model.strategie.SimilarityResult;
 import com.advisora.Model.strategie.Strategie;
 import com.advisora.Services.IService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
 import com.advisora.utils.MyConnection;
+import com.advisora.utils.news.OllamaClient;
+import com.fasterxml.jackson.databind.JsonNode;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 
 import java.sql.*;
+import java.text.Normalizer;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 
 public class ServiceStrategie implements IService<Strategie> {
 
     @Override
     public void ajouter(Strategie strategie) {
         validate(strategie, true);
-        java.util.List<Strategie> candidates = getAllByType(strategie.getTypeStrategie());
 
-        // 2) check
-        SimilarityResult r = checkUniquenessGlobal(
-                strategie,
-                null,                // objectives unknown at creation
-                candidates,
-                null                 // no need to load objective ids
-        );
+        String sql = "INSERT INTO strategies " +
+                "(statusStrategie, CreatedAtS, lockedAt, idProj, idUser, nomStrategie, type, budgetTotal, gainEstime, DureeTerme) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        if (r.isDuplicate()) {
-
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-            confirm.setTitle("Stratégie similaire détectée");
-            confirm.setHeaderText("Stratégie trop similaire");
-            confirm.setContentText(
-                    "La stratégie est très similaire à :\n\n" +
-                            "#" + r.getBestMatchingId() + " - " + r.getBestMatchName() +
-                            "\nScore: " + String.format("%.2f", r.getBestScore()) +
-                            "\n\nVoulez-vous continuer quand même ?"
-            );
-
-            ButtonType btnYes = new ButtonType("Oui");
-            ButtonType btnNo = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
-            confirm.getButtonTypes().setAll(btnYes, btnNo);
-
-            Optional<ButtonType> result = confirm.showAndWait();
-
-            if (result.isEmpty() || result.get() == btnNo) {
-                return; // user cancelled
-            }
-
-
-            // Save justification inside strategy
-        }
-
-        String sql = "INSERT INTO strategies ( statusStrategie, CreatedAtS, lockedAt, idProj, idUser, nomStrategie, type, budgetTotal, gainEstime,DureeTerme) "
-                + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, "En_cours"); // default status for new strategy
+            // 1) status
+            if (strategie.getProjet() == null) {
+                ps.setString(1, "Non_affectée");
+            } else {
+                ps.setString(1, "En_cours");
+            }
+
+            // 2) dates
             ps.setTimestamp(2, Timestamp.valueOf(strategie.getCreatedAt()));
             ps.setTimestamp(3, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
-            ps.setInt(4, strategie.getProjet().getIdProj());
-            if (strategie.getIdUser() == null) {
-                ps.setNull(5, Types.INTEGER);
+
+            // 3) projet nullable
+            if (strategie.getProjet() == null) {
+                ps.setNull(4, Types.INTEGER);
             } else {
-                ps.setInt(5, strategie.getIdUser());
+                ps.setInt(4, strategie.getProjet().getIdProj());
             }
+
+            // 4) user nullable
+            if (strategie.getIdUser() == null) ps.setNull(5, Types.INTEGER);
+            else ps.setInt(5, strategie.getIdUser());
+
+            // 5) autres champs
             ps.setString(6, strategie.getNomStrategie().trim());
-            ps.setString(7, strategie.getTypeStrategie().name().toUpperCase(Locale.ROOT));
+            ps.setString(7, strategie.getTypeStrategie().name()); // attention: même format que DB
             ps.setDouble(8, strategie.getBudgetTotal());
             ps.setDouble(9, strategie.getGainEstime());
             ps.setString(10, strategie.getDureeTerme());
+
             ps.executeUpdate();
+
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    strategie.setId(rs.getInt(1));
-                }
+                if (rs.next()) strategie.setId(rs.getInt(1));
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Erreur ajout strategie: " + e.getMessage(), e);
         }
     }
-
 
 
     private List<Strategie> getAllByType(TypeStrategie typeStrategie) {
@@ -148,7 +135,7 @@ public class ServiceStrategie implements IService<Strategie> {
             strategie.setStatut(statusToSave);
         }
 
-        String sql = "UPDATE strategies SET , statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=?, type=?, budgetTotal=?, gainEstime=? ,DureeTerme=?" +
+        String sql = "UPDATE strategies SET  statusStrategie=?, lockedAt=?, idProj=?, idUser=?, nomStrategie=?, justification=?, type=?, budgetTotal=?, gainEstime=? ,DureeTerme=?" +
                 "WHERE idStrategie=?";
 
         try (Connection cnx = MyConnection.getInstance().getConnection();
@@ -180,7 +167,7 @@ public class ServiceStrategie implements IService<Strategie> {
             // 10) gainEstime
             ps.setDouble(9, strategie.getGainEstime());
 
-            ps.setString(10, strategie.getDureeTerme().trim() );
+            ps.setString(10, strategie.getDureeTerme().trim());
 
             // 11) idStrategie (WHERE)
             ps.setInt(11, strategie.getId());
@@ -191,7 +178,6 @@ public class ServiceStrategie implements IService<Strategie> {
             throw new RuntimeException("Erreur modification strategie: " + e.getMessage(), e);
         }
     }
-
 
 
     @Override
@@ -245,7 +231,7 @@ public class ServiceStrategie implements IService<Strategie> {
         s.setBudgetTotal(rs.getDouble("budgetTotal"));
         s.setGainEstime(rs.getDouble("gainEstime"));
         s.getDureeTerme();
-         // convert ms to days
+        // convert ms to days
         int idProj = rs.getInt("idProj");
         if (!rs.wasNull()) {
             Project p = new Project();
@@ -278,16 +264,19 @@ public class ServiceStrategie implements IService<Strategie> {
 
     private void validate(Strategie s, boolean create) {
         if (s == null) throw new IllegalArgumentException("Strategie obligatoire.");
-        if (s.getNomStrategie() == null || s.getNomStrategie().isBlank()) throw new IllegalArgumentException("Nom strategie obligatoire.");
-        if (s.getProjet() == null || s.getProjet().getIdProj() <= 0) throw new IllegalArgumentException("Projet obligatoire.");
-        if (s.getStatut() == null) s.setStatut(StrategyStatut.EN_COURS);
-        if (s.getCreatedAt() == null) s.setCreatedAt(java.time.LocalDateTime.now());
+        if (s.getNomStrategie() == null || s.getNomStrategie().isBlank())
+            throw new IllegalArgumentException("Nom strategie obligatoire.");
+        if (s.getStatut() == null) throw new IllegalArgumentException("Statut strategie obligatoire.");
+        if (s.getCreatedAt() == null) s.setCreatedAt(LocalDateTime.now());
         if (!create && s.getId() <= 0) throw new IllegalArgumentException("idStrategie invalide.");
-        if (s.getTypeStrategie() == null) throw new IllegalArgumentException("Type strategie obligatoire, si vous n'etes pas sur veuillez choisir NULL .");
+        if (s.getTypeStrategie() == TypeStrategie.NULL)
+            throw new IllegalArgumentException("Type strategie obligatoire, si vous n'etes pas sur veuillez choisir AUTRE .");
         if (s.getBudgetTotal() < 0) throw new IllegalArgumentException("Budget total >= 0");
-        if (s.getBudgetTotal() > 1000000000) throw new IllegalArgumentException("Budget total trop élevé (max 1 milliard) il faut faire une demande de financement pour les projets de cette envergure.");
+        if (s.getBudgetTotal() > 1000000000)
+            throw new IllegalArgumentException("Budget total trop élevé (max 1 milliard) il faut faire une demande de financement pour les projets de cette envergure.");
         if (s.getGainEstime() < 0) throw new IllegalArgumentException("Gain estime >= 0");
-        if (s.getGainEstime() > 1000000000) throw new IllegalArgumentException("Gain estime trop élevé veuillez revoir votre estimation.");
+        if (s.getGainEstime() > 1000000000)
+            throw new IllegalArgumentException("Gain estime trop élevé veuillez revoir votre estimation.");
         try {
             int duree = Integer.parseInt(s.getDureeTerme());
             if (duree <= 0) {
@@ -350,7 +339,7 @@ public class ServiceStrategie implements IService<Strategie> {
     }
 
     private String normalizeLiteral(String value) {
-        return java.text.Normalizer.normalize(value == null ? "" : value, java.text.Normalizer.Form.NFD)
+        return Normalizer.normalize(value == null ? "" : value, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
                 .replace('-', '_')
                 .trim()
@@ -457,7 +446,9 @@ public class ServiceStrategie implements IService<Strategie> {
         }
     }
 
-    /** returns current idProj in DB (nullable) */
+    /**
+     * returns current idProj in DB (nullable)
+     */
     private Integer getCurrentProjectId(int idStrategie) {
         String sql = "SELECT idProj FROM strategies WHERE idStrategie=?";
         try (Connection cnx = MyConnection.getInstance().getConnection();
@@ -494,20 +485,21 @@ public class ServiceStrategie implements IService<Strategie> {
             throw new RuntimeException("Erreur lecture strategie par nom: " + e.getMessage(), e);
         }
     }
+
     private String norm(String s) {
         if (s == null) return "";
-        return java.text.Normalizer.normalize(s.trim().toLowerCase(java.util.Locale.ROOT),
-                        java.text.Normalizer.Form.NFD)
+        return Normalizer.normalize(s.trim().toLowerCase(Locale.ROOT),
+                        Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
                 .replaceAll("[^\\p{L}0-9 ]", " ")   // keep ALL letters
                 .replaceAll("\\s+", " ")
                 .trim();
     }
 
-    private java.util.Set<String> tokens(String s) {
+    private Set<String> tokens(String s) {
         String n = norm(s);
-        if (n.isBlank()) return java.util.Set.of();
-        return new java.util.HashSet<>(java.util.Arrays.asList(n.split(" ")));
+        if (n.isBlank()) return Set.of();
+        return new HashSet<>(Arrays.asList(n.split(" ")));
     }
 
     private Set<String> charNgrams(String s, int n) {
@@ -548,15 +540,15 @@ public class ServiceStrategie implements IService<Strategie> {
         return Math.max(0.0, 1.0 - diffPct);
     }
 
-    private double jaccardObjectives(java.util.Set<Integer> a, java.util.Set<Integer> b) {
+    private double jaccardObjectives(Set<Integer> a, Set<Integer> b) {
         if (a == null || b == null) return 0.0;
         if (a.isEmpty() && b.isEmpty()) return 1.0;
         if (a.isEmpty() || b.isEmpty()) return 0.0;
 
-        var inter = new java.util.HashSet<>(a);
+        var inter = new HashSet<>(a);
         inter.retainAll(b);
 
-        var union = new java.util.HashSet<>(a);
+        var union = new HashSet<>(a);
         union.addAll(b);
 
         return (double) inter.size() / (double) union.size();
@@ -567,13 +559,14 @@ public class ServiceStrategie implements IService<Strategie> {
         if (a.getTypeStrategie() == TypeStrategie.NULL || b.getTypeStrategie() == TypeStrategie.NULL) return true;
         return a.getTypeStrategie() == b.getTypeStrategie();
     }
+
     public double similarityScore(Strategie a, Strategie b,
-                                  java.util.Set<Integer> aObjIds,
-                                  java.util.Set<Integer> bObjIds) {
+                                  Set<Integer> aObjIds,
+                                  Set<Integer> bObjIds) {
 
         double nameSim = jaccardName(a.getNomStrategie(), b.getNomStrategie());
         double budgetSim = closeness(a.getBudgetTotal(), b.getBudgetTotal(), 0.10);
-        double gainSim   = closeness(a.getGainEstime(), b.getGainEstime(), 0.10);
+        double gainSim = closeness(a.getGainEstime(), b.getGainEstime(), 0.10);
 
         boolean hasObj = (aObjIds != null && bObjIds != null);
         double objSim = hasObj ? jaccardObjectives(aObjIds, bObjIds) : 0.0;
@@ -583,13 +576,14 @@ public class ServiceStrategie implements IService<Strategie> {
         } else {
             // redistribute objective weight when objectives not known yet
 // no objectives yet
-            return 0.35 * nameSim + 0.325 * budgetSim + 0.325 * gainSim;        }
+            return 0.35 * nameSim + 0.325 * budgetSim + 0.325 * gainSim;
+        }
     }
 
-      public SimilarityResult checkUniquenessGlobal(Strategie incoming,
-                                                    java.util.Set<Integer> incomingObjIds,
-                                                    java.util.List<Strategie> candidates,
-                                                    java.util.function.Function<Integer, java.util.Set<Integer>> loadObjIds) {
+    public SimilarityResult checkUniquenessGlobal(Strategie incoming,
+                                                  Set<Integer> incomingObjIds,
+                                                  List<Strategie> candidates,
+                                                  Function<Integer, Set<Integer>> loadObjIds) {
 
         double bestScore = -1.0;
         Strategie best = null;
@@ -600,7 +594,7 @@ public class ServiceStrategie implements IService<Strategie> {
             // Recommended: duplicates must be same type
             if (!sameType(incoming, ex)) continue;
 
-            java.util.Set<Integer> exObjIds = null;
+            Set<Integer> exObjIds = null;
             if (incomingObjIds != null && loadObjIds != null) {
                 exObjIds = loadObjIds.apply(ex.getId());
             }
@@ -617,7 +611,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
             if (sameProject) {
                 double budgetHard = closeness(incoming.getBudgetTotal(), ex.getBudgetTotal(), 0.05); // 5%
-                double gainHard   = closeness(incoming.getGainEstime(), ex.getGainEstime(), 0.10);  // 10%
+                double gainHard = closeness(incoming.getGainEstime(), ex.getGainEstime(), 0.10);  // 10%
 
                 if (budgetHard >= 1.0 && gainHard >= 0.90) {
                     // treat as duplicate even if name differs
@@ -627,7 +621,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
             // HARD RULE: same numbers (very close) => duplicate even if name differs
             double budgetHard = closeness(incoming.getBudgetTotal(), ex.getBudgetTotal(), 0.03);
-            double gainHard   = closeness(incoming.getGainEstime(), ex.getGainEstime(), 0.03);
+            double gainHard = closeness(incoming.getGainEstime(), ex.getGainEstime(), 0.03);
             if (budgetHard >= 1.0 && gainHard >= 1.0) {
                 return new SimilarityResult(true, Math.max(score, 1.0), ex.getId(), ex.getNomStrategie());
             }
@@ -644,7 +638,7 @@ public class ServiceStrategie implements IService<Strategie> {
 
 
     public List<Project> listProjets() {
-        String sql ="SELECT * FROM projects WHERE stateProj='ACCEPTED' ORDER BY idProj DESC";
+        String sql = "SELECT * FROM projects WHERE stateProj='ACCEPTED' ORDER BY idProj DESC";
         List<Project> list = new ArrayList<>();
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql);
@@ -680,14 +674,260 @@ public class ServiceStrategie implements IService<Strategie> {
     }
 
     public void ValidationStrategie(Strategie s) {
-        String sql = "UPDATE strategies SET approbation=? WHERE idStrategie=?";
+        String sql = "UPDATE strategies SET statusStrategie=? WHERE idStrategie=?";
         try (Connection cnx = MyConnection.getInstance().getConnection();
-                PreparedStatement ps = cnx.prepareStatement(sql)) {
-                ps.setBoolean(1, s.getApprobation());
-                ps.setInt(2, s.getId());
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException("Erreur validation strategie: " + e.getMessage(), e);
-            }
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, "En_attente"); // default status for new strategy
+
+            ps.setInt(2, s.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur validation strategie: " + e.getMessage(), e);
+        }
     }
+
+    public void updateStatut(int id, StrategyStatut strategyStatut) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID de stratégie invalide.");
+        }
+        if (strategyStatut == null) {
+            throw new IllegalArgumentException("Statut de stratégie obligatoire.");
+        }
+
+        String sql = "UPDATE strategies SET statusStrategie=? WHERE idStrategie=?";
+
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setString(1, resolveDbStrategyStatus(cnx, strategyStatut));
+            ps.setInt(2, id);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Aucune stratégie trouvée avec l'ID: " + id);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur mise à jour statut stratégie: " + e.getMessage(), e);
+        }
+
+
+    }
+
+    public Strategie recommendStrategy(Project project) {
+        if (project == null || project.getIdProj() <= 0) {
+            throw new IllegalArgumentException("Projet invalide.");
+        }
+
+        List<Strategie> candidates = getByProject(project.getIdProj());
+
+        Strategie incoming = new Strategie();
+        incoming.setNomStrategie(""); // placeholder
+        incoming.setProjet(project);
+
+        incoming.setBudgetTotal(project.getBudgetProj() == 0 ? 0.0 : project.getBudgetProj());
+        incoming.setGainEstime((project.getBudgetProj() == 0 ? 0.0 : project.getBudgetProj()) * 0.20);
+        incoming.setDureeTerme("180"); // example in days if your app expects days
+        incoming.setTypeStrategie(TypeStrategie.AUTRE);
+
+        SimilarityResult result = checkUniquenessGlobal(
+                incoming,
+                null,             // no objective ids at project level
+                candidates,
+                null
+        );
+
+        if (result.isDuplicate()) {
+            Strategie best = candidates.stream()
+                    .filter(s -> s.getId() == result.getBestMatchingStrategyId())
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Matching strategy not found"));
+
+            // optionally adjust status
+            StrategyStatut target = result.getBestScore() >= 0.90
+                    ? StrategyStatut.ACCEPTEE
+                    : StrategyStatut.EN_COURS;
+
+            if (best.getStatut() != target) {
+                updateStatut(best.getId(), target);
+                best.setStatut(target);
+            }
+            return best;
+        }
+
+        return generateDraftFromGemini(project);
+    }
+
+    /**
+     * Calls Gemini to generate a strategy, parses it and persists.
+     */
+    private Strategie generateDraftFromGemini(Project project) {
+        // TODO: instantiate your client correctly (adapt)
+        OllamaClient gemini = new OllamaClient(
+                System.getenv("GEMINI_API_KEY"),
+                "gemini-1.5-flash"
+        );
+
+        double budget = (project.getBudgetProj() == 0) ? 0.0 : project.getBudgetProj();
+
+        String prompt = """
+You are a consultant. Generate ONE strategy proposal for this project.
+
+Project title: %s
+Budget: %.2f
+Type: %s
+Progress: %.0f%%
+
+Return ONLY JSON with EXACT keys:
+{
+  "nomStrategie": "string",
+  "justification": "string",
+  "budgetTotal": number,
+  "gainEstime": number,
+  "DureeTerme": "integer_days_as_string",
+  "typeStrategie": "AUTRE"
 }
+""".formatted(
+                safe(project.getTitleProj()),
+                budget,
+                String.valueOf(project.getTypeProj()),
+                project.getAvancementProj()
+        );
+
+        Optional<JsonNode> jsonOpt;
+        try {
+            jsonOpt = gemini.generateJson(prompt);
+        } catch (Exception e) {
+            throw new RuntimeException("Gemini unreachable: " + e.getMessage(), e);
+        }
+
+        if (jsonOpt.isEmpty()) {
+            throw new RuntimeException("Gemini returned empty/malformed JSON");
+        }
+
+        JsonNode reply = jsonOpt.get();
+
+        Strategie s = new Strategie();
+        s.setNomStrategie(reply.path("nomStrategie").asText("").trim());
+        s.setJustification(reply.path("justification").asText("").trim());
+        s.setBudgetTotal(reply.path("budgetTotal").asDouble(budget));
+        s.setGainEstime(reply.path("gainEstime").asDouble(budget * 0.2));
+        s.setDureeTerme(reply.path("DureeTerme").asText("180").trim());
+
+        // safer: never trust model for enums
+        s.setTypeStrategie(TypeStrategie.AUTRE);
+
+        // status is handled by caller
+        return s;
+    }
+
+    private String safe(String v) { return v == null ? "" : v.trim(); }
+
+    public Strategie confirmRecommendedStrategy(Strategie draft) {
+        if (draft == null) throw new IllegalArgumentException("Stratégie invalide.");
+        // Ensure minimum fields (and that it’s linked to project/user)
+        if (draft.getProjet() == null || draft.getProjet().getIdProj() <= 0) {
+            throw new IllegalArgumentException("Projet obligatoire pour enregistrer.");
+        }
+        if (draft.getIdUser() == null) {
+            draft.setIdUser(SessionContext.getCurrentUserId());
+        }
+        if (draft.getStatut() == null) {
+            draft.setStatut(StrategyStatut.EN_COURS);
+        }
+        if (draft.getCreatedAt() == null) {
+            draft.setCreatedAt(LocalDateTime.now());
+        }
+        Integer t=0;
+        int daysToint =t.parseInt(draft.getDureeTerme());
+        if (daysToint <= 0) {
+            throw new IllegalArgumentException("Durée du terme doit être supérieure à 0");
+        }
+
+        ajouter(draft); // persists + sets id
+        return draft;
+    }
+
+    public int getBestMatchingStrategyId(Project project) {
+        if (project == null || project.getIdProj() <= 0) {
+            throw new IllegalArgumentException("project cannot be null/invalid");
+        }
+
+        List<Strategie> candidates = getByProject(project.getIdProj());
+        if (candidates.isEmpty()) return -1;
+
+        Strategie incoming = new Strategie();
+        incoming.setProjet(project);
+        incoming.setNomStrategie("");
+        incoming.setBudgetTotal(project.getBudgetProj() == 0 ? 0.0 : project.getBudgetProj());
+        incoming.setGainEstime((project.getBudgetProj() == 0 ? 0.0 : project.getBudgetProj()) * 0.20);
+        incoming.setDureeTerme("180");
+        incoming.setTypeStrategie(TypeStrategie.AUTRE);
+
+        SimilarityResult result = checkUniquenessGlobal(
+                incoming,
+                null,
+                candidates,
+                null
+        );
+
+        if (!result.isDuplicate()) return -1;
+
+        return result.getBestMatchingStrategyId();
+    }
+
+    public Set<Integer> getObjectivesByProject(int idProj) {
+        String sql = """
+        SELECT so.idObjective
+        FROM strategy_objectives so
+        JOIN strategies s ON s.idStrategie = so.idStrategie
+        WHERE s.idProj = ?
+    """;
+        Set<Integer> result = new HashSet<>();
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idProj);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) result.add(rs.getInt(1));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lecture objectives par projet: " + e.getMessage(), e);
+        }
+    }
+    public Strategie recommendDraftStrategy(Project project) {
+        if (project == null || project.getIdProj() <= 0) {
+            throw new IllegalArgumentException("Projet invalide.");
+        }
+
+        // 1) Try find duplicate (optional)
+        List<Strategie> candidates = getByProject(project.getIdProj());
+
+        Strategie incoming = new Strategie();
+        incoming.setNomStrategie("");
+        incoming.setProjet(project);
+
+        double budget = (project.getBudgetProj() == 0) ? 0.0 : project.getBudgetProj();
+        incoming.setBudgetTotal(budget);
+        incoming.setGainEstime(budget * 0.20);
+        incoming.setDureeTerme("180");
+        incoming.setTypeStrategie(TypeStrategie.AUTRE);
+
+        SimilarityResult sim = checkUniquenessGlobal(incoming, null, candidates, null);
+        if (sim.isDuplicate()) {
+            // Return the existing strategy as preview (no DB changes)
+            return candidates.stream()
+                    .filter(s -> s.getId() == sim.getBestMatchingStrategyId())
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Matching strategy not found"));
+        }
+
+        // 2) Otherwise call Gemini to generate a NEW draft (not saved)
+        Strategie draft = generateDraftFromGemini(project);
+        draft.setProjet(project);
+        draft.setIdUser(SessionContext.getCurrentUserId());
+        draft.setStatut(StrategyStatut.EN_COURS); // default preview status
+        draft.setCreatedAt(LocalDateTime.now());
+        return draft;
+    }}
+
