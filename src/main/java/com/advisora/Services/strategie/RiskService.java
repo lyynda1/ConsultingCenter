@@ -20,26 +20,87 @@ public class RiskService {
     private static final ObjectMapper OM = new ObjectMapper();
 
     private final ExternalEventStore store;
-    private final OllamaClient llm; // (you kept OllamaClient but it calls Gemini now)
+    private final OllamaClient llm;
+   // (you kept OllamaClient but it calls Gemini now)
 
     public RiskService(ExternalEventStore store, OllamaClient llm) {
         this.store = store;
         this.llm = llm;
+
     }
 
     public static class RiskResult {
+
         public Severity maxSeverity = Severity.INFO;
         public String message = "";
+        public List<String> suggestions = new ArrayList<>();
     }
 
     // -----------------------------
     // 1) Macro check (keywords)
     // -----------------------------
+    private static boolean hasAnyFuzzyWithSuggestions(String t, List<String> suggestionsOut, String... words) {
+        if (t == null || t.isBlank()) return false;
+
+        String[] tokens = t.split(" ");
+        boolean matched = false;
+
+        for (String w : words) {
+            if (w == null || w.isBlank()) continue;
+            String kw = norm(w);
+
+            // exact contains
+            if (t.contains(kw)) {
+                matched = true;
+                continue;
+            }
+
+            if (kw.length() < 5) continue;
+
+            int maxDist = (kw.length() >= 10) ? 2 : 1;
+
+            for (String tok : tokens) {
+                if (tok.length() < 3) continue;
+                if (Math.abs(tok.length() - kw.length()) > maxDist) continue;
+
+                int d = levenshtein(tok, kw);
+                if (d <= maxDist) {
+                    matched = true;
+
+                    // add suggestion only if it's really different
+                    if (!tok.equals(kw)) {
+                        String sug = tok + " → " + kw;
+                        if (!suggestionsOut.contains(sug)) suggestionsOut.add(sug);
+                    }
+                    break;
+                }
+            }
+        }
+        return matched;
+    }
+
+    private static int levenshtein(String a, String b) {
+        int n = a.length(), m = b.length();
+        int[] prev = new int[m + 1];
+        int[] cur  = new int[m + 1];
+
+        for (int j = 0; j <= m; j++) prev[j] = j;
+        for (int i = 1; i <= n; i++) {
+            cur[0] = i;
+            char ca = a.charAt(i - 1);
+            for (int j = 1; j <= m; j++) {
+                int cost = (ca == b.charAt(j - 1)) ? 0 : 1;
+                cur[j] = Math.min(Math.min(cur[j - 1] + 1, prev[j] + 1), prev[j - 1] + cost);
+            }
+            int[] tmp = prev; prev = cur; cur = tmp;
+        }
+        return prev[m];
+    }
     public RiskResult checkTitle(String strategyTitle) throws Exception {
         String t = norm(strategyTitle);
 
-
-        boolean economy = hasAny(t,
+        RiskResult r = new RiskResult();
+        boolean economy = hasAnyFuzzyWithSuggestions(t,r.suggestions,
                 // EN
                 "price","pricing","budget","investment","loan","cost","profit","revenue","salary",
                 "inflation","import","export","currency","dinar","interest","tax","subsidy",
@@ -52,7 +113,7 @@ public class RiskService {
                 "تضخم","توريد","استيراد","تصدير","عملة","دينار","فائدة","ضرائب","دعم"
         );
 
-        boolean health = hasAny(t,
+        boolean health = hasAnyFuzzyWithSuggestions(t,r.suggestions,
                 // EN
                 "health","pandemic","outbreak","covid","travel","tourism","event","disease","virus",
                 // FR
@@ -70,7 +131,6 @@ public class RiskService {
             System.out.println("eventType=" + e.getEventType() + " severity=" + e.getSeverity() + " name=" + e.getEventName());
         }
 
-        RiskResult r = new RiskResult();
         StringBuilder sb = new StringBuilder();
 
         for (ExternalEvent e : active) {

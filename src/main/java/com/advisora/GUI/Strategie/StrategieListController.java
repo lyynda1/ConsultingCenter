@@ -596,7 +596,7 @@ public class StrategieListController {
 
         try {
             // si tu veux stocker la justification de refus:
-            // strategieService.updateStatutAndJustification(s.getId(), StrategyStatut.REFUSEE, motif);
+             strategieService.applyDecision(s.getId(),false, motif,true);
 
             strategieService.updateStatut(s.getId(), StrategyStatut.REFUSEE);
 

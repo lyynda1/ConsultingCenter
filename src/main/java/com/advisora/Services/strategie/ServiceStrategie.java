@@ -35,7 +35,10 @@ public class ServiceStrategie implements IService<Strategie> {
              PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             // 1) status
-            if (strategie.getProjet() == null) {
+            if (strategie.getApprobation()==false) {
+                ps.setString(1, "En_attente");
+            }
+            else if (strategie.getProjet() == null) {
                 ps.setString(1, "Non_affectée");
             } else {
                 ps.setString(1, "En_cours");
@@ -145,7 +148,7 @@ public class ServiceStrategie implements IService<Strategie> {
             ps.setTimestamp(2, strategie.getLockedAt() == null ? null : Timestamp.valueOf(strategie.getLockedAt()));
 
             // 4) idProj
-            if (newProjId == null) ps.setNull(4, Types.INTEGER);
+            if (newProjId == null) ps.setNull(3, Types.INTEGER);
             else ps.setInt(3, newProjId);
 
             // 5) idUser
@@ -332,6 +335,12 @@ public class ServiceStrategie implements IService<Strategie> {
                 return literal;
             }
             if (status == StrategyStatut.REFUSEE && normalized.contains("REFUSEE")) {
+                return literal;
+            }if (status == StrategyStatut.EN_ATTENTE && normalized.contains("EN_ATTENTE")) {
+                return literal;
+
+
+            }if (status == StrategyStatut.EN_COURS && normalized.contains("NON_AFFECTE")) {
                 return literal;
             }
         }
@@ -673,18 +682,7 @@ public class ServiceStrategie implements IService<Strategie> {
         }
     }
 
-    public void ValidationStrategie(Strategie s) {
-        String sql = "UPDATE strategies SET statusStrategie=? WHERE idStrategie=?";
-        try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setString(1, "En_attente"); // default status for new strategy
 
-            ps.setInt(2, s.getId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur validation strategie: " + e.getMessage(), e);
-        }
-    }
 
     public void updateStatut(int id, StrategyStatut strategyStatut) {
         if (id <= 0) {

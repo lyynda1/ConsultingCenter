@@ -25,7 +25,7 @@ public class OllamaClient {
 
     // Example model: "gemini-1.5-flash"
     public OllamaClient(String apiKey, String model) {
-        this.apiKey = "AIzaSyDLjltBxGdJ5jmlz2ETYVkVmkwoVIZjqJU";
+        this.apiKey = "AIzaSyDG89ABKupwUT5Nwz1HdcGN7p3dEDj9fgU";
         this.model = model;
     }
 

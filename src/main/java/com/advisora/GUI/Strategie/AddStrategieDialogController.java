@@ -28,6 +28,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 
 import java.nio.file.Path;
@@ -169,22 +171,18 @@ public class AddStrategieDialogController {
         }
     }
 
+
     @FXML
     private void save() {
-        setLoading(true);
+
+        // ---- Fast validations on UI thread (ok) ----
+        StrategyStatut statut = statutCombo.getValue();
+        if (statut == null) statut = StrategyStatut.EN_COURS;
+
+        Project selectedProject = projetCombo.getValue();
+        Strategie s = (editingStrategie == null) ? new Strategie() : editingStrategie;
+
         try {
-            StrategyStatut statut = statutCombo.getValue();
-            if (statut == null) {
-                statut = StrategyStatut.EN_COURS;
-            }
-
-
-            Project selectedProject = projetCombo.getValue();
-
-
-            Strategie s = editingStrategie == null ? new Strategie() : editingStrategie;
-
-
             String validatedName = validateStrategyName(nomField.getText());
             validatedName = UniqueStrategie(validatedName, s.getId());
             s.setNomStrategie(validatedName);
@@ -196,76 +194,76 @@ public class AddStrategieDialogController {
             s.setBudgetTotal(parsePositiveDouble(budgetTotalField.getText(), "Budget total invalide."));
             s.setGainEstime(parsePositiveDouble(gainEstimeField.getText(), "Gain estime invalide."));
             s.setDureeTerme(required(terme.getText(), "Durée/terme obligatoire."));
-            if (s.getCreatedAt() == null) {
-                s.setCreatedAt(LocalDateTime.now());
+            if (s.getCreatedAt() == null) s.setCreatedAt(LocalDateTime.now());
+        } catch (Exception e) {
+            showError("Strategie", e.getMessage());
+            return;
+        }
+
+        // confirm budget vs gain (still UI)
+        if (s.getBudgetTotal() > s.getGainEstime()) {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Le gain estimé est inférieur au budget total. Continuer ?",
+                    ButtonType.YES, ButtonType.NO);
+            a.setHeaderText("Validation gain vs budget");
+            Optional<ButtonType> result = a.showAndWait();
+            if (result.isEmpty() || result.get() == ButtonType.NO) return;
+        }
+
+        // ---- If edit: no Gemini, just save quickly ----
+        if (editingStrategie != null) {
+            try {
+                serviceStrategie.modifier(s);
+                onSaved.run();
+                close();
+            } catch (Exception e) {
+                showError("Strategie", e.getMessage());
             }
-            if (s.getBudgetTotal()> s.getGainEstime()){
-                Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Le gain estimé est inférieur au budget total, il faut s'assurer de la viabilité de la strategie . Etes vous sur de votre choix ?", ButtonType.YES, ButtonType.NO);
-                a.setHeaderText("Validation gain vs budget");
-                Optional<ButtonType> result = a.showAndWait();
-                if (result.isEmpty() || result.get() == ButtonType.NO) {
-                    return;
-                }
-            }
+            return;
+        }
 
-            if (editingStrategie == null) {
+        // ---- Create: run heavy risk + LLM in background ----
+        setLoading(true);
 
-                String title = nomField.getText().trim();
+        Task<RiskOutcome> task = new Task<>() {
+            @Override
+            protected RiskOutcome call() throws Exception {
+                String title = s.getNomStrategie(); // already validated
 
-                // 1) Macro (keywords + events active)
                 RiskService riskService = RiskContext.getRiskService();
                 RiskService.RiskResult rr = riskService.checkTitle(title);
-                System.out.println("[CHECKTITLE] title=" + title);
-                System.out.println("[CHECKTITLE] maxSeverity=" + rr.maxSeverity);
-                System.out.println("[CHECKTITLE] msg=" + rr.message);
-                System.out.println("[CHECKTITLE] activeEventsCount=" + riskService.getActiveEvents().size());
+                String improvedMsg = "Analyse macro : " + rr.maxSeverity + "\n\n" + rr.message;
 
-                String improvedMsg = "Analyse macro : " + rr.maxSeverity;
+                if (rr.suggestions != null && !rr.suggestions.isEmpty()) {
+
+                    s.setNomStrategie(rr.suggestions.get(0));
+                }
+
                 Severity finalSeverity = rr.maxSeverity;
-                ProgressIndicator pi = new ProgressIndicator();
-                pi.setMaxSize(100, 100);
-                // Will be styled by your CSS
-                overlay.getChildren().add(pi);
-                overlay.setManaged(true);
-                overlay.setVisible(true);
 
-
-
-                // 2) LLM decision only if macro is WARNING+
                 if (rr.maxSeverity == Severity.WARNING || rr.maxSeverity == Severity.DANGER || rr.maxSeverity == Severity.CRITICAL) {
                     try {
-                        // Load active events
-                        List<ExternalEvent> activeEvents = RiskContext.getRiskService().getActiveEvents();
-                        // ⬆️ If you don't have getActiveEvents(), use: store.getActiveEvents() inside RiskService and expose it
+                        List<ExternalEvent> activeEvents = riskService.getActiveEvents();
 
-                        // Load recent news
                         NewsJsonStore ns = new NewsJsonStore(Path.of("data", "news_items.json"));
                         List<NewsItem> items = ns.readAll();
-                        Collections.reverse(items); // newest first
+                        Collections.reverse(items);
                         if (items.size() > 10) items = items.subList(0, 10);
 
-                        // LLM decision (you already wired gemini through OllamaClient)
                         LlmDecision dec = riskService.decideWithLLM(title, activeEvents, items);
 
-                        // Parse severity returned by LLM
-                        Severity llmSeverity;
                         try {
-                            llmSeverity = Severity.valueOf(dec.finalSeverity.toUpperCase());
+                            finalSeverity = Severity.valueOf(dec.finalSeverity.toUpperCase());
                         } catch (Exception ignored) {
-                            llmSeverity = rr.maxSeverity; // fallback
+                            finalSeverity = rr.maxSeverity;
                         }
-
-                        finalSeverity = llmSeverity;
 
                         improvedMsg += "\n\nAnalyse IA : " + (dec.summary_fr == null ? "" : dec.summary_fr)
                                 + "\n" + (dec.why_fr == null ? "" : dec.why_fr);
 
-                        // Add matched news links if available
                         if (dec.matchedNewsLinks != null && !dec.matchedNewsLinks.isEmpty()) {
                             improvedMsg += "\n\nNews pertinentes :";
-                            for (String link : dec.matchedNewsLinks) {
-                                improvedMsg += "\n- " + link;
-                            }
+                            for (String link : dec.matchedNewsLinks) improvedMsg += "\n- " + link;
                         }
 
                         improvedMsg += "\n\nDecision finale = " + finalSeverity;
@@ -277,85 +275,123 @@ public class AddStrategieDialogController {
                     }
                 }
 
+                return new RiskOutcome(finalSeverity, improvedMsg);
+            }
+        };
 
-                // 3) Decision uses finalSeverity
+        task.setOnSucceeded(ev -> {
+            setLoading(false);
+
+            RiskOutcome out = task.getValue();
+            Severity finalSeverity = out.severity;
+            String improvedMsg = out.message;
+
+            try {
                 switch (finalSeverity) {
                     case INFO, WARNING -> {
                         serviceStrategie.ajouter(s);
                         showInfo("Enregistrée (Risque: " + finalSeverity + ")", improvedMsg);
+                        onSaved.run();
+                        close();
                     }
                     case DANGER -> {
                         String justification = askJustification(improvedMsg);
                         if (justification == null || justification.isBlank()) return;
+
                         serviceStrategie.ajouter(s);
                         showInfo("Enregistrée avec justification (Risque: DANGER)", improvedMsg);
+                        onSaved.run();
+                        close();
                     }
                     case CRITICAL -> {
-                        // Create a custom dialog for critical risk
-                        Dialog<ButtonType> criticalDialog = new Dialog<>();
-                        criticalDialog.setTitle("Risque Critique - Approbation Admin Requise");
-                        criticalDialog.setHeaderText("Cette stratégie présente un risque critique lié aux événements externes.");
 
-                        // Add content to the dialog
+                        Dialog<String> dialog = new Dialog<>();
+                        dialog.setTitle("Risque Critique - Justification obligatoire");
+                        dialog.setHeaderText("Cette stratégie présente un risque critique.\nUne justification est obligatoire pour continuer.");
+
+                        // UI content
                         TextArea riskDetails = new TextArea(improvedMsg);
                         riskDetails.setEditable(false);
                         riskDetails.setWrapText(true);
                         riskDetails.setPrefRowCount(10);
 
+                        TextArea justificationArea = new TextArea();
+                        justificationArea.setPromptText("Justification obligatoire (mesures, mitigation, pourquoi la stratégie reste viable)...");
+                        justificationArea.setWrapText(true);
+                        justificationArea.setPrefRowCount(6);
+
                         VBox content = new VBox(10,
-                                new Label("Détails du risque:"),
+                                new Label("Détails du risque :"),
                                 riskDetails,
-                                new Label("Êtes-vous certain que cette stratégie ne sera pas affectée par ces événements externes?")
+                                new Label("Votre justification (obligatoire) :"),
+                                justificationArea
                         );
+                        VBox.setVgrow(riskDetails, Priority.ALWAYS);
+                        VBox.setVgrow(justificationArea, Priority.ALWAYS);
 
-                        criticalDialog.getDialogPane().setContent(content);
+                        dialog.getDialogPane().setContent(content);
 
-                        // Add buttons
-                        ButtonType confirmBtn = new ButtonType("Confirmer (Approbation Admin Requise)", ButtonBar.ButtonData.OK_DONE);
-                        ButtonType cancelBtn = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-                        criticalDialog.getDialogPane().getButtonTypes().addAll(confirmBtn, cancelBtn);
+                        // Buttons
+                        ButtonType confirmBtn = new ButtonType("Confirmer et envoyer pour approbation", ButtonBar.ButtonData.OK_DONE);
+                        dialog.getDialogPane().getButtonTypes().addAll(confirmBtn, ButtonType.CANCEL);
 
-                        // Show dialog and handle response
-                        Optional<ButtonType> result = criticalDialog.showAndWait();
-                        if (result.isPresent() && result.get() == confirmBtn) {
-                            // Save the strategy
-                            serviceStrategie.ajouter(s);
-                            s.setApprobation(false); // Mark as pending approval
-                            serviceStrategie.ValidationStrategie(s);
+                        // Disable confirm until justification is filled
+                        Node confirmNode = dialog.getDialogPane().lookupButton(confirmBtn);
+                        confirmNode.setDisable(true);
 
-                            // Show confirmation message
-                            Alert approvalAlert = new Alert(Alert.AlertType.INFORMATION);
-                            approvalAlert.setTitle("Demande d'approbation envoyée");
-                            approvalAlert.setHeaderText("Votre demande d'approbation a été envoyée à l'administrateur");
-                            approvalAlert.setContentText("Une notification a été envoyée pour confirmer l'approbation de cette stratégie malgré le risque critique.");
+                        justificationArea.textProperty().addListener((obs, oldV, newV) -> {
+                            confirmNode.setDisable(newV == null || newV.trim().isEmpty());
+                        });
 
-                            approvalAlert.showAndWait();
-                            // Close the dialog
-                            onSaved.run();
-                            notificationManager.addNotification(new com.advisora.Model.strategie.Notification(
-                                    "Approbation requise pour stratégie à risque critique",
-                                    "La stratégie '" + s.getNomStrategie() + "' a été enregistrée malgré un risque critique. Veuillez réviser et approuver."));
+                        // Return justification if confirmed
+                        dialog.setResultConverter(btn -> btn == confirmBtn ? justificationArea.getText().trim() : null);
 
-                            close();
-                        }
-                        // If user cancels, just return without saving
-                        return;
+                        Optional<String> justificationOpt = dialog.showAndWait();
+                        if (justificationOpt.isEmpty()) return;
+
+                        String justification = justificationOpt.get().trim();
+                        if (justification.isEmpty()) return; // safety
+
+                        // Save as "pending admin approval"
+                        s.setApprobation(false);
+
+                        // ✅ if you have a field in Strategie, store it:
+                        // s.setJustification(justification);
+
+                        serviceStrategie.ajouter(s);
+
+                        // ✅ if you store justification in DB via a service call:
+                        // serviceStrategie.updateJustification(s.getId(), justification);
+
+                        notificationManager.addNotification(new com.advisora.Model.strategie.Notification(
+                                "Approbation requise (CRITICAL)",
+                                "Stratégie: '" + s.getNomStrategie() + "'. Justification: " + justification
+                        ));
+
+                        onSaved.run();
+                        close();
                     }
-
                 }
-            } else {
-                serviceStrategie.modifier(s);
+            } catch (Exception e) {
+                showError("Strategie", e.getMessage());
             }
+        });
 
-            onSaved.run();
-            close();
-        } catch (Exception e) {
-            Alert a = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
-            a.setHeaderText("Strategie");
-            a.showAndWait();
-        }finally {
+        task.setOnFailed(ev -> {
             setLoading(false);
-        }
+            Throwable ex = task.getException();
+            showError("Strategie", ex == null ? "Erreur inconnue" : ex.getMessage());
+        });
+
+        Thread th = new Thread(task, "risk-llm-worker");
+        th.setDaemon(true);
+        th.start();
+    }
+
+    private static class RiskOutcome {
+        final Severity severity;
+        final String message;
+        RiskOutcome(Severity s, String m) { this.severity = s; this.message = m; }
     }
 
     private Severity combineMacroWithLLM(Severity macro, int bestScore) {

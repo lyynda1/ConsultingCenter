@@ -3,6 +3,8 @@ package com.advisora.Model.strategie;
 import com.advisora.enums.Severity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExternalEvent {
 
@@ -16,6 +18,7 @@ public class ExternalEvent {
 
     private Severity severity = Severity.INFO;
     private String description;
+    public List<String> suggestions = new ArrayList<>();
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
