@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.fxml.FXMLLoader?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../style/resource-module.css"
+            styleClass="module-root">
+    <children>
+        <TabPane tabClosingPolicy="UNAVAILABLE" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+            <tabs>
+                <Tab text="Fournisseurs">
+                    <content>
+                        <fx:include source="SupplierList.fxml"/>
+                    </content>
+                </Tab>
+                <Tab text="Ressources">
+                    <content>
+                        <fx:include source="ResourceList.fxml"/>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>

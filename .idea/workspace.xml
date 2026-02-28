@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/events.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/events.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/strategie/ServiceStrategie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/strategie/ServiceStrategie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/utils/news/OllamaClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/utils/news/OllamaClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/strategie/interfaceStrategie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/interfaceStrategie.fxml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/MSI/Downloads/AdvisoraValidation1" value="39OSo5h2RQKe0nFpnLKCkqwmMqi" />
+      <entry key="_C:/Users/MSI/Downloads/projet" value="3AFi5olRKguUVT03tk3BRMaZGPm" />
+    </persistenceIdMap>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="FxmlFile" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="gestionProjets" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;scrup&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/lyynda1/ConsultingCenter.git&quot;,
+    &quot;accountId&quot;: &quot;e44810b8-919c-4bc5-a11e-735584d1a3c3&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="$PROJECT_DIR$/../../../../xampp/php/php.exe" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+        &quot;associatedIndex&quot;: 3
+        }</component>
+  <component name="ProjectId" id="39OSo5h2RQKe0nFpnLKCkqwmMqi" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Advisora [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Advisora [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;dev.sweep.assistant.data.RecentlyUsedFiles&quot;: &quot;src\\main\\java\\com\\advisora\\GUI\\Strategie\\AddStrategieDialogController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieListController.java;src\\main\\java\\com\\advisora\\GUI\\InterfaceGeneralController.java;src\\main\\java\\com\\advisora\\Services\\ServiceStrategie.java;src\\main\\java\\com\\advisora\\GUI\\Project\\ProjectListController.java;src\\main\\java\\com\\advisora\\GUI\\Strategie\\StrategieInfoDialogController.java;src\\main\\java\\com\\advisora\\Model\\Strategie.java;src\\main\\resources\\css\\strategie-list.css&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;gestionStrategie&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/MSI/Downloads/AdvisoraValidation1&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/user/IdeaProjects/Advisora/src/main/java/org/example/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;sweep.chatMode&quot;: &quot;Agent&quot;,
+    &quot;sweep.selectedModel&quot;: &quot;Auto&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.advisora.Model" />
+      <recent name="com.advisora.GUI" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\MSI\Downloads\ConsultingCenter-gestionProjets\src\main\resources\views" />
+      <recent name="C:\Users\MSI\Downloads\ConsultingCenter-gestionProjets\src\main\java\com\advisora\GUI" />
+      <recent name="C:\Users\MSI\Downloads\ConsultingCenter-gestionProjets\src\main\resources" />
+      <recent name="C:\Users\MSI\Downloads\ConsultingCenter-gestionProjets\src\main\resources\GUI\Admin" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\MSI\Downloads\AdvisoraValidation1\src\main\java\com\advisora\Services\projet" />
+      <recent name="C:\Users\MSI\Downloads\AdvisoraValidation1\src\main\java\com\advisora\Model\projet" />
+      <recent name="C:\Users\MSI\Downloads\AdvisoraValidation1\src\main\resources\Assets" />
+      <recent name="C:\Users\user\IdeaProjects\Advisora\src\main\java" />
+      <recent name="C:\Users\user\IdeaProjects\Advisora\src\Entities" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.advisora.Main" />
+      <module name="Advisora" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.advisora.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="" />
+      <created>1770565797318</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770565797318</updated>
+      <workItem from="1770565799038" duration="6175000" />
+      <workItem from="1770572083759" duration="8000" />
+      <workItem from="1770572346688" duration="459000" />
+      <workItem from="1770582123085" duration="1370000" />
+      <workItem from="1770583557298" duration="709000" />
+      <workItem from="1770584305916" duration="817000" />
+      <workItem from="1771489007200" duration="7199000" />
+      <workItem from="1771500546135" duration="14384000" />
+      <workItem from="1771592940026" duration="7356000" />
+      <workItem from="1772194538622" duration="13626000" />
+      <workItem from="1772279322933" duration="15292000" />
+    </task>
+    <task id="LOCAL-00001" summary="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml">
+      <option name="closed" value="true" />
+      <created>1771264712634</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1771264712634</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Merge branch 'gestionEvenements' into gestionStrategie&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/java/com/advisora/Model/Transaction.java&#10;#&#9;src/main/java/com/advisora/enums/UserRole.java">
+      <option name="closed" value="true" />
+      <created>1771518045282</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771518045282</updated>
+    </task>
+    <task id="LOCAL-00003" summary="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)">
+      <option name="closed" value="true" />
+      <created>1771518296324</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1771518296324</updated>
+    </task>
+    <task id="LOCAL-00004" summary="ajout de budget et gain estimé pour chaque strategie ainsi qu'un calcul de ROI (modification de la table Strategie) changement du desing de l'interface de gestion des strategies ainsi que le dialogue d'info sur strategie dans la gestion des projets">
+      <option name="closed" value="true" />
+      <created>1771540210400</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1771540210400</updated>
+    </task>
+    <task id="LOCAL-00005" summary="ajout de clear all pour les notifications et ajustement de la visibilité des notificatons selon role">
+      <option name="closed" value="true" />
+      <created>1771541513611</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1771541513611</updated>
+    </task>
+    <task id="LOCAL-00006" summary="correction de la notification part 1">
+      <option name="closed" value="true" />
+      <created>1771544279384</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1771544279384</updated>
+    </task>
+    <task id="LOCAL-00007" summary="ajout de systeme de recommandation depuisq la base puis avec gemini. Amelioration de l'interface et ajout de load spin">
+      <option name="closed" value="true" />
+      <created>1772285852241</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1772285852241</updated>
+    </task>
+    <task id="LOCAL-00008" summary="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo">
+      <option name="closed" value="true" />
+      <created>1772289712927</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772289712927</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml" />
+    <MESSAGE value="notification lors de la prise de decision concernantant une strategie ( UI + son + table notification)" />
+    <MESSAGE value="ajout de budget et gain estimé pour chaque strategie ainsi qu'un calcul de ROI (modification de la table Strategie) changement du desing de l'interface de gestion des strategies ainsi que le dialogue d'info sur strategie dans la gestion des projets" />
+    <MESSAGE value="ajout de clear all pour les notifications et ajustement de la visibilité des notificatons selon role" />
+    <MESSAGE value="correction de la notification part 1" />
+    <MESSAGE value="ajout de systeme de recommandation depuisq la base puis avec gemini. Amelioration de l'interface et ajout de load spin" />
+    <MESSAGE value="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo" />
+    <option name="LAST_COMMIT_MESSAGE" value="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
