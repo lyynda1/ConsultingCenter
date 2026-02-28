@@ -24,6 +24,12 @@
         <VBox spacing="6">
             <Label text="Projet" />
             <ComboBox fx:id="projetCombo" promptText="Choisir un projet" />
+
+            <!-- ✅ Lock message -->
+            <Label fx:id="projectLockLabel"
+                   text="Projet verrouillé (après 2h). Seul l’admin peut modifier."
+                   visible="false" managed="false"
+                   style="-fx-text-fill: #d9534f; -fx-font-size: 12px;"/>
         </VBox>
 
         <VBox spacing="6">

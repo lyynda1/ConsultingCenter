@@ -8,6 +8,7 @@ import com.advisora.Services.IService;
 import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
+import com.advisora.enums.UserRole;
 import com.advisora.utils.MyConnection;
 import com.advisora.utils.news.OllamaClient;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -116,6 +117,37 @@ public class ServiceStrategie implements IService<Strategie> {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lecture strategies: " + e.getMessage(), e);
         }
+    }
+
+    public void updateProject(Strategie s, UserRole role) {
+
+
+        // If not accepted or no project -> allow
+        if (s.getStatut() != StrategyStatut.ACCEPTEE || s.getProjet() == null) {
+            modifier(s);
+            return;
+        }
+
+        // Admin always allowed
+        if (role == UserRole.ADMIN) {
+            modifier(s);
+            return;
+        }
+
+        // Must have accepted_at (or project_assigned_at)
+        LocalDateTime ref = s.getLockedAt(); // or getProjectAssignedAt()
+        if (ref == null) {
+            // safest: block for non-admin if we don't know time
+            throw new IllegalStateException("Changement projet bloqué: date d'acceptation inconnue.");
+        }
+
+        long minutes = java.time.Duration.between(ref, LocalDateTime.now()).toMinutes();
+
+        if (minutes > 120) {
+            throw new IllegalArgumentException("Vous ne pouvez plus changer le projet après 2 heures. Seul l'admin peut.");
+        }
+
+        modifier(s);
     }
 
     @Override

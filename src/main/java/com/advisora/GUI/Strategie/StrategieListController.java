@@ -18,61 +18,70 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
-import java.io.File;
-import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StrategieListController {
+
     @FXML private ListView<Strategie> strategieList;
     @FXML private TextField txtSearch;
     @FXML private Label lblTotalStrategies;
     @FXML private Label lblPending;
     @FXML private Label lblSuccess;
+
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
+
     @FXML private CheckBox chkPendingOnly;
+    @FXML private ComboBox<StrategyStatut> cmbStatusFilter;
+    @FXML private ComboBox<String> cmbProjectFilter;
 
     private final ServiceStrategie strategieService = new ServiceStrategie();
     private final ServiceObjective objectiveService = new ServiceObjective();
-    private final ObservableList<Strategie> allObs = FXCollections.observableArrayList();
+
+    private final ObservableList<Strategie> allObs  = FXCollections.observableArrayList();
     private final ObservableList<Strategie> viewObs = FXCollections.observableArrayList();
+
     private Map<Integer, List<Objective>> objectivesByStrategie = Map.of();
-    private Comparator<Strategie> comparator = Comparator.comparing(this::getCreatedAtSafe, this::compareDateDesc);
+
+    private Comparator<Strategie> comparator =
+            Comparator.comparing(this::getCreatedAtSafe, this::compareDateDesc);
+
     private double dragOffsetX;
     private double dragOffsetY;
 
-    private boolean addSpin = false;
-
     @FXML
-
     public void initialize() {
 
         strategieList.setItems(viewObs);
-
-        // ✅ allow dynamic cell height (otherwise labels can be clipped)
         strategieList.setFixedCellSize(-1);
 
+        // ---- Status filter ----
+        if (cmbStatusFilter != null) {
+            cmbStatusFilter.setItems(FXCollections.observableArrayList(StrategyStatut.values()));
+            cmbStatusFilter.setPromptText("Statut");
+            cmbStatusFilter.valueProperty().addListener((obs, oldV, newV) ->
+                    applyFilter(txtSearch == null ? "" : txtSearch.getText())
+            );
+        }
 
+        // ---- Project filter ----
+        if (cmbProjectFilter != null) {
+            cmbProjectFilter.setItems(FXCollections.observableArrayList("Tous"));
+            cmbProjectFilter.setValue("Tous");
+            cmbProjectFilter.valueProperty().addListener((obs, oldV, newV) ->
+                    applyFilter(txtSearch == null ? "" : txtSearch.getText())
+            );
+        }
+
+        // ---- List cell factory (cards) ----
         strategieList.setCellFactory(lv -> new ListCell<>() {
-
             {
-                // ✅ show ONLY graphic (your VBox card)
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-
-                // ✅ let cell width follow list width (helps wrapping)
-                prefWidthProperty().bind(lv.widthProperty().subtract(20)); // small margin
+                prefWidthProperty().bind(lv.widthProperty().subtract(20));
             }
 
             @Override
@@ -83,44 +92,45 @@ public class StrategieListController {
                     setGraphic(null);
                 } else {
                     VBox card = buildCard(s);
-
-                    // ✅ VERY IMPORTANT: give the card a width to wrap into
                     card.maxWidthProperty().bind(prefWidthProperty());
                     card.setFillWidth(true);
-
                     setGraphic(card);
                 }
             }
         });
 
-        txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
-        UserRole role = SessionContext.getCurrentRole();
-        boolean isAdmin = (role == UserRole.ADMIN);
+        // ---- Search ----
+        if (txtSearch != null) {
+            txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+        }
 
-// toggle seulement pour ADMIN
+        // ---- Admin toggle ----
+        boolean isAdmin = (SessionContext.getCurrentRole() == UserRole.ADMIN);
         if (chkPendingOnly != null) {
             chkPendingOnly.setVisible(isAdmin);
             chkPendingOnly.setManaged(isAdmin);
-
-            // option: par défaut l’admin peut choisir (false = tout voir)
             chkPendingOnly.setSelected(false);
-
-            chkPendingOnly.selectedProperty().addListener((o, oldV, newV) -> {
-                applyFilter(txtSearch == null ? "" : txtSearch.getText());
-            });
+            chkPendingOnly.selectedProperty().addListener((o, oldV, newV) ->
+                    applyFilter(txtSearch == null ? "" : txtSearch.getText())
+            );
         }
 
+        // ---- Initial load ----
         try {
             refresh();
         } catch (Exception ex) {
+            ex.printStackTrace();
             showError("Chargement strategies impossible: " + ex.getMessage());
             viewObs.clear();
-            lblTotalStrategies.setText("0");
-            lblPending.setText("0");
-            lblSuccess.setText("0%");
+            if (lblTotalStrategies != null) lblTotalStrategies.setText("0");
+            if (lblPending != null) lblPending.setText("0");
+            if (lblSuccess != null) lblSuccess.setText("0%");
         }
     }
 
+    // ============================
+    // UI Handlers
+    // ============================
 
     @FXML
     private void nouvelleStrategie(ActionEvent e) {
@@ -135,6 +145,118 @@ public class StrategieListController {
     private void onSearch(KeyEvent e) {
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
     }
+
+    @FXML
+    private void onTogglePendingOnly(ActionEvent e) {
+        applyFilter(txtSearch == null ? "" : txtSearch.getText());
+    }
+
+    @FXML
+    public void onFilterStatus(ActionEvent e) {
+        applyFilter(txtSearch == null ? "" : txtSearch.getText());
+    }
+
+    @FXML
+    public void onFilterProject(ActionEvent e) {
+        applyFilter(txtSearch == null ? "" : txtSearch.getText());
+    }
+
+    @FXML
+    public void onRefresh(ActionEvent e) {
+        try {
+            refresh();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("Rafraîchissement impossible: " + ex.getMessage());
+        }
+    }
+
+    // ============================
+    // Refresh (DB -> UI)
+    // ============================
+
+    private void refresh() throws Exception {
+        List<Strategie> list = strategieService.afficher();
+        allObs.setAll(list);
+
+        // load objectives map
+        try {
+            List<Objective> allObjectives = objectiveService.afficher();
+            objectivesByStrategie = allObjectives.stream()
+                    .collect(Collectors.groupingBy(Objective::getStrategieId));
+        } catch (Exception ignored) {
+            objectivesByStrategie = Map.of();
+        }
+
+        // update project filter items + keep selection
+        if (cmbProjectFilter != null) {
+            String current = cmbProjectFilter.getValue();
+
+            List<String> projects = list.stream()
+                    .map(s -> s.getProjet() != null ? safe(s.getProjet().getTitleProj()) : null)
+                    .filter(p -> p != null && !p.isBlank())
+                    .distinct()
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .toList();
+
+            ObservableList<String> items = FXCollections.observableArrayList();
+            items.add("Tous");
+            items.addAll(projects);
+
+            cmbProjectFilter.setItems(items);
+
+            if (current != null && items.contains(current)) {
+                cmbProjectFilter.setValue(current);
+            } else {
+                cmbProjectFilter.setValue("Tous");
+            }
+        }
+
+        applyFilter(txtSearch == null ? "" : txtSearch.getText());
+        updateStats(list);
+    }
+
+    // ============================
+    // Filtering
+    // ============================
+
+    private void applyFilter(String q) {
+        String search = q == null ? "" : q.trim().toLowerCase(Locale.ROOT);
+
+        boolean isAdmin = (SessionContext.getCurrentRole() == UserRole.ADMIN);
+        boolean pendingOnly = isAdmin && chkPendingOnly != null && chkPendingOnly.isSelected();
+
+        StrategyStatut statusFilter = (cmbStatusFilter != null) ? cmbStatusFilter.getValue() : null;
+        String projectFilter = (cmbProjectFilter != null) ? cmbProjectFilter.getValue() : null;
+
+        // ✅ treat "Tous" as no filter
+        if (projectFilter != null && projectFilter.equalsIgnoreCase("Tous")) {
+            projectFilter = null;
+        }
+
+        String finalProjectFilter = projectFilter;
+
+        List<Strategie> filtered = allObs.stream()
+                .filter(s -> !pendingOnly || s.getStatut() == StrategyStatut.EN_ATTENTE)
+                .filter(s -> statusFilter == null || s.getStatut() == statusFilter)
+                .filter(s -> finalProjectFilter == null ||
+                        (s.getProjet() != null &&
+                                safe(s.getProjet().getTitleProj()).equalsIgnoreCase(finalProjectFilter)))
+                .filter(s ->
+                        search.isBlank()
+                                || safe(s.getNomStrategie()).toLowerCase(Locale.ROOT).contains(search)
+                                || (s.getProjet() != null && safe(s.getProjet().getTitleProj()).toLowerCase(Locale.ROOT).contains(search))
+                                || (s.getStatut() != null && s.getStatut().toDb().toLowerCase(Locale.ROOT).contains(search))
+                )
+                .sorted(comparator)
+                .toList();
+
+        viewObs.setAll(filtered);
+    }
+
+    // ============================
+    // Sort handlers (optional)
+    // ============================
 
     @FXML
     private void onSortNomAsc(ActionEvent e) {
@@ -159,36 +281,35 @@ public class StrategieListController {
         comparator = Comparator.comparing(this::getCreatedAtSafe, this::compareDateAsc);
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
     }
-    @FXML
-    private void onTogglePendingOnly(ActionEvent e) {
-        applyFilter(txtSearch == null ? "" : txtSearch.getText());
-    }
+
+    // ============================
+    // Card UI
+    // ============================
 
     private VBox buildCard(Strategie s) {
-
-        // ===== HEADER =====
         Label title = new Label(safe(s.getNomStrategie()));
         title.getStyleClass().add("card-title");
 
-        // Status + icon
         String statusText = (s.getStatut() == null) ? "" : s.getStatut().toDb();
         String statusIcon = switch (s.getStatut()) {
             case ACCEPTEE -> "✅ ";
-            case REFUSEE  -> "⛔ ";
+            case REFUSEE -> "⛔ ";
             case EN_COURS -> "⏳ ";
             case Non_affectée -> "⚪ ";
+            case EN_ATTENTE -> "🕒 ";
             default -> "";
         };
 
         Label statut = new Label(statusIcon + statusText);
         statut.getStyleClass().addAll("badge", "status-badge");
 
-        // status color class
         if (s.getStatut() != null) {
             switch (s.getStatut()) {
                 case ACCEPTEE -> statut.getStyleClass().add("status-accepted");
-                case REFUSEE  -> statut.getStyleClass().add("status-refused");
-                case EN_COURS -> statut.getStyleClass().add("status-pending");
+                case REFUSEE -> statut.getStyleClass().add("status-refused");
+                case EN_COURS, EN_ATTENTE -> statut.getStyleClass().add("status-pending");
+                case Non_affectée -> statut.getStyleClass().add("status-non-affectee");
+                default -> { }
             }
         }
 
@@ -198,8 +319,6 @@ public class StrategieListController {
         HBox head = new HBox(10, title, spacer, statut);
         head.getStyleClass().add("card-head");
 
-
-        // ===== LEFT META (Projet / Date / Type) =====
         Label projet = new Label("Projet associé : " +
                 (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
         projet.getStyleClass().add("card-meta");
@@ -215,10 +334,8 @@ public class StrategieListController {
         VBox metaLeft = new VBox(6, projet, date, type);
         metaLeft.getStyleClass().add("card-meta-col");
 
-
-        // ===== RIGHT METRICS (Budget / Gain / ROI) =====
         String budgetText = (s.getBudgetTotal() == 0) ? "-" : String.format("%,.0f DT", s.getBudgetTotal());
-        String gainText   = (s.getGainEstime() == 0) ? "-" : String.format("%,.0f DT", s.getGainEstime());
+        String gainText = (s.getGainEstime() == 0) ? "-" : String.format("%,.0f DT", s.getGainEstime());
 
         Label budget = new Label("Budget : " + budgetText);
         budget.getStyleClass().add("metric-line");
@@ -229,7 +346,7 @@ public class StrategieListController {
         Label roi = new Label("ROI : -");
         roi.getStyleClass().add("roi-value");
 
-        if (s.getGainEstime() != 0 && s.getBudgetTotal() != 0 && s.getBudgetTotal() != 0) {
+        if (s.getGainEstime() != 0 && s.getBudgetTotal() != 0) {
             double roiValue = strategieService.CalculROI(s.getGainEstime(), s.getBudgetTotal()) * 100.0;
             roi.setText(String.format("ROI : %+,.0f%%", roiValue));
         }
@@ -237,21 +354,16 @@ public class StrategieListController {
         VBox metricsRight = new VBox(6, budget, gain, roi);
         metricsRight.getStyleClass().add("metrics-col");
 
-
-        // ===== TOP GRID (left + right) =====
         HBox topRow = new HBox(22, metaLeft, metricsRight);
         topRow.getStyleClass().add("card-top-row");
         HBox.setHgrow(metaLeft, Priority.ALWAYS);
 
-
-        // ===== OBJECTIVES CHIPS =====
         FlowPane objChips = new FlowPane();
         objChips.getStyleClass().add("obj-chips");
         objChips.setHgap(8);
         objChips.setVgap(8);
 
         List<Objective> objectives = objectivesByStrategie.getOrDefault(s.getId(), List.of());
-
         if (objectives.isEmpty()) {
             Label none = new Label("Aucun objectif");
             none.getStyleClass().add("obj-empty");
@@ -265,8 +377,6 @@ public class StrategieListController {
             }
         }
 
-
-        // ===== JUSTIFICATION =====
         Label justificationLabel = new Label();
         justificationLabel.getStyleClass().add("justification");
         justificationLabel.setWrapText(true);
@@ -278,10 +388,6 @@ public class StrategieListController {
         justificationLabel.setVisible(hasJustif);
         justificationLabel.setManaged(hasJustif);
 
-
-
-
-        // ===== ACTIONS =====
         HBox actions = new HBox(10);
         actions.getStyleClass().add("card-actions");
 
@@ -301,14 +407,13 @@ public class StrategieListController {
             actions.getChildren().addAll(edit, delete, addObjective);
         }
 
-// ✅ ADMIN ONLY: accept/refuse (only if pending)
         if (isAdmin() && s.getStatut() == StrategyStatut.EN_ATTENTE) {
             Region grow = new Region();
             HBox.setHgrow(grow, Priority.ALWAYS);
             actions.getChildren().add(grow);
 
             Button accept = new Button("Accepter");
-            accept.getStyleClass().add("btn-success"); // ajoute dans css
+            accept.getStyleClass().add("btn-success");
             accept.setOnAction(e -> acceptStrategie(s));
 
             Button refuse = new Button("Refuser");
@@ -318,53 +423,44 @@ public class StrategieListController {
             actions.getChildren().addAll(accept, refuse);
         }
 
-
-        // ===== CARD =====
         VBox card = new VBox(14);
         card.getStyleClass().add("card");
-
-        card.getChildren().addAll(
-                head,
-                topRow,
-                objChips,
-                justificationLabel,
-                actions
-        );
-
+        card.getChildren().addAll(head, topRow, objChips, justificationLabel, actions);
         return card;
     }
 
-
-
-
+    // ============================
+    // Dialogs / Actions
+    // ============================
 
     private void openAddDialog() {
         try {
             var url = getClass().getResource("/views/strategie/AddStrategie.fxml");
             if (url == null) {
-                showError("FXML introuvable: /views/strategie/AddStrategie.fxml (vérifie src/main/resources)");
+                showError("FXML introuvable: /views/strategie/AddStrategie.fxml");
                 return;
             }
             FXMLLoader loader = new FXMLLoader(url);
             Parent content = loader.load();
+
             AddStrategieDialogController c = loader.getController();
             c.setOnClose(this::closeDialog);
             c.setOnSaved(() -> {
                 closeDialog();
-                refresh();
+                try { refresh(); } catch (Exception ex) { showError(ex.getMessage()); }
             });
+
             c.setEditingStrategie(null);
             c.resetForm();
+
             enableDrag(c.getDragHandle(), modalBox);
             showDialog(content);
-         } catch (Exception ex) {
-            ex.printStackTrace(); // <-- MOST IMPORTANT
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
             Throwable root = ex;
             while (root.getCause() != null) root = root.getCause();
-
-            showError("Impossible d'ouvrir le formulaire:\n" + root.getClass().getName()
-                    + "\n" + root.getMessage());
+            showError("Impossible d'ouvrir le formulaire:\n" + root.getMessage());
         }
     }
 
@@ -372,16 +468,20 @@ public class StrategieListController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/AddStrategie.fxml"));
             Parent content = loader.load();
+
             AddStrategieDialogController c = loader.getController();
             c.setOnClose(this::closeDialog);
             c.setOnSaved(() -> {
                 closeDialog();
-                refresh();
+                try { refresh(); } catch (Exception ex) { showError(ex.getMessage()); }
             });
+
             c.setEditingStrategie(strategie);
             enableDrag(c.getDragHandle(), modalBox);
             showDialog(content);
+
         } catch (Exception ex) {
+            ex.printStackTrace();
             showError("Impossible d'ouvrir modification: " + ex.getMessage());
         }
     }
@@ -390,17 +490,22 @@ public class StrategieListController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/objectif/AddObjectif.fxml"));
             Parent content = loader.load();
+
             AddObjectifController c = loader.getController();
             c.setOnClose(this::closeDialog);
             c.setOnSaved(() -> {
                 closeDialog();
-                refresh();
+                try { refresh(); } catch (Exception ex) { showError(ex.getMessage()); }
             });
+
             c.setStrategie(strategie);
             c.resetForm();
+
             enableDrag(c.getDragHandle(), modalBox);
             showDialog(content);
+
         } catch (Exception ex) {
+            ex.printStackTrace();
             showError("Impossible d'ouvrir objectifs: " + ex.getMessage());
         }
     }
@@ -409,17 +514,22 @@ public class StrategieListController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/objectif/AddObjectif.fxml"));
             Parent content = loader.load();
+
             AddObjectifController c = loader.getController();
             c.setOnClose(this::closeDialog);
             c.setOnSaved(() -> {
                 closeDialog();
-                refresh();
+                try { refresh(); } catch (Exception ex) { showError(ex.getMessage()); }
             });
+
             c.setStrategie(strategie);
             c.setEditingObjective(objective);
+
             enableDrag(c.getDragHandle(), modalBox);
             showDialog(content);
+
         } catch (Exception ex) {
+            ex.printStackTrace();
             showError("Impossible d'ouvrir modification objectif: " + ex.getMessage());
         }
     }
@@ -428,14 +538,22 @@ public class StrategieListController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/objectif/ObjectiveInfoDialog.fxml"));
             Parent content = loader.load();
+
             ObjectiveInfoController controller = loader.getController();
             controller.setObjective(objective);
             controller.setOnClose(this::closeDialog);
-            controller.setOnRefresh(this::refresh);
+
+            controller.setOnRefresh(() -> {
+                try { refresh(); } catch (Exception ex) { showError(ex.getMessage()); }
+            });
+
             controller.setOnEditRequested(o -> openEditObjectiveDialog(o, strategie));
+
             enableDrag(controller.getDragHandle(), modalBox);
             showDialog(content);
+
         } catch (Exception ex) {
+            ex.printStackTrace();
             showError("Impossible d'ouvrir detail objectif: " + ex.getMessage());
         }
     }
@@ -445,24 +563,73 @@ public class StrategieListController {
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer cette strategie ?");
         confirm.setContentText("ID: " + s.getId() + "\nCette action est irreversible.");
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
-            return;
-        }
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
         try {
             strategieService.supprimer(s);
             refresh();
         } catch (Exception ex) {
+            ex.printStackTrace();
             showError("Suppression echouee: " + ex.getMessage());
         }
     }
 
+    private void acceptStrategie(Strategie s) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Accepter cette stratégie ?\nID: " + s.getId(),
+                ButtonType.OK, ButtonType.CANCEL);
+        confirm.setHeaderText("Validation Admin");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
+        try {
+            strategieService.updateStatut(s.getId(), StrategyStatut.Non_affectée);
+            refresh();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("Impossible d'accepter: " + ex.getMessage());
+        }
+    }
+
+    private void refuseStrategie(Strategie s) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Refus Admin");
+        dialog.setHeaderText("Refuser cette stratégie");
+        dialog.setContentText("Motif (optionnel):");
+
+        String motif = dialog.showAndWait().orElse("").trim();
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Confirmer le refus ?\nID: " + s.getId(),
+                ButtonType.OK, ButtonType.CANCEL);
+        confirm.setHeaderText("Validation Admin");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
+        try {
+            strategieService.applyDecision(s.getId(), false, motif, true);
+            strategieService.updateStatut(s.getId(), StrategyStatut.REFUSEE);
+            refresh();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("Impossible de refuser: " + ex.getMessage());
+        }
+    }
+
+    // ============================
+    // Overlay / drag
+    // ============================
+
     private void showDialog(Parent content) {
         modalBox.setTranslateX(0);
         modalBox.setTranslateY(0);
+
         if (content instanceof Region r) {
             r.setMaxWidth(Region.USE_PREF_SIZE);
             r.setMaxHeight(Region.USE_PREF_SIZE);
         }
+
         modalBox.getChildren().setAll(content);
         overlay.setManaged(true);
         overlay.setVisible(true);
@@ -477,6 +644,8 @@ public class StrategieListController {
     }
 
     private void enableDrag(Node handle, Node draggable) {
+        if (handle == null || draggable == null) return;
+
         handle.setOnMousePressed(e -> {
             dragOffsetX = e.getSceneX() - draggable.getTranslateX();
             dragOffsetY = e.getSceneY() - draggable.getTranslateY();
@@ -487,49 +656,29 @@ public class StrategieListController {
         });
     }
 
-    private void refresh() {
-        List<Strategie> list = strategieService.afficher();
-        allObs.setAll(list);
-        try {
-            List<Objective> allObjectives = objectiveService.afficher();
-            objectivesByStrategie = allObjectives.stream().collect(Collectors.groupingBy(Objective::getStrategieId));
-        } catch (Exception ignored) {
-            objectivesByStrategie = Map.of();
-        }
-        applyFilter(txtSearch == null ? "" : txtSearch.getText());
-        updateStats(list);
-    }
+    // ============================
+    // Helpers
+    // ============================
+
     private boolean isAdmin() {
         return SessionContext.getCurrentRole() == UserRole.ADMIN;
     }
 
-    private void applyFilter(String q) {
-        String search = q == null ? "" : q.trim().toLowerCase(Locale.ROOT);
-
+    private boolean canManage() {
         UserRole role = SessionContext.getCurrentRole();
-        boolean isAdmin = (role == UserRole.ADMIN);
-        boolean pendingOnly = isAdmin && chkPendingOnly != null && chkPendingOnly.isSelected();
-
-        List<Strategie> filtered = allObs.stream()
-                .filter(s -> !pendingOnly || s.getStatut() == StrategyStatut.EN_ATTENTE) // ✅ pending filter
-                .filter(s -> search.isBlank()
-                        || safe(s.getNomStrategie()).toLowerCase(Locale.ROOT).contains(search)
-                        || (s.getProjet() != null && safe(s.getProjet().getTitleProj()).toLowerCase(Locale.ROOT).contains(search))
-                        || (s.getStatut() != null && s.getStatut().toDb().toLowerCase(Locale.ROOT).contains(search)))
-                .sorted(comparator)
-                .toList();
-
-        viewObs.setAll(filtered);
+        return role == UserRole.ADMIN || role == UserRole.GERANT;
     }
 
     private void updateStats(List<Strategie> list) {
         int total = list == null ? 0 : list.size();
         long pending = list == null ? 0 : list.stream().filter(s -> s.getStatut() == StrategyStatut.EN_COURS).count();
         long accepted = list == null ? 0 : list.stream().filter(s -> s.getStatut() == StrategyStatut.ACCEPTEE).count();
+
         String success = total == 0 ? "0%" : Math.round((accepted * 100.0) / total) + "%";
-        lblTotalStrategies.setText(String.valueOf(total));
-        lblPending.setText(String.valueOf(pending));
-        lblSuccess.setText(success);
+
+        if (lblTotalStrategies != null) lblTotalStrategies.setText(String.valueOf(total));
+        if (lblPending != null) lblPending.setText(String.valueOf(pending));
+        if (lblSuccess != null) lblSuccess.setText(success);
     }
 
     private LocalDateTime getCreatedAtSafe(Strategie s) {
@@ -550,11 +699,6 @@ public class StrategieListController {
         return a.compareTo(b);
     }
 
-    private boolean canManage() {
-        UserRole role = SessionContext.getCurrentRole();
-        return role == UserRole.ADMIN || role == UserRole.GERANT;
-    }
-
     private String safe(String value) {
         return value == null ? "" : value.trim();
     }
@@ -564,49 +708,4 @@ public class StrategieListController {
         alert.setHeaderText("Gestion strategies");
         alert.showAndWait();
     }
-
-    private void acceptStrategie(Strategie s) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Accepter cette stratégie ?\nID: " + s.getId(),
-                ButtonType.OK, ButtonType.CANCEL);
-        confirm.setHeaderText("Validation Admin");
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
-
-        try {
-            strategieService.updateStatut(s.getId(), StrategyStatut.Non_affectée);
-            refresh();
-        } catch (Exception ex) {
-            showError("Impossible d'accepter: " + ex.getMessage());
-        }
-    }
-
-    private void refuseStrategie(Strategie s) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Refus Admin");
-        dialog.setHeaderText("Refuser cette stratégie");
-        dialog.setContentText("Motif (optionnel):");
-
-        String motif = dialog.showAndWait().orElse("").trim();
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Confirmer le refus ?\nID: " + s.getId(),
-                ButtonType.OK, ButtonType.CANCEL);
-        confirm.setHeaderText("Validation Admin");
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
-
-        try {
-            // si tu veux stocker la justification de refus:
-             strategieService.applyDecision(s.getId(),false, motif,true);
-
-            strategieService.updateStatut(s.getId(), StrategyStatut.REFUSEE);
-
-            // option: si tu as un champ justification et tu veux le mettre:
-            // if (!motif.isBlank()) strategieService.updateJustification(s.getId(), motif);
-
-            refresh();
-        } catch (Exception ex) {
-            showError("Impossible de refuser: " + ex.getMessage());
-        }
-    }
-
 }

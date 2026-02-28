@@ -287,9 +287,11 @@
 .badge.status-accepted { -fx-background-color: rgba(46,163,106,0.18); }
 .badge.status-refused  { -fx-background-color: rgba(217,83,79,0.18);  }
 .badge.status-pending  { -fx-background-color: rgba(233,123,44,0.18); }
+.badge.status-non-affectee { -fx-background-color: rgba(221, 155, 106, 0.38); }
 
 .badge.status-accepted,
 .badge.status-refused,
+.badge.status-non-affectee,
 .badge.status-pending {
     -fx-text-fill: #1f1f1f;
     -fx-font-weight: 800;
@@ -514,5 +516,90 @@
     -fx-background-radius: 10;
     -fx-padding: 8 14;
 }
+/* =========================================
+   COMBOBOX (filters) – same style as search/ghost
+   ========================================= */
 
+/* Apply to ComboBox via styleClass="filter-combo" */
+.filter-combo {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 2 6 2 6; /* combo has its own padding in editor */
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f1f1f;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 3);
+}
+
+.filter-combo:hover {
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-background-color: rgba(255,255,255,0.96);
+}
+
+.filter-combo:focused {
+    -fx-border-color: rgba(233,123,44,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.20), 18, 0.22, 0, 4);
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+/* Text inside the combo */
+.filter-combo .list-cell {
+    -fx-text-fill: #1f1f1f;
+    -fx-padding: 8 10 8 10;
+    -fx-background-color: transparent;
+}
+
+/* The arrow button area */
+.filter-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 14;
+    -fx-padding: 0 8 0 6;
+}
+
+/* The little arrow */
+.filter-combo .arrow {
+    -fx-background-color: rgba(40,40,40,0.70);
+}
+
+/* Dropdown popup list */
+.filter-combo .list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 18, 0.20, 0, 6);
+}
+
+/* Items in dropdown */
+.filter-combo .list-view .list-cell {
+    -fx-padding: 10 12 10 12;
+    -fx-background-color: transparent;
+}
+
+/* Hover item */
+.filter-combo .list-view .list-cell:hover {
+    -fx-background-color: rgba(233,123,44,0.12);
+}
+
+/* Selected item */
+.filter-combo .list-view .list-cell:selected {
+    -fx-background-color: rgba(233,123,44,0.18);
+    -fx-text-fill: #1f1f1f;
+    -fx-font-weight: 700;
+}
+.btn-icon {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 8 10 8 10;
+    -fx-cursor: hand;
+}
+.btn-icon:hover { -fx-background-color: white; }
 

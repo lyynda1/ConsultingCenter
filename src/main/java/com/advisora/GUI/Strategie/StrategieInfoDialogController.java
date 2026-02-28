@@ -120,6 +120,8 @@ public class StrategieInfoDialogController {
                 case EN_COURS -> lblStatut.getStyleClass().add("status-pending");
                 case ACCEPTEE -> lblStatut.getStyleClass().add("status-accepted");
                 case REFUSEE -> lblStatut.getStyleClass().add("status-refused");
+                case Non_affectée -> lblStatut.getStyleClass().add("status-pending");
+
                 default -> lblStatut.getStyleClass().add("status-archived");
             }
         }

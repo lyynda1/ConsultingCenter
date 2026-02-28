@@ -14,6 +14,7 @@ import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.Severity;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.TypeStrategie;
+import com.advisora.enums.UserRole;
 import com.advisora.utils.news.NewsJsonStore;
 import com.advisora.utils.news.OllamaClient;
 import javafx.beans.binding.Bindings;
@@ -33,6 +34,7 @@ import javafx.concurrent.Task;
 
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,7 @@ public class AddStrategieDialogController {
     @FXML private TextField budgetTotalField;
     @FXML private TextField gainEstimeField;
     @FXML private StackPane overlay;
+    @FXML private Label projectLockLabel;
 
 
     @FXML private HBox dragHandle;
@@ -133,7 +136,24 @@ public class AddStrategieDialogController {
     }
 
     public void setEditingStrategie(Strategie strategie) {
+        boolean isAdmin = SessionContext.getCurrentRole() == UserRole.ADMIN;
+
+        boolean lockProject = false;
+        if (strategie != null
+                && strategie.getStatut() == StrategyStatut.ACCEPTEE
+                && strategie.getProjet() != null
+                && strategie.getLockedAt() != null
+                && !isAdmin) {
+            long minutes = Duration.between(strategie.getLockedAt(), LocalDateTime.now()).toMinutes();
+            lockProject = minutes > 120;
+        }
+
+        projetCombo.setDisable(lockProject);
+        if (projectLockLabel != null) {
+            projectLockLabel.setVisible(lockProject);
+            projectLockLabel.setManaged(lockProject);}
         this.editingStrategie = strategie;
+
 
         if (strategie == null) {
             resetForm();

@@ -4,15 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="ajout de systeme de recommandation depuisq la base puis avec gemini. Amelioration de l'interface et ajout de load spin">
+    <list default="true" id="e640f9e0-3f12-4cb9-85c3-ef9f0cc73dc2" name="Changes" comment="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/events.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/events.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/AddStrategieDialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieInfoDialogController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/GUI/Strategie/StrategieListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Model/strategie/ExternalEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Model/strategie/ExternalEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/strategie/RiskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/strategie/RiskService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/Services/strategie/ServiceStrategie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/Services/strategie/ServiceStrategie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/advisora/utils/news/OllamaClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/advisora/utils/news/OllamaClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/css/strategie-list.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/AddStrategie.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/strategie/interfaceStrategie.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/strategie/interfaceStrategie.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +178,7 @@
       <workItem from="1771500546135" duration="14384000" />
       <workItem from="1771592940026" duration="7356000" />
       <workItem from="1772194538622" duration="13626000" />
-      <workItem from="1772279322933" duration="10122000" />
+      <workItem from="1772279322933" duration="15292000" />
     </task>
     <task id="LOCAL-00001" summary="Merge branch 'gestionEvenements' of https://github.com/lyynda1/ConsultingCenter into gestionEvenements&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/workspace.xml">
       <option name="closed" value="true" />
@@ -234,7 +236,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772285852241</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo">
+      <option name="closed" value="true" />
+      <created>1772289712927</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772289712927</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -247,7 +257,8 @@
     <MESSAGE value="ajout de clear all pour les notifications et ajustement de la visibilité des notificatons selon role" />
     <MESSAGE value="correction de la notification part 1" />
     <MESSAGE value="ajout de systeme de recommandation depuisq la base puis avec gemini. Amelioration de l'interface et ajout de load spin" />
-    <option name="LAST_COMMIT_MESSAGE" value="ajout de systeme de recommandation depuisq la base puis avec gemini. Amelioration de l'interface et ajout de load spin" />
+    <MESSAGE value="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo" />
+    <option name="LAST_COMMIT_MESSAGE" value="ajout de auto correct de titre en cas de typo aussi correction du systeme de prevention en cas de typo" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
