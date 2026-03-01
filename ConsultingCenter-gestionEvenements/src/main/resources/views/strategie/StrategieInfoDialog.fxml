@@ -68,14 +68,21 @@
                 <Label text="Gain estimé :" styleClass="meta-label"/>
                 <Label fx:id="lblGain" styleClass="metric-line" text="-" />
             </HBox>
-
-            <Label fx:id="lblRoi" styleClass="roi-value" text="ROI : -" />
+            <HBox spacing="8">
+                <Label fx:id="lblRoi" styleClass="roi-value" text="ROI : -" />
+            </HBox>
+            <HBox spacing="8">
+                <Label fx:id="lblTerm" styleClass="metric-line" text="-" />
+                <Label text="jours" styleClass="meta-label"/>
+            </HBox>
         </VBox>
     </HBox>
 
     <!-- justification (optional) -->
-    <Label fx:id="lblJustification" styleClass="justification" wrapText="true" visible="false" managed="false"/>
-
+    <VBox spacing="6">
+        <Label text="Justification" styleClass="meta-label"/>
+        <Label fx:id="lblJustification" styleClass="justification-text" text="-" wrapText="true"/>
+    </VBox>
     <!-- objectives header -->
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label text="Objectifs" styleClass="meta-label"/>
@@ -85,6 +92,9 @@
     <!-- list -->
     <ListView fx:id="listObjectives" VBox.vgrow="ALWAYS" prefHeight="300"
               maxHeight="400"/>
+    <HBox fx:id="recommendActionsBox" spacing="10" alignment="CENTER_RIGHT" visible="false" managed="false">
+        <Button text="Confirmer" onAction="#onConfirm" styleClass="btn-primary"/>
+        <Button text="Ignorer" onAction="#onIgnore" styleClass="btn-ghost"/>
+    </HBox>
 
 </VBox>
-

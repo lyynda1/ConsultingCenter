@@ -13,21 +13,10 @@ public class SimilarityResult {
         this.bestMatchName = bestMatchName;
     }
 
-    public boolean isDuplicate() {
-        return duplicate;
-    }
-
-    public double getBestScore() {
-        return bestScore;
-    }
-
-    public int getBestMatchingId() {
-        return bestMatchingId;
-    }
-
-    public String getBestMatchName() {
-        return bestMatchName;
-    }
+    public boolean isDuplicate() { return duplicate; }
+    public double getBestScore() { return bestScore; }
+    public int getBestMatchingStrategyId() { return bestMatchingId; }
+    public String getBestMatchName() { return bestMatchName; }
 
     public String toPercentString() {
         return String.format(java.util.Locale.US, "%.0f%%", bestScore * 100.0);

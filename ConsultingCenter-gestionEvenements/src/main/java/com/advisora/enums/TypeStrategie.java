@@ -9,7 +9,8 @@ public enum TypeStrategie {
     CROISSANCE,
     COMMERCIALE,
     JURIDIQUE,
-    NULL;
+    AUTRE
+    , NULL;
 
     public static TypeStrategie fromDb(String typeStrategie) {
         if (typeStrategie == null || typeStrategie.isBlank()) {

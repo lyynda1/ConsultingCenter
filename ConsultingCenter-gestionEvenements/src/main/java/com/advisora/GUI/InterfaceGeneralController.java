@@ -34,6 +34,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class InterfaceGeneralController {
     private final List<Button> navButtons = new ArrayList<>();
 
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
 
         User u = SessionContext.getCurrentUser();
         initNavButtons();

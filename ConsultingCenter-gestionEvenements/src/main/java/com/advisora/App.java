@@ -7,6 +7,7 @@ Role: Application bootstrap/entrypoint
 package com.advisora;
 
 import com.advisora.Services.projet.TaskService;
+import com.advisora.Services.strategie.RiskContext;
 import com.advisora.Services.user.AdminAlertService;
 import com.advisora.Services.user.UserService;
 import javafx.application.Application;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
+        RiskContext.init();
         seedDefaultAdmin();
         seedDemoTasksForNotifications();
         scanAdminAlerts();
@@ -31,6 +33,11 @@ public class App extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+    }
+    @Override
+    public void stop() {
+        // ✅ stop scheduler thread on app close
+        RiskContext.shutdown();
     }
 
     private void seedDefaultAdmin() {
