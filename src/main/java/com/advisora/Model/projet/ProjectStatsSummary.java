@@ -56,3 +56,4 @@ public class ProjectStatsSummary {
         this.avgProgressPercent = avgProgressPercent;
     }
 }
+

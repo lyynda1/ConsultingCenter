@@ -495,3 +495,97 @@
 .notif-clear-btn:hover {
     -fx-underline: true;
 }
+
+/* Theme bridge (scoped to root theme class to avoid cross-module collisions) */
+.theme-light .app {
+    -fx-background-color: -app-bg;
+}
+
+.theme-light .sidebar,
+.theme-light .profile {
+    -fx-background-color: -surface-3;
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .topbar {
+    -fx-background-color: rgba(255,255,255,0.62);
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .top-title,
+.theme-light .profile-name,
+.theme-light .sidebar .nav .nav-btn .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-light .top-sub,
+.theme-light .profile-role,
+.theme-light .sidebar-foot {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .sidebar,
+.theme-dark .profile {
+    -fx-background-color: -surface-3;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .topbar {
+    -fx-background-color: rgba(20, 29, 41, 0.92);
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .top-title,
+.theme-dark .profile-name,
+.theme-dark .sidebar .nav .nav-btn .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .top-sub,
+.theme-dark .profile-role,
+.theme-dark .sidebar-foot {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .sidebar .nav .nav-btn:hover,
+.theme-dark .sidebar .nav .nav-btn:hover .content {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.theme-dark .sidebar .nav .nav-btn {
+    -fx-opacity: 1;
+}
+
+.theme-dark .sidebar .nav .nav-btn .label {
+    -fx-text-fill: #f1f6ff;
+    -fx-opacity: 1;
+}
+
+.theme-dark .sidebar .nav .nav-btn {
+    -fx-text-fill: #f1f6ff;
+}
+
+.theme-dark .sidebar .nav .nav-btn .text {
+    -fx-fill: #f1f6ff;
+}
+
+.theme-dark .sidebar .nav .nav-btn.nav-active {
+    -fx-text-fill: #ffffff;
+}
+
+.theme-dark .sidebar .nav .nav-btn.nav-active .text {
+    -fx-fill: #ffffff;
+}
+
+.theme-dark .sidebar-sep .line {
+    -fx-border-color: rgba(241, 246, 255, 0.20);
+}
+
+.theme-dark .profile-name {
+    -fx-text-fill: #ffffff;
+}
+
+.theme-dark .profile-role,
+.theme-dark .sidebar-foot {
+    -fx-text-fill: #d3deec;
+}

@@ -86,7 +86,7 @@ public class UserService implements IService<User> {
             ps.setString(10, u.getImagePath());
 
             // enrolled face image (new)
-            // If you didnâ€™t add facePath in User model yet, add it (I can give it too)
+            // If you didnÃ¢â‚¬â„¢t add facePath in User model yet, add it (I can give it too)
             ps.setString(11, u.getFacePath());
 
             ps.executeUpdate();
@@ -170,7 +170,7 @@ public class UserService implements IService<User> {
         int days = getDaysSincePasswordChange(userId);
         if (days < 14) {
             int remaining = 14 - days;
-            throw new RuntimeException("Mot de passe changÃ© rÃ©cemment. RÃ©essayez dans " + remaining + " jours.");
+            throw new RuntimeException("Mot de passe changÃƒÂ© rÃƒÂ©cemment. RÃƒÂ©essayez dans " + remaining + " jours.");
         }
 
         String sql = "UPDATE `user` SET passwordUser=?, password_changed_at=NOW() WHERE idUser=?";
@@ -203,7 +203,7 @@ public class UserService implements IService<User> {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, path);
             ps.setInt(2, userId);
-            return ps.executeUpdate(); // âœ… returns number of rows updated
+            return ps.executeUpdate(); // Ã¢Å“â€¦ returns number of rows updated
         } catch (SQLException e) {
             throw new RuntimeException("Erreur updateFacePath: " + e.getMessage(), e);
         }
@@ -539,3 +539,4 @@ public class UserService implements IService<User> {
         return BCrypt.hashpw(p, BCrypt.gensalt(12)); // 12 rounds is a good default
     }
 }
+

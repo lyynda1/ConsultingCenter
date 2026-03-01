@@ -4,6 +4,7 @@ import com.advisora.Model.projet.Project;
 import com.advisora.Model.strategie.Strategie;
 import com.advisora.Services.strategie.ServiceStrategie;
 import com.advisora.enums.StrategyStatut;
+import com.advisora.enums.TypeStrategie;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -88,19 +89,25 @@ public class test_strategie {
     }
 
     // Defaulting behavior:
-    // if version/statut/createdAt are missing, service sets safe defaults.
+    // if createdAt is missing, service sets a safe default timestamp.
     @Test
-    void validate_sets_default_values_when_missing() throws Exception {
+    void validate_sets_createdAt_default_when_missing() throws Exception {
         Strategie s = validStrategie();
-        s.setVersion(0);
-        s.setStatut(null);
         s.setCreatedAt(null);
 
         invokeValidate(s, true);
 
-        assertEquals(1, s.getVersion());
-        assertEquals(StrategyStatut.EN_COURS, s.getStatut());
         assertNotNull(s.getCreatedAt());
+    }
+
+    // Validation guard:
+    // null status must be rejected by current validator rules.
+    @Test
+    void validate_rejects_null_status() {
+        Strategie s = validStrategie();
+        s.setStatut(null);
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> invokeValidate(s, true));
+        assertEquals("Statut strategie obligatoire.", ex.getMessage());
     }
 
     // Happy path:
@@ -124,6 +131,8 @@ public class test_strategie {
         s.setNomStrategie("Strategie croissance");
         s.setVersion(1);
         s.setStatut(StrategyStatut.EN_COURS);
+        s.setTypeStrategie(TypeStrategie.AUTRE);
+        s.setDureeTerme(180);
         s.setProjet(p);
         s.setIdUser(2);
         return s;

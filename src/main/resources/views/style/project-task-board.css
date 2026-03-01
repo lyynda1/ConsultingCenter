@@ -76,8 +76,16 @@
 }
 
 .task-list {
-    -fx-background-color: transparent;
+    -fx-background-color: rgba(255,255,255,0.82);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(17,24,39,0.10);
     -fx-padding: 2;
+}
+
+.task-list .virtual-flow,
+.task-list .virtual-flow .viewport {
+    -fx-background-color: transparent;
 }
 
 .task-list .list-cell {
@@ -235,4 +243,81 @@
     -fx-text-fill: #7a5a00;
     -fx-font-size: 12px;
     -fx-font-weight: 700;
+}
+
+/* Dark mode */
+.theme-dark .task-page-root {
+    -fx-background-color: transparent;
+}
+
+.theme-dark .task-page-title {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .task-progress-pill {
+    -fx-background-color: #32465e;
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .task-column {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .task-column-title {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .task-column-subtitle,
+.theme-dark .task-field-label {
+    -fx-text-fill: #b6c3d3;
+}
+
+.theme-dark .task-list {
+    -fx-background-color: #172232;
+    -fx-border-color: rgba(237,243,251,0.14);
+}
+
+.theme-dark .task-list .list-cell:filled:selected {
+    -fx-background-color: rgba(243,155,76,0.26);
+}
+
+.theme-dark .task-card {
+    -fx-background-color: #243245;
+    -fx-border-color: rgba(237,243,251,0.18);
+}
+
+.theme-dark .task-card-title {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .task-card-date {
+    -fx-text-fill: #b6c3d3;
+}
+
+.theme-dark .task-meta-pill {
+    -fx-background-color: rgba(243,155,76,0.24);
+    -fx-text-fill: #ffe5cd;
+}
+
+.theme-dark .task-input,
+.theme-dark .task-status-combo {
+    -fx-background-color: #243245;
+    -fx-text-fill: #edf3fb;
+    -fx-border-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .task-input {
+    -fx-prompt-text-fill: rgba(237,243,251,0.55);
+}
+
+.theme-dark .task-status-combo .list-cell {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .task-btn-ghost,
+.theme-dark .task-close-btn {
+    -fx-background-color: #28364a;
+    -fx-text-fill: #edf3fb;
+    -fx-border-color: rgba(237,243,251,0.16);
 }

@@ -100,10 +100,10 @@ public class PacmanGame implements PlayableGame {
     }
 
     private Node buildMouseControls() {
-        Button up = dirButton("↑", PacmanLogic.Direction.UP);
-        Button down = dirButton("↓", PacmanLogic.Direction.DOWN);
-        Button left = dirButton("←", PacmanLogic.Direction.LEFT);
-        Button right = dirButton("→", PacmanLogic.Direction.RIGHT);
+        Button up = dirButton("â†‘", PacmanLogic.Direction.UP);
+        Button down = dirButton("â†“", PacmanLogic.Direction.DOWN);
+        Button left = dirButton("â†", PacmanLogic.Direction.LEFT);
+        Button right = dirButton("â†’", PacmanLogic.Direction.RIGHT);
 
         HBox middle = new HBox(8, left, down, right);
         middle.setAlignment(Pos.CENTER);
@@ -165,3 +165,4 @@ public class PacmanGame implements PlayableGame {
         }
     }
 }
+

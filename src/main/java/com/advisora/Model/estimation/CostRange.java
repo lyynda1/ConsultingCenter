@@ -7,3 +7,4 @@ public record CostRange(
         String currency
 ) {
 }
+

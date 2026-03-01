@@ -1,5 +1,7 @@
 package com.advisora.GUI.Auth;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Services.user.PasswordResetService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -45,7 +47,7 @@ public class ForgotPasswordController {
             c.prefillEmail(email);
 
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Reset Password");
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +60,7 @@ public class ForgotPasswordController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/views/login.fxml"));
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Login");
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,3 +87,5 @@ public class ForgotPasswordController {
 
     private String safe(String s){ return s == null ? "" : s.trim(); }
 }
+
+

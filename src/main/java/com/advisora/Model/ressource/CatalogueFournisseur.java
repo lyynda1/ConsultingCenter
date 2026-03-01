@@ -70,3 +70,4 @@ public class CatalogueFournisseur {
         return "#" + idFr + " - " + (nomFr == null ? "" : nomFr);
     }
 }
+

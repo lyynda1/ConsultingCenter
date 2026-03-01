@@ -43,6 +43,12 @@
 
         <Label text="Lieu" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
         <TextField fx:id="txtLocation" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+        <Label text="Tarif ticket" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <HBox spacing="8" GridPane.rowIndex="7" GridPane.columnIndex="1">
+            <TextField fx:id="txtTicketPrice" promptText="0.00" prefWidth="150"/>
+            <ComboBox fx:id="cbCurrency" prefWidth="100"/>
+        </HBox>
     </GridPane>
 
     <HBox spacing="8" styleClass="form-actions">

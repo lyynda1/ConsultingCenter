@@ -12,12 +12,12 @@ public class Login2FAService {
 
     private static final int OTP_MINUTES = 10;
 
-    // ✅ configure ton sender une seule fois
+    // âœ… configure ton sender une seule fois
     private final EmailSender sender = new EmailSender(
             "smtp.gmail.com",
             587,
             "lyynda19@gmail.com",
-            "bsiy vjdy yaep ikom" // mot de passe d’application
+            "bsiy vjdy yaep ikom" // mot de passe dâ€™application
     );
 
     public void requestLoginCode(String email) {
@@ -55,7 +55,7 @@ public class Login2FAService {
             throw new RuntimeException("requestLoginCode failed: " + e.getMessage(), e);
         }
 
-        // ✅ send email (instance method)
+        // âœ… send email (instance method)
         String subject = "Advisora login verification code";
         String body = "Your login code is: " + code + "\n\nThis code expires in " + OTP_MINUTES + " minutes.";
         sender.send(email, subject, body);

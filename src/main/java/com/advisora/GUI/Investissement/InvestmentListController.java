@@ -77,7 +77,7 @@ public class InvestmentListController {
             NumberAxis yAxis = new NumberAxis();
             yAxis.setLabel("Montant (TND)");
             LineChart<String, Number> chart = new LineChart<>(xAxis, yAxis);
-            chart.setTitle("Évolution des Transactions (6 derniers mois)");
+            chart.setTitle("Ã‰volution des Transactions (6 derniers mois)");
             chart.setLegendVisible(false);
             chart.setCreateSymbols(true);
             chart.setAnimated(false);
@@ -86,7 +86,9 @@ public class InvestmentListController {
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Montants");
-            var data = transactionService.getTransactionEvolutionLast6Months();
+            var data = SessionContext.isClient()
+                    ? transactionService.getTransactionEvolutionLast6MonthsForClient(SessionContext.getCurrentUserId())
+                    : transactionService.getTransactionEvolutionLast6Months();
             for (var e : data.entrySet()) {
                 series.getData().add(new XYChart.Data<>(e.getKey(), e.getValue()));
             }
@@ -109,6 +111,36 @@ public class InvestmentListController {
     @FXML
     private void nouvelInvestissement(ActionEvent e) {
         openAddDialog();
+    }
+
+    @FXML
+    private void openExchangeRate(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/investissement/ExchangeRate.fxml"));
+            Parent content = loader.load();
+            ExchangeRateController c = loader.getController();
+            c.setOnClose(this::closeDialog);
+            enableDrag(((VBox) content).lookup("#dragHandle"), modalBox);
+            showDialog(content);
+        } catch (Exception ex) {
+            showError("Impossible d'ouvrir le taux de change : " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void openMacroAnalysis(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/investissement/MacroAnalysis.fxml"));
+            Parent content = loader.load();
+            MacroAnalysisController c = loader.getController();
+            c.setOnClose(this::closeDialog);
+            enableDrag(((VBox) content).lookup("#dragHandle"), modalBox);
+            showDialog(content);
+        } catch (Exception ex) {
+            showError("Impossible d'ouvrir l'analyse macro : " + ex.getMessage());
+        }
     }
 
     @FXML
@@ -170,7 +202,7 @@ public class InvestmentListController {
         VBox card = new VBox(10);
         card.getChildren().add(head);
         if (!SessionContext.isClient()) {
-            Label detail = new Label("Projet #" + inv.getIdProj() + " • Utilisateur #" + inv.getIdUser());
+            Label detail = new Label("Projet #" + inv.getIdProj() + " â€¢ Utilisateur #" + inv.getIdUser());
             detail.getStyleClass().add("card-sub");
             Label idLabel = new Label("ID: " + inv.getIdInv());
             idLabel.getStyleClass().add("card-sub");
@@ -229,13 +261,13 @@ public class InvestmentListController {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer cet investissement ?");
-        confirm.setContentText("ID: " + inv.getIdInv() + "\nCette action est irréversible.");
+        confirm.setContentText("ID: " + inv.getIdInv() + "\nCette action est irrÃ©versible.");
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
         try {
             investmentService.supprimer(inv);
             refresh();
         } catch (Exception ex) {
-            showError("Suppression échouée: " + ex.getMessage());
+            showError("Suppression Ã©chouÃ©e: " + ex.getMessage());
         }
     }
 
@@ -271,7 +303,12 @@ public class InvestmentListController {
     }
 
     private void refresh() {
-        List<Investment> list = investmentService.afficher();
+        List<Investment> list;
+        if (SessionContext.isClient()) {
+            list = investmentService.getInvestmentsForClient(SessionContext.getCurrentUserId());
+        } else {
+            list = investmentService.afficher();
+        }
         allObs.setAll(list);
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
 
@@ -304,3 +341,4 @@ public class InvestmentListController {
         alert.showAndWait();
     }
 }
+

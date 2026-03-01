@@ -119,3 +119,4 @@ public class ProjectStatsController {
         return Double.parseDouble(String.format(Locale.US, "%.2f", Math.max(0.0, Math.min(100.0, value))));
     }
 }
+

@@ -1,5 +1,7 @@
 package com.advisora.GUI.Auth;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Model.user.User;
 import com.advisora.Services.user.AuthSessionService;
 import com.advisora.Services.user.Login2FAService;
@@ -52,7 +54,7 @@ public class VerifyLoginCodeController {
             emailField.setDisable(true);
         }
 
-        // Démarre automatiquement le compte à rebours dès l'ouverture (30s)
+        // DÃ©marre automatiquement le compte Ã  rebours dÃ¨s l'ouverture (30s)
         startResendCooldown(RESEND_COOLDOWN_SECONDS);
     }
 
@@ -104,7 +106,7 @@ public class VerifyLoginCodeController {
     private void handleResend() {
         System.out.println("[2FA] handleResend clicked");
 
-        // Anti spam (si déjà en cooldown)
+        // Anti spam (si dÃ©jÃ  en cooldown)
         if (resendRemaining > 0) return;
 
         hideError();
@@ -112,18 +114,18 @@ public class VerifyLoginCodeController {
 
         String email = safe(emailField.getText());
 
-        // Désactiver immédiatement + démarrer cooldown
+        // DÃ©sactiver immÃ©diatement + dÃ©marrer cooldown
         startResendCooldown(RESEND_COOLDOWN_SECONDS);
 
         try {
             twoFA.requestLoginCode(email);
-            // message initial (le timer va ensuite afficher le compte à rebours)
-            showInfo("Un nouveau code a été envoyé.");
+            // message initial (le timer va ensuite afficher le compte Ã  rebours)
+            showInfo("Un nouveau code a Ã©tÃ© envoyÃ©.");
         } catch (Exception e) {
             e.printStackTrace();
-            showInfo("Échec d'envoi: " + e.getMessage());
+            showInfo("Ã‰chec d'envoi: " + e.getMessage());
 
-            // Si tu veux réactiver direct en cas d’échec, dé-commente :
+            // Si tu veux rÃ©activer direct en cas dâ€™Ã©chec, dÃ©-commente :
             // stopResendCooldown(true);
         }
     }
@@ -144,7 +146,7 @@ public class VerifyLoginCodeController {
                 showInfo("Vous pourrez renvoyer un code dans " + resendRemaining + "s.");
             } else {
                 if (resendBtn != null) resendBtn.setDisable(false);
-                hideInfo(); // ou showInfo("Vous pouvez renvoyer un code."); si tu préfères
+                hideInfo(); // ou showInfo("Vous pouvez renvoyer un code."); si tu prÃ©fÃ¨res
                 resendTimeline.stop();
             }
         }));
@@ -165,7 +167,7 @@ public class VerifyLoginCodeController {
 
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
             Stage stage = (Stage) codeField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Login");
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +180,7 @@ public class VerifyLoginCodeController {
         Parent root = loader.load();
 
         Stage stage = (Stage) codeField.getScene().getWindow();
-        stage.setScene(new Scene(root));
+        SceneThemeApplier.setScene(stage, root);
         stage.setTitle("Advisora - Interface Generale (" + user.getRole() + ")");
     }
 
@@ -234,3 +236,5 @@ public class VerifyLoginCodeController {
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 }
+
+

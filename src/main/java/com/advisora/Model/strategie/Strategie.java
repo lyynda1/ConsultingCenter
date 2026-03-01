@@ -13,8 +13,9 @@ import java.time.LocalDateTime;
 
 public class Strategie {
     private int id;
-    private String nomStrategie;
     private int version;
+    private String nomStrategie;
+
     private StrategyStatut statut;
     private LocalDateTime createdAt;
     private LocalDateTime lockedAt;
@@ -26,6 +27,8 @@ public class Strategie {
     private double budgetTotal;
     private double gainEstime;
     private String justifStrategie;
+    private Integer dureeTerme;
+    private boolean Approbation;
 
     public Strategie() {
         this.version = 1;
@@ -42,6 +45,14 @@ public class Strategie {
         this.id = id;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public String getNomStrategie() {
         return nomStrategie;
     }
@@ -50,13 +61,6 @@ public class Strategie {
         this.nomStrategie = nomStrategie;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
 
     public StrategyStatut getStatut() {
         return statut;
@@ -74,13 +78,10 @@ public class Strategie {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getLockedAt() {
-        return lockedAt;
-    }
 
-    public void setLockedAt(LocalDateTime lockedAt) {
-        this.lockedAt = lockedAt;
-    }
+
+    public Integer getDureeTerme() { return dureeTerme; }
+    public void setDureeTerme(Integer dureeTerme) { this.dureeTerme = dureeTerme; }
 
     public String getNews() {
         return news;
@@ -148,4 +149,20 @@ public class Strategie {
     public String getJustifStrategie() {
         return justifStrategie;
     }
+
+    public LocalDateTime getLockedAt() {
+        return lockedAt;
+    }
+
+    public void setLockedAt(LocalDateTime lockedAt) {
+        this.lockedAt = lockedAt;
+    }
+
+    public Boolean getApprobation() {
+        return this.Approbation;
+    }
+    public void setApprobation(Boolean approbation) {
+        this.Approbation = approbation;
+    }
 }
+

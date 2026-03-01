@@ -204,3 +204,4 @@ public class DecisionService {
     @FunctionalInterface private interface SqlRun { void exec() throws SQLException; }
     @FunctionalInterface private interface SqlCall<T> { T exec() throws SQLException; }
 }
+

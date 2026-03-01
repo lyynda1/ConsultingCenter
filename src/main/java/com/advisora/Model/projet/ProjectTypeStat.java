@@ -38,3 +38,4 @@ public class ProjectTypeStat {
         this.acceptanceRatePercent = acceptanceRatePercent;
     }
 }
+

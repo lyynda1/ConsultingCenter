@@ -100,7 +100,7 @@ public class UserDialogController {
         }
         selectedImagePath = u.getImagePath();
 
-        // ✁Eadmin can't modify password
+        // âœEadmin can't modify password
         passwordField.clear();
         passwordField.setDisable(true);
         passwordField.setPromptText("Non modifiable");
@@ -177,7 +177,7 @@ public class UserDialogController {
         if (u.getRole() == UserRole.GERANT) u.setExpertiseArea(safe(expertiseField.getText()));
         else u.setExpertiseArea(null);
 
-        // ✁Epassword:
+        // âœEpassword:
         // ADD => required
         // EDIT => null (service must keep old password)
         if (!editMode) u.setPassword(passwordField.getText());
@@ -187,11 +187,11 @@ public class UserDialogController {
             if (!editMode) {
                 u.setImagePath(selectedImagePath);
                 userService.ajouter(u);
-                onSuccess.accept("Utilisateur ajouté ✁E");
+                onSuccess.accept("Utilisateur ajoutÃ© âœE");
             } else {
                 u.setImagePath(selectedImagePath);
                 userService.modifier(u);
-                onSuccess.accept("Utilisateur modifié ✁E");
+                onSuccess.accept("Utilisateur modifiÃ© âœE");
             }
             onClose.run();
         } catch (Exception e) {
@@ -219,8 +219,8 @@ public class UserDialogController {
         else if (!NAME_PATTERN.matcher(nom).matches()) ok &= showError(nomField, nomError, "Nom invalide");
         else hideError(nomField, nomError);
 
-        if (prenom.trim().isEmpty()) ok &= showError(prenomField, prenomError, "Prénom obligatoire");
-        else if (!NAME_PATTERN.matcher(prenom).matches()) ok &= showError(prenomField, prenomError, "Prénom invalide");
+        if (prenom.trim().isEmpty()) ok &= showError(prenomField, prenomError, "PrÃ©nom obligatoire");
+        else if (!NAME_PATTERN.matcher(prenom).matches()) ok &= showError(prenomField, prenomError, "PrÃ©nom invalide");
         else hideError(prenomField, prenomError);
 
         if (email.trim().isEmpty()) ok &= showError(emailField, emailError, "Email obligatoire");
@@ -231,8 +231,8 @@ public class UserDialogController {
         else if (!CIN_PATTERN.matcher(cin).matches()) ok &= showError(cinField, cinError, "CIN invalide (8 chiffres)");
         else hideError(cinField, cinError);
 
-        if (tel.trim().isEmpty()) ok &= showError(telField, telError, "Téléphone obligatoire");
-        else if (!PHONE_PATTERN.matcher(tel).matches()) ok &= showError(telField, telError, "Téléphone invalide");
+        if (tel.trim().isEmpty()) ok &= showError(telField, telError, "TÃ©lÃ©phone obligatoire");
+        else if (!PHONE_PATTERN.matcher(tel).matches()) ok &= showError(telField, telError, "TÃ©lÃ©phone invalide");
         else hideError(telField, telError);
 
         if (dobTxt.trim().isEmpty()) {
@@ -243,7 +243,7 @@ public class UserDialogController {
                 if (dob.isAfter(LocalDate.now())) ok &= showError(dateNField, dateNError, "Date invalide (futur)");
                 else {
                     int age = Period.between(dob, LocalDate.now()).getYears();
-                    if (age < 10) ok &= showError(dateNField, dateNError, "Âge invalide (<10)");
+                    if (age < 10) ok &= showError(dateNField, dateNError, "Ã‚ge invalide (<10)");
                     else hideError(dateNField, dateNError);
                 }
             } catch (DateTimeParseException ex) {
@@ -258,7 +258,7 @@ public class UserDialogController {
             hideError(passwordField, passwordError);
         }
 
-        if (role == null) ok &= showError(roleCombo, roleError, "Choisir un rôle");
+        if (role == null) ok &= showError(roleCombo, roleError, "Choisir un rÃ´le");
         else hideError(roleCombo, roleError);
 
         if (role == UserRole.GERANT) {
@@ -271,13 +271,13 @@ public class UserDialogController {
         return ok;
     }
 
-    // ✁ERouge dynamique pendant qu'il tape
+    // âœERouge dynamique pendant qu'il tape
     private void addLiveValidation() {
         liveValidate(nomField, nomError, NAME_PATTERN, "Nom obligatoire", "Nom invalide");
-        liveValidate(prenomField, prenomError, NAME_PATTERN, "Prénom obligatoire", "Prénom invalide");
+        liveValidate(prenomField, prenomError, NAME_PATTERN, "PrÃ©nom obligatoire", "PrÃ©nom invalide");
         liveValidate(emailField, emailError, EMAIL_PATTERN, "Email obligatoire", "Email invalide");
         liveValidate(cinField, cinError, CIN_PATTERN, "CIN obligatoire", "CIN invalide (8 chiffres)");
-        liveValidate(telField, telError, PHONE_PATTERN, "Téléphone obligatoire", "Téléphone invalide");
+        liveValidate(telField, telError, PHONE_PATTERN, "TÃ©lÃ©phone obligatoire", "TÃ©lÃ©phone invalide");
 
         dateNField.textProperty().addListener((obs, a, v) -> {
             String s = safe(v);
@@ -340,3 +340,4 @@ public class UserDialogController {
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 }
+

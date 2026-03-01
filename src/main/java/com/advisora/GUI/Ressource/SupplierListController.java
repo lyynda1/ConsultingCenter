@@ -1,5 +1,7 @@
 package com.advisora.GUI.Ressource;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Model.ressource.CatalogueFournisseur;
 import com.advisora.Services.ressource.CatalogueFournisseurService;
 import com.advisora.Services.user.SessionContext;
@@ -168,7 +170,7 @@ public class SupplierListController {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(title);
-        stage.setScene(new Scene(root));
+        SceneThemeApplier.setScene(stage, root);
         stage.showAndWait();
     }
 
@@ -182,3 +184,6 @@ public class SupplierListController {
         return value == null ? "-" : value.trim();
     }
 }
+
+
+

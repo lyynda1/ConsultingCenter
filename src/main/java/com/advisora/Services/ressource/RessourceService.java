@@ -217,6 +217,51 @@ public class RessourceService implements IRessourceService {
         return availableMap;
     }
 
+    public Map<Integer, String> getProjectTitlesByResourceIds(List<Integer> resourceIds) {
+        if (resourceIds == null || resourceIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<Integer> ids = resourceIds.stream().filter(id -> id != null && id > 0).distinct().toList();
+        if (ids.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        StringJoiner placeholders = new StringJoiner(",");
+        for (int i = 0; i < ids.size(); i++) {
+            placeholders.add("?");
+        }
+
+        String sql = "SELECT pr.idRs, GROUP_CONCAT(DISTINCT p.titleProj ORDER BY p.titleProj SEPARATOR ' | ') AS projectTitles "
+                + "FROM project_resources pr "
+                + "JOIN projects p ON p.idProj = pr.idProj "
+                + "WHERE pr.idRs IN (" + placeholders + ") "
+                + "GROUP BY pr.idRs";
+
+        Map<Integer, String> result = new HashMap<>();
+        try (Connection cnx = MyConnection.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            for (int i = 0; i < ids.size(); i++) {
+                ps.setInt(i + 1, ids.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("idRs");
+                    String titles = rs.getString("projectTitles");
+                    result.put(id, titles == null ? "" : titles.trim());
+                }
+            }
+        } catch (SQLException e) {
+            // Recherche par projet = enrichissement; fallback silencieux si table/colonne indisponible.
+            return Collections.emptyMap();
+        }
+
+        for (Integer id : ids) {
+            result.putIfAbsent(id, "");
+        }
+        return result;
+    }
+
     private Ressource map(ResultSet rs) throws SQLException {
         Ressource r = new Ressource();
         r.setIdRs(rs.getInt("idRs"));
@@ -276,3 +321,4 @@ public class RessourceService implements IRessourceService {
         }
     }
 }
+

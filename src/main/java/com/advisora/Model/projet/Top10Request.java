@@ -18,3 +18,4 @@ public class Top10Request {
         this.rawCategory = rawCategory;
     }
 }
+

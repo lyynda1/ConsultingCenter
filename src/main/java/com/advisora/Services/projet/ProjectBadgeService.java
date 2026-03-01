@@ -378,3 +378,4 @@ public class ProjectBadgeService {
         private final Set<Integer> refusedProjects = new HashSet<>();
     }
 }
+

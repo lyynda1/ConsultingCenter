@@ -74,3 +74,4 @@ public final class SessionContext {
         currentUser = null;
     }
 }
+

@@ -120,3 +120,4 @@ public class FxRateService {
     private record CacheEntry(FxQuote quote, Instant fetchedAt) {
     }
 }
+

@@ -7,3 +7,4 @@ public interface ICatalogueFournisseurService extends IService<CatalogueFourniss
     CatalogueFournisseur getById(int idFr);
     boolean existsByName(String name, Integer excludeId);
 }
+

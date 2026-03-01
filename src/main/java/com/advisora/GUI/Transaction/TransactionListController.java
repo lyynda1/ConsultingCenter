@@ -1,10 +1,13 @@
 package com.advisora.GUI.Transaction;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Model.investment.Investment;
 import com.advisora.Model.investment.Transaction;
 import com.advisora.Services.investment.InvestmentService;
-import com.advisora.Services.user.SessionContext;
 import com.advisora.Services.investment.TransactionService;
+import com.advisora.Services.investment.TransactionPdfExportService;
+import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.transactionStatut;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,13 +17,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TransactionListController {
@@ -35,6 +36,7 @@ public class TransactionListController {
     @FXML private VBox modalBox;
 
     private final TransactionService transactionService = new TransactionService();
+    private final TransactionPdfExportService pdfExportService = new TransactionPdfExportService();
     private final InvestmentService investmentService = new InvestmentService();
     private Map<Integer, Investment> investmentById = Collections.emptyMap();
     private final javafx.collections.ObservableList<Transaction> allObs = javafx.collections.FXCollections.observableArrayList();
@@ -178,7 +180,7 @@ public class TransactionListController {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox head = new HBox(10, title, spacer, statutLabel);
 
-        Label detail = new Label("Montant: " + t.getMontantTransac() + "  •  Durée: " + dureeStr);
+        Label detail = new Label("Montant: " + t.getMontantTransac() + "  â€¢  DurÃ©e: " + dureeStr);
         detail.getStyleClass().add("card-sub");
 
         HBox actions = new HBox(8);
@@ -216,7 +218,7 @@ public class TransactionListController {
 
     private void openEditDialog(Transaction t) {
         if (SessionContext.isClient() && t.getStatut() != transactionStatut.PENDING) {
-            showError("Seules les transactions en attente (PENDING) peuvent être modifiées. Un admin a déjà validé cette transaction.");
+            showError("Seules les transactions en attente (PENDING) peuvent Ãªtre modifiÃ©es. Un admin a dÃ©jÃ  validÃ© cette transaction.");
             return;
         }
         try {
@@ -237,13 +239,13 @@ public class TransactionListController {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer cette transaction ?");
-        confirm.setContentText("ID: " + t.getIdTransac() + ". Cette action est irréversible.");
+        confirm.setContentText("ID: " + t.getIdTransac() + ". Cette action est irrÃ©versible.");
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
         try {
             transactionService.supprimer(t);
             refresh();
         } catch (Exception ex) {
-            showError("Suppression échouée: " + ex.getMessage());
+            showError("Suppression Ã©chouÃ©e: " + ex.getMessage());
         }
     }
 
@@ -279,12 +281,86 @@ public class TransactionListController {
     }
 
     private void refresh() {
-        List<Transaction> list = transactionService.afficher();
+        List<Transaction> list;
+        if (SessionContext.isClient()) {
+            list = transactionService.getTransactionsForClient(SessionContext.getCurrentUserId());
+        } else {
+            list = transactionService.afficher();
+        }
         allObs.setAll(list);
-        investmentById = investmentService.afficher().stream()
+        List<Investment> invList = SessionContext.isClient()
+                ? investmentService.getInvestmentsForClient(SessionContext.getCurrentUserId())
+                : investmentService.afficher();
+        investmentById = invList.stream()
                 .collect(Collectors.toMap(Investment::getIdInv, inv -> inv, (a, b) -> a));
         applyFilter(txtSearch == null ? "" : txtSearch.getText());
         updateStats(list);
+    }
+
+    @FXML
+    private void onOpenHistorique(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/transaction/TransactionHistory.fxml"));
+            Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Historique des Transactions");
+            SceneThemeApplier.setScene(stage, root);
+            stage.initOwner(transactionList.getScene().getWindow());
+            stage.show();
+        } catch (Exception ex) {
+            showError("Impossible d'ouvrir l'historique: " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onExportPdf(ActionEvent e) {
+        try {
+            List<Transaction> rows = new ArrayList<>(allObs);
+            if (rows.isEmpty()) {
+                showError("Aucune transaction Ã  exporter.");
+                return;
+            }
+
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Exporter historique des transactions (PDF)");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+            String ts = new SimpleDateFormat("yyyyMMdd_HHmm").format(new Date());
+            chooser.setInitialFileName("transactions_" + ts + ".pdf");
+            File selected = chooser.showSaveDialog(transactionList.getScene().getWindow());
+            if (selected == null) return;
+
+            File output = selected.getName().toLowerCase(Locale.ROOT).endsWith(".pdf")
+                    ? selected
+                    : (selected.getParentFile() == null
+                    ? new File(selected.getName() + ".pdf")
+                    : new File(selected.getParentFile(), selected.getName() + ".pdf"));
+
+            boolean includeId = !SessionContext.isClient();
+            File out = pdfExportService.exportTransactions(rows, output, includeId);
+            ensureValidPdf(out);
+
+            Alert ok = new Alert(Alert.AlertType.INFORMATION, "Fichier gÃ©nÃ©rÃ©:\n" + out.getAbsolutePath(), ButtonType.OK);
+            ok.setHeaderText("Export PDF terminÃ©");
+            ok.showAndWait();
+        } catch (Exception ex) {
+            showError("Export PDF impossible: " + ex.getMessage());
+        }
+    }
+
+    private void ensureValidPdf(File file) {
+        if (file == null || !file.exists() || file.length() < 10) {
+            throw new IllegalStateException("PDF invalide (fichier vide ou absent).");
+        }
+        byte[] head = new byte[5];
+        try (java.io.FileInputStream in = new java.io.FileInputStream(file)) {
+            int read = in.read(head);
+            String sig = read <= 0 ? "" : new String(head, 0, read, java.nio.charset.StandardCharsets.US_ASCII);
+            if (!sig.startsWith("%PDF-")) {
+                throw new IllegalStateException("PDF invalide (signature manquante).");
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("PDF invalide: " + e.getMessage(), e);
+        }
     }
 
     private void applyFilter(String q) {
@@ -337,3 +413,6 @@ public class TransactionListController {
         alert.showAndWait();
     }
 }
+
+
+

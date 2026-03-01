@@ -1,9 +1,12 @@
+package com.advisora.GUI.Project;
+
 /*
 ADVISORA STRUCTURE COMMENT
  param($m) 'File: ' + ($m.Groups[1].Value -replace '\\','/')
 Role: GUI controller: user interactions and screen flow
 */
-package com.advisora.GUI.Project;
+
+import com.advisora.utils.SceneThemeApplier;
 
 import com.advisora.Model.projet.Project;
 import com.advisora.Model.projet.ProjectAcceptanceEstimate;
@@ -24,8 +27,11 @@ import com.advisora.Services.user.UserService;
 import com.advisora.enums.ProjectStatus;
 import com.advisora.enums.StrategyStatut;
 import com.advisora.enums.UserRole;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -88,6 +94,10 @@ public class ProjectListController implements Initializable {
     private Map<Integer, String> clientNamesById = new HashMap<>();
     private ProjectDashboardData dashboardData = new ProjectDashboardData();
     private List<Project> lastVisibleProjects = new ArrayList<>();
+    // ---- new fields for the recommendation spinner ----
+    private final ProgressIndicator recommendSpinner = new ProgressIndicator();
+    private boolean recommendBusy = false;
+
 
     // Default sort: newest first (null-safe).
     private Comparator<Project> currentComparator =
@@ -97,6 +107,9 @@ public class ProjectListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setupRoleUI();
         setupCardRenderer();
+        // new: spinner starts invisible
+        recommendSpinner.setMaxSize(80, 80);
+        recommendSpinner.setVisible(false);
 
         // Keep ListView non-null and stable
         projectList.setItems(FXCollections.observableArrayList());
@@ -225,6 +238,7 @@ public class ProjectListController implements Initializable {
         badgeBox.getStyleClass().add("badge-box");
         badgeBox.setMinWidth(Region.USE_PREF_SIZE);
 
+
         // ===== MID (conditional) =====
         HBox mid;
         if (SessionContext.isClient()) {
@@ -248,24 +262,34 @@ public class ProjectListController implements Initializable {
             }
         }
         mid.getStyleClass().add("card-mid");
-
-        // Actions row (same logic)
         HBox actionRow = new HBox(8);
         actionRow.getStyleClass().add("card-actions");
+        // Actions row (same logic)
+        // Only show strategy recommendation when the project is accepted.
+        if (!SessionContext.isClient() && p.getStateProj() == ProjectStatus.ACCEPTED) {
+            Button recommendBtn = new Button("Prevoir strategie");
+            recommendBtn.disableProperty().bind(Bindings.createBooleanBinding(
+                    () -> recommendBusy));
+            recommendBtn.getStyleClass().add("btn-ghost");
+
+            recommendBtn.setOnAction(e -> runRecommendation(p));
+            actionRow.getChildren().add(recommendBtn);
+        }
+
 
         if (p.getStateProj() == ProjectStatus.PENDING) {
-            Label pendingLabel = new Label("En attente de décision du manager");
+            Label pendingLabel = new Label("En attente de decision du manager");
             pendingLabel.getStyleClass().add("btn-ghost");
             actionRow.getChildren().add(pendingLabel);
         } else {
-            Button currentDecision = new Button("Décision actuelle");
+            Button currentDecision = new Button("Decision actuelle");
             currentDecision.getStyleClass().add("btn-ghost");
             currentDecision.setOnAction(e -> onShowCurrentDecision(p));
             actionRow.getChildren().add(currentDecision);
         }
 
         if (p.getStateProj() == ProjectStatus.ACCEPTED) {
-            Button tasks = new Button("Tâches");
+            Button tasks = new Button("Taches");
             tasks.getStyleClass().add("btn-ghost");
             tasks.setOnAction(e -> onOpenTasks(p));
             actionRow.getChildren().add(tasks);
@@ -276,7 +300,11 @@ public class ProjectListController implements Initializable {
         news.setOnAction(e -> onOpenNews(p));
         actionRow.getChildren().add(news);
 
-        if (SessionContext.isClient() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
+        boolean canEditDelete =
+                SessionContext.getCurrentRole() == UserRole.ADMIN
+                        || (SessionContext.isClient() && p.getIdClient() == SessionContext.getCurrentUserId());
+
+        if (canEditDelete) {
             Button edit = new Button("Modifier");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> onEditProject(p));
@@ -289,7 +317,7 @@ public class ProjectListController implements Initializable {
         }
 
         if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
-            Button decide = new Button("Décider ");
+            Button decide = new Button("Decider");
             decide.getStyleClass().add("btn-primary");
             decide.setOnAction(e -> onDecideProject(p));
             actionRow.getChildren().add(decide);
@@ -304,10 +332,9 @@ public class ProjectListController implements Initializable {
     private VBox buildStrategiesPanel(Project p) {
         VBox panel = new VBox(10);
         panel.getStyleClass().add("strategies-panel");
-
-        // ??? Title shown once
+        // Title shown once.
         HBox titleRow = new HBox();
-        Label title = new Label("strategies proposées :");
+        Label title = new Label("strategies proposees :");
         title.getStyleClass().add("strategies-title");
 
         Region spacer = new Region();
@@ -322,7 +349,7 @@ public class ProjectListController implements Initializable {
         List<Strategie> strategies = strategyService.getByProject(p.getIdProj());
 
         if (strategies == null || strategies.isEmpty()) {
-            Label empty = new Label("Aucune strat??gie.");
+            Label empty = new Label("Aucune strategie.");
             empty.getStyleClass().add("card-meta");
             panel.getChildren().add(empty);
             return panel;
@@ -334,7 +361,7 @@ public class ProjectListController implements Initializable {
         }
 
         if (panel.getChildren().size() == 1) { // only titleRow
-            Label empty = new Label("Aucune strat??gie.");
+            Label empty = new Label("Aucune strategie.");
             empty.getStyleClass().add("card-meta");
             panel.getChildren().add(empty);
         }
@@ -399,7 +426,7 @@ public class ProjectListController implements Initializable {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            showError("Impossible d'ouvrir detail strategie: " + ex.getMessage());
+            showError("Impossible de charger la strategie: " + ex.getMessage());
         }
     }
 
@@ -448,7 +475,7 @@ public class ProjectListController implements Initializable {
 
         Alert confirm = new Alert(
                 Alert.AlertType.CONFIRMATION,
-                "Confirmer la d??cision \"" + choice + "\" pour la strat??gie :\n" + safe(s.getNomStrategie()) + " ?",
+                "Confirmer la decision \"" + choice + "\" pour la strategie :\n" + safe(s.getNomStrategie()) + " ?",
                 ButtonType.YES,
                 ButtonType.NO
         );
@@ -464,7 +491,7 @@ public class ProjectListController implements Initializable {
             } else {
                 TextInputDialog dialog = new TextInputDialog();
                 dialog.setTitle("Justification de refus");
-                dialog.setHeaderText("Strat??gie refus??e");
+                dialog.setHeaderText("Strategie refusee");
                 dialog.setContentText("Veuillez fournir une raison de refus:");
 
                 Optional<String> result = dialog.showAndWait();
@@ -472,8 +499,8 @@ public class ProjectListController implements Initializable {
                 if (result.isPresent() && !result.get().trim().isEmpty()) {
                     strategyService.applyDecision(s.getId(), false, result.get(), true);
                 } else {
-                    new Alert(Alert.AlertType.WARNING, "Le refus n??cessite une justification.", ButtonType.OK).showAndWait();
-                    return; // IMPORTANT: don???t remove row if not refused
+                    new Alert(Alert.AlertType.WARNING, "Le refus necessite une justification.", ButtonType.OK).showAndWait();
+                    return; // Important: do not remove row if not refused.
                 }
             }
 
@@ -483,7 +510,7 @@ public class ProjectListController implements Initializable {
             panel.getChildren().remove(row);
 
             if (panel.getChildren().size() == 1) {
-                Label empty = new Label("Aucune strat??gie.");
+                Label empty = new Label("Aucune strategie.");
                 empty.getStyleClass().add("card-meta");
                 panel.getChildren().add(empty);
             }
@@ -618,7 +645,7 @@ public class ProjectListController implements Initializable {
             Parent root = loader.load();
             DecisionFormController controller = loader.getController();
             controller.initWithProjectId(selected.getIdProj());
-            openModal(root, "Décider du projet");
+            openModal(root, "Decider du projet");
             loadProjectsFromService();
         } catch (Exception e) {
             showError(e.getMessage());
@@ -633,7 +660,7 @@ public class ProjectListController implements Initializable {
             List<Project> projects;
             if (SessionContext.isClient()) {
                 projects = projectService.getByClient(SessionContext.getCurrentUserId());
-                dashboardData = statsService.getForClient(SessionContext.getCurrentUserId());
+                dashboardData = statsService.getForManager();
                 clientNamesById = new HashMap<>();
             } else {
                 projects = projectService.getAll();
@@ -776,7 +803,7 @@ public class ProjectListController implements Initializable {
                 Stage stage = new Stage();
                 stage.setTitle("Statistiques projets");
                 stage.initOwner(projectList.getScene().getWindow());
-                stage.setScene(new Scene(root));
+                SceneThemeApplier.setScene(stage, root);
                 stage.setMinWidth(1100);
                 stage.setMinHeight(700);
                 stage.show();
@@ -861,7 +888,7 @@ public class ProjectListController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Admin/admin.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) projectList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Admin Dashboard");
         } catch (Exception e) {
             showError(e.getMessage());
@@ -893,7 +920,7 @@ public class ProjectListController implements Initializable {
     }
 
     private VBox buildEstimateBox(ProjectAcceptanceEstimate estimate) {
-        Label title = new Label("Estimation d'acceptation");
+        Label title = new Label("strategies proposees :");
         title.getStyleClass().add("estimate-title");
 
         ProgressBar bar = new ProgressBar(Math.max(0, Math.min(100, estimate.getScorePercent())) / 100.0);
@@ -952,7 +979,7 @@ public class ProjectListController implements Initializable {
         if (score == null || score.getBadge() == null || score.getBadge().isBlank()) {
             return "-";
         }
-        return badgeEmoji(score.getBadge());
+        return badgeLabel(score.getBadge());
     }
 
     private String pbsClassFor(String badge) {
@@ -965,14 +992,9 @@ public class ProjectListController implements Initializable {
         };
     }
 
-    private String badgeEmoji(String badge) {
-        if (badge == null) return "🥉";
-        return switch (badge.trim().toUpperCase(Locale.ROOT)) {
-            case "ARGENT" -> "🥈";
-            case "OR" -> "🥇";
-            case "PLATINE" -> "👑";
-            default -> "🥉";
-        };
+    private String badgeLabel(String badge) {
+        if (badge == null || badge.isBlank()) return "BRONZE";
+        return badge.trim().toUpperCase(Locale.ROOT);
     }
 
     private void onBadgeDetails(Project project, ProjectBadgeScore score) {
@@ -981,7 +1003,7 @@ public class ProjectListController implements Initializable {
         String badge = score.getBadge() == null ? "-" : score.getBadge();
         StringBuilder details = new StringBuilder();
         details.append("Projet: ").append(safe(project.getTitleProj())).append("\n");
-        details.append("Badge: ").append(badgeEmoji(badge)).append(" ").append(badge).append("\n");
+        details.append("Badge: ").append(badgeLabel(badge)).append("\n");
         details.append("Note globale: ").append(String.format(Locale.US, "%.1f", score.getPbs())).append("/100\n\n");
 
         details.append("Pourquoi ce badge (simple):\n");
@@ -1028,7 +1050,7 @@ public class ProjectListController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle(title);
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(new Scene(root));
+        SceneThemeApplier.setScene(stage, root);
         stage.showAndWait();
     }
 
@@ -1050,4 +1072,129 @@ public class ProjectListController implements Initializable {
         }
         return current.getClass().getSimpleName() + ": " + msg;
     }
+
+
+    @FXML
+    private void onRecommend(ActionEvent actionEvent) {
+        Project selected = projectList.getSelectionModel().getSelectedItem();
+        runRecommendation(selected);
+    }
+
+    /**
+     * Open the modal that asks the Gerant to either confirm or ignore the
+     * generated strategy before it is inserted into the database.
+     */
+    private void openStrategyConfirmDialog(Strategie draft) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/strategie/StrategieInfoDialog.fxml"));
+            Parent content = loader.load();
+
+            com.advisora.GUI.Strategie.StrategieInfoDialogController c = loader.getController();
+            c.setOnClose(this::closeDialog);
+            c.initWithStrategie(draft);
+            // Expose two callbacks: confirm => persist; ignore => close.
+            c.enableRecommendationActions(true);   // show confirm/ignore buttons in the dialog
+
+            c.setOnConfirm(() -> {
+                try {
+                    // persist the strategy ONLY when the Gerant clicks Confirm
+                    strategyService.confirmRecommendedStrategy(draft);
+                    closeDialog();
+                    refresh();                     // reload the project list cards
+                    new Alert(Alert.AlertType.INFORMATION, "Strategie enregistree.", ButtonType.OK).showAndWait();
+                } catch (Exception ex) {
+                    showError("Enregistrement impossible: " + ex.getMessage());
+                }
+            });
+
+            c.setOnIgnore(() -> closeDialog());    // no save, no refresh
+
+            enableDrag(c.getDragHandle(), modalBox);
+            showDialog(content);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("Impossible d'ouvrir la strategie : " + ex.getMessage());
+        }
+    }
+    /**
+     * Launches the asynchronous recommendation (calls Gemini).
+     */
+    private void runRecommendation(Project project) {
+        if (project == null || project.getIdProj() <= 0) {
+            showError("Aucun projet selectionne.");
+            return;
+        }
+        if (recommendBusy) return;
+        recommendBusy = true;
+
+        overlay.getChildren().add(recommendSpinner);
+        recommendSpinner.setVisible(true);
+        overlay.setManaged(true);
+        overlay.setVisible(true);
+
+        Task<Strategie> task = new Task<>() {
+            @Override
+            protected Strategie call() {
+                // Only build a draft (no DB insert).
+                return strategyService.recommendDraftStrategy(project);
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            recommendBusy = false;
+            hideRecommendSpinner();
+
+            Strategie draft = task.getValue();
+            if (draft == null) {
+                showError("La recommandation a echoue.");
+                return;
+            }
+            // Open confirm dialog (still not saved).
+            openStrategyConfirmDialog(draft);
+        });
+
+        task.setOnFailed(e -> {
+            recommendBusy = false;
+            hideRecommendSpinner();
+
+            Throwable th = task.getException();
+            showError("Erreur recommandation:\n" + (th == null ? "Erreur inconnue" : rootCauseMessage(th)));
+            if (th != null) th.printStackTrace();
+        });
+
+        Thread th = new Thread(task, "recommend-strategy");
+        th.setDaemon(true);
+        th.start();
+    }
+
+    /**
+     * Show the spinner overlay.
+     */
+    private void showRecommendSpinner() {
+        recommendSpinner.setVisible(true);
+        overlay.getChildren().add(recommendSpinner);
+        overlay.setManaged(true);
+        overlay.setVisible(true);
+    }
+
+    /**
+     * Hides the spinner overlay.
+     */
+    private void hideRecommendSpinner() {
+        recommendSpinner.setVisible(false);
+        overlay.getChildren().remove(recommendSpinner);
+
+        // If no other modal is showing, hide the overlay
+        boolean modalOpen = modalBox != null && !modalBox.getChildren().isEmpty();
+        if (!modalOpen) {
+            overlay.setVisible(false);
+            overlay.setManaged(false);
+        }
+    }
+
+
+
 }
+
+
+

@@ -12,6 +12,9 @@ import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.AvatarUtil;
 import com.advisora.utils.LocalSessionStore;
+import com.advisora.utils.SceneThemeApplier;
+import com.advisora.utils.ThemeMode;
+import com.advisora.utils.ThemeManager;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -34,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +53,7 @@ public class InterfaceGeneralController {
     @FXML private Button eventsBtn;
     @FXML private Button strategiesBtn;
     @FXML private Button investissementsBtn;
+    @FXML private Button themeToggleBtn;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
 
@@ -74,14 +79,14 @@ public class InterfaceGeneralController {
     private final List<Button> navButtons = new ArrayList<>();
 
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
 
         User u = SessionContext.getCurrentUser();
         initNavButtons();
 
         NotificationManager.getInstance()
                 .loadNotificationsForUser(u.getRole(), u.getId());
-        // Ã¢Å“â€¦ important to refresh data from DB
+        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ important to refresh data from DB
 
         updateNotificationBadge();
 
@@ -104,15 +109,12 @@ public class InterfaceGeneralController {
         usersBtn.setManaged(isAdmin);
 
         if (eventsBtn != null) {
-            if (u.getRole() == UserRole.CLIENT) {
-                eventsBtn.setText("Evenements");
-            } else {
-                eventsBtn.setText("Gestion Evenements");
-            }
+            eventsBtn.setText("Evenements");
         }
 
         handleOpenHome();
         AvatarUtil.makeCircular(profileImageView);
+        refreshThemeToggleText();
     }
 
     private void initNavButtons() {
@@ -189,7 +191,7 @@ public class InterfaceGeneralController {
     private void handleOpenUsers() {
         UserRole r = SessionContext.getCurrentRole();
         if (r != UserRole.ADMIN) {
-            showError("Gestion Utilisateurs", "AccÃƒÂ¨s refusÃƒÂ©: ADMIN requis.");
+            showError("Gestion Utilisateurs", "AccÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨s refusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©: ADMIN requis.");
             return;
         }
         try {
@@ -249,13 +251,13 @@ public class InterfaceGeneralController {
         try {
             UserRole r = SessionContext.getCurrentRole();
             if (r != UserRole.ADMIN && r != UserRole.GERANT) {
-                showError("Gestion Strategies", "AccÃƒÂ¨s refusÃƒÂ©: GERANT ou ADMIN requis.");
+                showError("Gestion Strategies", "AccÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨s refusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©: GERANT ou ADMIN requis.");
                 return;
             }
             loadIntoContent("/views/strategie/interfaceStrategie.fxml");
             setActiveNav(strategiesBtn);
         } catch (Exception ex) {
-            showError("Gestion Strategies", ex.getMessage());
+            showError("Gestion Strategies", buildErrorMessage(ex));
         }
     }
 
@@ -304,7 +306,7 @@ public class InterfaceGeneralController {
 
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
             Stage stage = (Stage) contentHost.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Login");
 
         } catch (Exception ex) {
@@ -363,7 +365,7 @@ public class InterfaceGeneralController {
     @FXML
     private void handleNotificationClick() {
         try {
-            // Ã¢Å“â€¦ toggle close if already open
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ toggle close if already open
             if (notificationPanel != null && popupLayer.getChildren().contains(notificationPanel)) {
                 popupLayer.getChildren().remove(notificationPanel);
                 notificationPanel = null;
@@ -392,7 +394,7 @@ public class InterfaceGeneralController {
             // aligned with button left
             double y = p.getY() + 6;  // below button
 
-            // Ã¢Å“â€¦ keep inside window
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ keep inside window
             double maxX = popupLayer.getWidth() - panelW - 10;
             double maxY = popupLayer.getHeight() - panelH - 10;
             x = Math.max(10, Math.min(x, maxX));
@@ -400,7 +402,7 @@ public class InterfaceGeneralController {
 
             notificationPanel.relocate(x, y);
 
-            // Ã¢Å“â€¦ close when clicking outside (without breaking other clicks)
+            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ close when clicking outside (without breaking other clicks)
             popupLayer.setOnMousePressed(e -> {
                 if (notificationPanel != null &&
                         !notificationPanel.getBoundsInParent().contains(e.getX(), e.getY())) {
@@ -413,6 +415,23 @@ public class InterfaceGeneralController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleToggleTheme() {
+        Scene scene = contentHost != null ? contentHost.getScene() : null;
+        ThemeMode mode = ThemeManager.toggleMode(scene);
+        if (mode == ThemeMode.DARK) {
+            System.out.println("[UI] Dark mode enabled");
+        } else {
+            System.out.println("[UI] Light mode enabled");
+        }
+        refreshThemeToggleText();
+    }
+
+    private void refreshThemeToggleText() {
+        if (themeToggleBtn == null) return;
+        themeToggleBtn.setText(ThemeManager.getCurrentMode() == ThemeMode.DARK ? "Mode clair" : "Mode nuit");
     }
 
 
@@ -446,3 +465,4 @@ public class InterfaceGeneralController {
     }
 
 }
+

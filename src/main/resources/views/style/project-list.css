@@ -201,56 +201,72 @@ Role: Project module UI layout (FXML/CSS)
 }
 
 .status-badge {
-    -fx-padding: 4 12 4 12;
+    -fx-padding: 5 12 5 12;
     -fx-background-radius: 999;
     -fx-font-weight: 800;
+    -fx-font-size: 12px;
+    -fx-border-radius: 999;
+    -fx-border-width: 1;
 }
 
 .status-pending {
-    -fx-background-color: rgba(244,197,66,0.20);
-    -fx-text-fill: #7a5a00;
+    -fx-background-color: #f4e4a6;
+    -fx-text-fill: #654b00;
+    -fx-border-color: #d3b55a;
 }
 
 .status-accepted {
-    -fx-background-color: rgba(46,163,106,0.18);
-    -fx-text-fill: #1f6e48;
+    -fx-background-color: #c8e8da;
+    -fx-text-fill: #0d6240;
+    -fx-border-color: #84c7a7;
 }
 
 .status-refused {
-    -fx-background-color: rgba(230,84,84,0.14);
-    -fx-text-fill: #b42318;
+    -fx-background-color: #f9d4d4;
+    -fx-text-fill: #9f1e1e;
+    -fx-border-color: #e5a8a8;
 }
 
 .status-archived {
-    -fx-background-color: rgba(107,114,128,0.16);
-    -fx-text-fill: #374151;
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: #334155;
+    -fx-border-color: #bcc8d8;
 }
 
 .pbs-badge {
-    -fx-padding: 4 10 4 10;
+    -fx-padding: 5 12 5 12;
     -fx-background-radius: 999;
     -fx-font-weight: 800;
-    -fx-font-size: 16px;
+    -fx-font-size: 12px;
+    -fx-border-radius: 999;
+    -fx-border-width: 1;
+    -fx-min-width: 86px;
+    -fx-alignment: center;
+    -fx-cursor: hand;
 }
 
 .pbs-bronze {
-    -fx-background-color: rgba(191, 120, 77, 0.18);
-    -fx-text-fill: #7a3f1f;
+    -fx-background-color: #efd6c8;
+    -fx-text-fill: #6e3519;
+    -fx-border-color: #cc9f84;
 }
 
 .pbs-argent {
-    -fx-background-color: rgba(148, 163, 184, 0.22);
-    -fx-text-fill: #334155;
+    -fx-background-color: #dde3ea;
+    -fx-text-fill: #2b3a4c;
+    -fx-border-color: #b8c2cf;
 }
 
 .pbs-or {
-    -fx-background-color: rgba(250, 204, 21, 0.20);
-    -fx-text-fill: #854d0e;
+    -fx-background-color: #f8e3a3;
+    -fx-text-fill: #6b4700;
+    -fx-border-color: #d8b55c;
 }
 
 .pbs-platine {
-    -fx-background-color: rgba(129, 140, 248, 0.16);
-    -fx-text-fill: #3730a3;
+    -fx-background-color: #d6d8f7;
+    -fx-text-fill: #2f2f88;
+    -fx-border-color: #a9afd9;
 }
 
 .card-mid {
@@ -650,4 +666,150 @@ Role: Project module UI layout (FXML/CSS)
 .news-empty {
     -fx-text-fill: #6b7280;
     -fx-font-weight: 700;
+}
+
+/* =========================
+   Dark theme overrides
+   ========================= */
+.theme-dark .title {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .tabs .tab {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-text-fill: -text-strong;
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 10;
+}
+
+.theme-dark .tabs .tab:selected {
+    -fx-background-color: rgba(243,155,76,0.24);
+    -fx-text-fill: #ffffff;
+}
+
+.theme-dark .search {
+    -fx-background-color: #243245;
+    -fx-text-fill: -text-strong;
+    -fx-prompt-text-fill: rgba(237,243,251,0.6);
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .project-card {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: rgba(237,243,251,0.18);
+}
+
+.theme-dark .card-list .list-cell:filled:selected .project-card {
+    -fx-border-color: rgba(243,155,76,0.85);
+}
+
+.theme-dark .card-title,
+.theme-dark .strategy-name,
+.theme-dark .objective-title,
+.theme-dark .dialog-card .dialog-title,
+.theme-dark .dialog-card .big-title,
+.theme-dark .meta-value,
+.theme-dark .kpi-chip-value {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .card-desc,
+.theme-dark .card-meta,
+.theme-dark .estimate-score,
+.theme-dark .estimate-reason,
+.theme-dark .news-description,
+.theme-dark .news-meta,
+.theme-dark .strategies-title,
+.theme-dark .dialog-card .meta-label,
+.theme-dark .objective-desc {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .card-divider {
+    -fx-background-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .status-pending {
+    -fx-background-color: #6a5512;
+    -fx-text-fill: #ffe8a3;
+    -fx-border-color: #a07f20;
+}
+
+.theme-dark .status-accepted {
+    -fx-background-color: #114f36;
+    -fx-text-fill: #c5f7dd;
+    -fx-border-color: #1f7a53;
+}
+
+.theme-dark .status-refused {
+    -fx-background-color: #6b1f26;
+    -fx-text-fill: #ffd7d7;
+    -fx-border-color: #9b3641;
+}
+
+.theme-dark .status-archived {
+    -fx-background-color: #314154;
+    -fx-text-fill: #dbe6f5;
+    -fx-border-color: #49617a;
+}
+
+.theme-dark .pbs-bronze {
+    -fx-background-color: #5a3d2d;
+    -fx-text-fill: #ffd8c2;
+    -fx-border-color: #875842;
+}
+
+.theme-dark .pbs-argent {
+    -fx-background-color: #3a4654;
+    -fx-text-fill: #e6edf6;
+    -fx-border-color: #627286;
+}
+
+.theme-dark .pbs-or {
+    -fx-background-color: #5f4b15;
+    -fx-text-fill: #ffe7a6;
+    -fx-border-color: #8f6f1f;
+}
+
+.theme-dark .pbs-platine {
+    -fx-background-color: #3c3f70;
+    -fx-text-fill: #e3e2ff;
+    -fx-border-color: #6367a5;
+}
+
+.theme-dark .strategy-row,
+.theme-dark .estimate-box,
+.theme-dark .stats-extended,
+.theme-dark .breakdown-box,
+.theme-dark .news-item-card,
+.theme-dark .dialog-card,
+.theme-dark .objective-card,
+.theme-dark .summary-row {
+    -fx-background-color: #243245;
+    -fx-border-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .dialog-card .list-view,
+.theme-dark .dialog-card .list-view .virtual-flow,
+.theme-dark .dialog-card .list-view .virtual-flow .viewport {
+    -fx-background-color: transparent;
+}
+
+.theme-dark .dialog-card .btn-close {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .dialog-card .btn-close:hover {
+    -fx-background-color: rgba(255,255,255,0.18);
+}
+
+.theme-dark .estimate-title,
+.theme-dark .news-title {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .kpi-chip {
+    -fx-background-color: rgba(243,155,76,0.26);
+    -fx-text-fill: #ffe6cc;
 }

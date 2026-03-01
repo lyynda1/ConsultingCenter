@@ -7,6 +7,7 @@ import com.advisora.Services.user.SessionContext;
 import com.advisora.Services.user.UserService;
 import com.advisora.utils.LocalSessionStore;
 import com.advisora.utils.PythonRunner;
+import com.advisora.utils.SceneThemeApplier;
 import com.advisora.utils.TokenUtil;
 
 import javafx.application.Platform;
@@ -82,7 +83,7 @@ public class loginController {
 
         if (statusLabel != null) statusLabel.setText("Ready.");
 
-        // ✅ auto-login after scene/window exists
+        // âœ… auto-login after scene/window exists
         Platform.runLater(this::tryAutoLogin);
     }
 
@@ -127,7 +128,7 @@ public class loginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ForgotPassword.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Forgot Password");
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,7 +142,7 @@ public class loginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Signup.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Sign up");
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,7 +155,7 @@ public class loginController {
         Parent root = loader.load();
 
         Stage stage = (Stage) emailField.getScene().getWindow();
-        stage.setScene(new Scene(root));
+        SceneThemeApplier.setScene(stage, root);
         stage.setTitle("Advisora - Interface Generale (" + user.getRole() + ")");
     }
 
@@ -167,7 +168,7 @@ public class loginController {
             c.init(email, remember);
 
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Verify Login Code");
 
         } catch (Exception e) {
@@ -191,16 +192,16 @@ public class loginController {
         if (userService.isLocked(email)) {
             long sec = userService.getLockRemainingSeconds(email);
 
-            // ✅ if timer finished -> allow login (don't show 0 min)
+            // âœ… if timer finished -> allow login (don't show 0 min)
             if (sec <= 0) {
                 // optionnel: si ton userService garde encore "locked" alors qu'il est fini,
-                // il faut le déverrouiller côté DB/service (voir plus bas).
+                // il faut le dÃ©verrouiller cÃ´tÃ© DB/service (voir plus bas).
             } else {
                 if (sec < 60) {
-                    showLoginError("Tentative de connexion 3/3. Réessayez dans " + sec + " s.");
+                    showLoginError("Tentative de connexion 3/3. RÃ©essayez dans " + sec + " s.");
                 } else {
                     long min = (sec + 59) / 60; // ceil
-                    showLoginError("Tentative de connexion 3/3. Réessayez dans " + min + " min.");
+                    showLoginError("Tentative de connexion 3/3. RÃ©essayez dans " + min + " min.");
                 }
                 return;
             }
@@ -224,7 +225,7 @@ public class loginController {
         try {
             User user = userService.authenticate(email, password);
             if (user == null) {
-                int count = userService.registerLoginFailure(email, 10); // ⚠️ si authenticate le fait déjà -> NE PAS doubler
+                int count = userService.registerLoginFailure(email, 10); // âš ï¸ si authenticate le fait dÃ©jÃ  -> NE PAS doubler
                 showLoginError("Invalid email or password");
                 showLoginError("Email ou mot de passe incorrect (" + Math.min(count,3) + "/3)");
 
@@ -233,7 +234,7 @@ public class loginController {
                 return;
             }
 
-            // ✅ STEP 2FA: send code + open verify page then STOP
+            // âœ… STEP 2FA: send code + open verify page then STOP
             boolean remember = (rememberMe != null && rememberMe.isSelected());
 
             // send OTP to email
@@ -347,7 +348,7 @@ public class loginController {
                 return;
             }
 
-            // ✅ FACE LOGIN: directly create session (no 2FA, unless you want it too)
+            // âœ… FACE LOGIN: directly create session (no 2FA, unless you want it too)
             String rawToken = TokenUtil.randomToken();
             authSessionService.createSession(user.getId(), rawToken, "Desktop", "127.0.0.1");
             LocalSessionStore.save(rawToken);
@@ -672,3 +673,4 @@ public class loginController {
         return s == null ? "" : s.trim();
     }
 }
+

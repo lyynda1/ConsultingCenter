@@ -1,10 +1,15 @@
 package com.advisora.GUI.Event;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Model.event.Event;
 import com.advisora.Model.event.EventBooking;
 import com.advisora.Services.event.EventBookingService;
+import com.advisora.Services.event.EventNotificationService;
+import com.advisora.Services.event.EventPaymentService;
 import com.advisora.Services.event.EventService;
 import com.advisora.Services.user.SessionContext;
+import com.advisora.enums.BookingStatus;
 import com.advisora.enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -55,6 +61,8 @@ public class EventListController {
 
     private final EventService eventService = new EventService();
     private final EventBookingService bookingService = new EventBookingService();
+    private final EventPaymentService paymentService = new EventPaymentService();
+    private final EventNotificationService notificationService = new EventNotificationService();
 
     private final ObservableList<Event> allEvents = FXCollections.observableArrayList();
     private final FilteredList<Event> filteredEvents = new FilteredList<>(allEvents, e -> true);
@@ -183,8 +191,25 @@ public class EventListController {
             authorizeClient();
             Event selected = requireEventSelection();
             int qty = parsePositiveInt(txtReserveQty.getText(), "Nombre de places invalide.");
-            bookingService.createBooking(SessionContext.getCurrentUserId(), selected.getIdEv(), qty);
-            lblStatus.setText("Reservation enregistree.");
+            int bookingId = bookingService.createBookingAndReturnId(SessionContext.getCurrentUserId(), selected.getIdEv(), qty);
+            EventBooking booking = bookingService.getById(bookingId);
+            if (booking == null) {
+                throw new IllegalStateException("Reservation creee mais introuvable.");
+            }
+
+            EventPaymentService.PaymentFlowResult flow = paymentService.initiateCheckout(bookingId);
+            EventBooking refreshedBooking = bookingService.getById(bookingId);
+
+            if (!flow.isPaymentRequired() || flow.isAlreadyConfirmed()) {
+                notificationService.sendBookingConfirmed(refreshedBooking);
+                lblStatus.setText("Reservation confirmee.");
+                refreshAll();
+                return;
+            }
+
+            notificationService.sendBookingPendingPayment(refreshedBooking, flow.getPaymentUrl());
+            promptPaymentConfirmation(flow, refreshedBooking);
+            lblStatus.setText("Reservation creee. Paiement en attente.");
             refreshAll();
         } catch (Exception ex) {
             showError("Reservation", ex.getMessage());
@@ -195,14 +220,40 @@ public class EventListController {
     private void onCancelBooking() {
         try {
             EventBooking selected = requireBookingSelection();
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Annuler cette reservation ?", ButtonType.YES, ButtonType.NO);
-            if (confirm.showAndWait().orElse(ButtonType.NO) != ButtonType.YES) {
-                return;
-            }
             if (SessionContext.getCurrentRole() == UserRole.CLIENT) {
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Annuler cette reservation ?", ButtonType.YES, ButtonType.NO);
+                if (confirm.showAndWait().orElse(ButtonType.NO) != ButtonType.YES) {
+                    return;
+                }
                 bookingService.cancelBookingForClient(SessionContext.getCurrentUserId(), selected.getIdBk());
             } else {
-                bookingService.cancelBookingAsManager(selected.getIdBk());
+                ButtonType btnRefund = new ButtonType("Rembourser + annuler", ButtonBar.ButtonData.YES);
+                ButtonType btnCancelOnly = new ButtonType("Annuler sans refund", ButtonBar.ButtonData.NO);
+                ButtonType btnAbort = new ButtonType("Fermer", ButtonBar.ButtonData.CANCEL_CLOSE);
+                Alert managerConfirm = new Alert(
+                        Alert.AlertType.CONFIRMATION,
+                        "Action manager pour cette reservation payante.",
+                        btnRefund,
+                        btnCancelOnly,
+                        btnAbort
+                );
+                managerConfirm.setHeaderText("Gestion reservation");
+                ButtonType action = managerConfirm.showAndWait().orElse(btnAbort);
+                if (action == btnAbort) {
+                    return;
+                }
+
+                if (action == btnRefund) {
+                    boolean refunded = paymentService.refundBooking(selected.getIdBk(), "Refund requested by manager");
+                    if (!refunded) {
+                        showError("Refund", "Remboursement non confirme. Verification Stripe requise.");
+                        return;
+                    }
+                    EventBooking refundedBooking = bookingService.getById(selected.getIdBk());
+                    notificationService.sendBookingRefunded(refundedBooking, "Refund requested by manager");
+                } else {
+                    bookingService.cancelBookingAsManager(selected.getIdBk());
+                }
             }
             lblStatus.setText("Reservation annulee.");
             refreshAll();
@@ -214,6 +265,64 @@ public class EventListController {
     @FXML
     private void onRefresh() {
         refreshAll();
+    }
+
+    @FXML
+    private void onShowMap() {
+        try {
+            List<Event> events = allEvents.stream()
+                    .filter(e -> e.getLocalisationEv() != null && !e.getLocalisationEv().isBlank())
+                    .collect(Collectors.toList());
+            
+            if (events.isEmpty()) {
+                showError("Carte", "Aucun evenement avec localisation disponible.");
+                return;
+            }
+            
+            EventMapView mapView = new EventMapView();
+            String[] locations = events.stream()
+                    .map(e -> e.getTitleEv() + " - " + e.getLocalisationEv())
+                    .toArray(String[]::new);
+            
+            mapView.showMapWithLocations(locations);
+            lblStatus.setText("Carte des evenements affichee.");
+        } catch (Exception ex) {
+            showError("Carte", "Erreur lors de l'affichage de la carte: " + ex.getMessage());
+        }
+    }
+
+    private void showEventLocation(Event event) {
+        try {
+            if (event.getLocalisationEv() == null || event.getLocalisationEv().isBlank()) {
+                showError("Carte", "Aucune localisation pour cet evenement.");
+                return;
+            }
+            
+            EventMapView mapView = new EventMapView();
+            mapView.showMapWithSingleLocation(event.getLocalisationEv(), event.getTitleEv());
+        } catch (Exception ex) {
+            showError("Carte", "Erreur: " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onShowCalendar() {
+        try {
+            List<Event> events = allEvents.stream()
+                    .filter(e -> e.getStartDateEv() != null)
+                    .collect(Collectors.toList());
+            
+            if (events.isEmpty()) {
+                showError("Calendrier", "Aucun evenement avec date disponible.");
+                return;
+            }
+            
+            EventCalendarView calendarView = new EventCalendarView();
+            calendarView.showCalendar(events);
+            lblStatus.setText("Calendrier des evenements affiche.");
+        } catch (Exception ex) {
+            showError("Calendrier", "Erreur : " + ex.getMessage());
+        }
     }
 
     @FXML
@@ -307,12 +416,28 @@ public class EventListController {
 
         Label line1 = new Label("Dates: " + fmtDateTime(e.getStartDateEv()) + " -> " + fmtDateTime(e.getEndDateEv()));
         line1.getStyleClass().add("card-meta");
+        
+        HBox locationLine = new HBox(8);
         Label line2 = new Label("Lieu: " + safe(e.getLocalisationEv()) + "   |   Organisateur: " + safe(e.getOrganisateurName()));
         line2.getStyleClass().add("card-meta");
+        locationLine.getChildren().add(line2);
+        
+        // Add map button if location exists
+        if (e.getLocalisationEv() != null && !e.getLocalisationEv().isBlank()) {
+            Button btnMap = new Button("ðŸ“");
+            btnMap.setStyle("-fx-font-size: 10px; -fx-padding: 2 6 2 6;");
+            btnMap.setOnAction(ev -> showEventLocation(e));
+            locationLine.getChildren().add(btnMap);
+        }
+        
         Label line3 = new Label("Capacite: " + e.getCapaciteEvnt() + "   |   Reserve: " + reserved + "   |   Disponible: " + available);
         line3.getStyleClass().add("card-meta");
 
-        VBox card = new VBox(8, head, line1, line2, line3);
+        String currency = e.getCurrencyCode() == null || e.getCurrencyCode().isBlank() ? "TND" : e.getCurrencyCode();
+        Label line4 = new Label("Tarif: " + e.getTicketPrice() + " " + currency);
+        line4.getStyleClass().add("card-meta");
+
+        VBox card = new VBox(8, head, line1, locationLine, line3, line4);
         card.getStyleClass().add("resource-card");
         return card;
     }
@@ -321,9 +446,9 @@ public class EventListController {
         Label title = new Label("Evenement: " + safe(b.getEventTitle()));
         title.getStyleClass().add("card-title");
 
-        Label badge = new Label("Places: " + b.getNumTicketBk());
+        Label badge = new Label(bookingStatusText(b));
         badge.getStyleClass().add("status-badge");
-        badge.getStyleClass().add("status-pending");
+        badge.getStyleClass().add(bookingStatusClass(b));
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -337,9 +462,91 @@ public class EventListController {
         Label line3 = new Label("Client: " + safe(b.getClientName()));
         line3.getStyleClass().add("card-meta");
 
-        VBox card = new VBox(8, head, line1, line2, line3);
+        String currency = b.getEventCurrencyCode() == null || b.getEventCurrencyCode().isBlank() ? "TND" : b.getEventCurrencyCode();
+        Label line4 = new Label("Places: " + b.getNumTicketBk() + "   |   Total: " + b.getTotalPrixBk() + " " + currency);
+        line4.getStyleClass().add("card-meta");
+
+        String paymentRef = b.getPaymentReference() == null || b.getPaymentReference().isBlank() ? "-" : b.getPaymentReference();
+        Label line5 = new Label("Ref paiement: " + paymentRef);
+        line5.getStyleClass().add("card-meta");
+
+        String qrShort = b.getQrTokenBk() == null || b.getQrTokenBk().isBlank() ? "-" : abbreviate(b.getQrTokenBk(), 48);
+        Label line6 = new Label("Ticket QR: " + qrShort);
+        line6.getStyleClass().add("card-meta");
+
+        VBox card = new VBox(8, head, line1, line2, line3, line4, line5, line6);
         card.getStyleClass().add("resource-card");
         return card;
+    }
+
+    private String bookingStatusText(EventBooking b) {
+        BookingStatus status = b.getBookingStatus();
+        if (status == null) {
+            return "CONFIRMEE";
+        }
+        return switch (status) {
+            case PENDING_PAYMENT -> "PAIEMENT EN ATTENTE";
+            case CONFIRMED -> "CONFIRMEE";
+            case CANCELLED -> "ANNULEE";
+            case REFUNDED -> "REMBOURSEE";
+        };
+    }
+
+    private String bookingStatusClass(EventBooking b) {
+        BookingStatus status = b.getBookingStatus();
+        if (status == null) {
+            return "status-accepted";
+        }
+        return switch (status) {
+            case PENDING_PAYMENT -> "status-pending";
+            case CONFIRMED -> "status-accepted";
+            case CANCELLED, REFUNDED -> "status-refused";
+        };
+    }
+
+    private void promptPaymentConfirmation(EventPaymentService.PaymentFlowResult flow, EventBooking booking) {
+        // If no payment URL (free or local fallback), just mark as paid
+        if (flow.getPaymentUrl() == null || flow.getPaymentUrl().isBlank() || 
+            flow.getExternalRef().startsWith("LOCAL-")) {
+            bookingService.markBookingPaid(booking.getIdBk(), flow.getExternalRef());
+            EventBooking confirmed = bookingService.getById(booking.getIdBk());
+            notificationService.sendBookingConfirmed(confirmed);
+            lblStatus.setText("Reservation confirmee (paiement local).");
+            return;
+        }
+
+        // Show embedded Stripe payment dialog
+        try {
+            Stage owner = (Stage) listEvents.getScene().getWindow();
+            StripePaymentDialog paymentDialog = new StripePaymentDialog(owner);
+            paymentDialog.loadPaymentUrl(flow.getPaymentUrl());
+            
+            boolean completed = paymentDialog.showAndWait();
+            
+            if (!completed) {
+                lblStatus.setText("Paiement annule. Reservation en attente.");
+                return;
+            }
+
+            // Verify payment with Stripe
+            boolean paid = paymentService.confirmCheckoutPayment(
+                    booking.getIdBk(),
+                    flow.getExternalRef(),
+                    flow.getPaymentUrl()
+            );
+            
+            if (!paid) {
+                showError("Paiement", "Paiement non confirme. Veuillez verifier avec Stripe ou reessayer.");
+                return;
+            }
+
+            EventBooking confirmed = bookingService.getById(booking.getIdBk());
+            notificationService.sendBookingConfirmed(confirmed);
+            lblStatus.setText("Paiement confirme. Reservation finalisee.");
+            
+        } catch (Exception ex) {
+            showError("Erreur paiement", "Erreur lors du paiement: " + ex.getMessage());
+        }
     }
 
     private String eventStatus(Event e) {
@@ -416,6 +623,17 @@ public class EventListController {
         return value == null || value.trim().isEmpty() ? "-" : value.trim();
     }
 
+    private String abbreviate(String value, int max) {
+        if (value == null) {
+            return "-";
+        }
+        String trimmed = value.trim();
+        if (trimmed.length() <= max) {
+            return trimmed;
+        }
+        return trimmed.substring(0, max - 3) + "...";
+    }
+
     private boolean containsIgnoreCase(String value, String q) {
         if (value == null) {
             return false;
@@ -427,7 +645,7 @@ public class EventListController {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(title);
-        stage.setScene(new Scene(root));
+        SceneThemeApplier.setScene(stage, root);
         stage.showAndWait();
     }
 
@@ -437,3 +655,6 @@ public class EventListController {
         a.showAndWait();
     }
 }
+
+
+

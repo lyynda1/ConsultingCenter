@@ -23,7 +23,7 @@ public class ProfileController {
     private User currentUser;
     private String selectedImagePath;
 
-    // ✁Ecallback to close overlay
+    // âœEcallback to close overlay
     private Runnable onClose = () -> {};
 
     public void setOnClose(Runnable onClose) {
@@ -66,7 +66,7 @@ public class ProfileController {
             profileImage.setImage(new Image(dest.toUri().toString()));
         } catch (Exception e) {
             e.printStackTrace();
-            statusLabel.setText("Error photo ❁E");
+            statusLabel.setText("Error photo âE");
         }
     }
 
@@ -81,14 +81,14 @@ public class ProfileController {
             userService.modifier(currentUser);
             SessionContext.setCurrentUser(currentUser);
 
-            statusLabel.setText("Saved ✁E");
+            statusLabel.setText("Saved âœE");
 
-            // ✁Eclose overlay and go back to previous page
+            // âœEclose overlay and go back to previous page
             onClose.run();
 
         } catch (Exception e) {
             e.printStackTrace();
-            statusLabel.setText("Error ❁E" + e.getMessage());
+            statusLabel.setText("Error âE" + e.getMessage());
         }
     }
 
@@ -98,3 +98,4 @@ public class ProfileController {
         onClose.run();
     }
 }
+

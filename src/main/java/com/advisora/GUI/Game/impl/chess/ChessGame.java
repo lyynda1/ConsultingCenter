@@ -55,7 +55,7 @@ public class ChessGame implements PlayableGame {
         Label modeLabel = new Label("Mode:");
         Label helpLabel = new Label("Astuce: cliquez une piece, puis la case cible.");
         helpLabel.getStyleClass().add("game-status");
-        Label legendLabel = new Label("Blanc = ♔♕♖♗♘♙ | Noir = ♚♛♜♝♞♟");
+        Label legendLabel = new Label("Blanc: roi dame tour fou cavalier pion | Noir: roi dame tour fou cavalier pion");
         legendLabel.getStyleClass().add("game-status");
         HBox top = new HBox(10, modeLabel, modeBox, statusLabel, helpLabel, legendLabel);
         top.setAlignment(Pos.CENTER_LEFT);
@@ -272,3 +272,4 @@ public class ChessGame implements PlayableGame {
         };
     }
 }
+

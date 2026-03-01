@@ -158,3 +158,4 @@ public class ResourceFormController {
         stage.close();
     }
 }
+

@@ -26,8 +26,11 @@
     </VBox>
 
     <VBox spacing="6">
-        <Label text="Durée (HH:mm:ss)"/>
-        <TextField fx:id="dureeField" promptText="ex: 12:00:00"/>
+        <Label text="Durée"/>
+        <HBox spacing="8">
+            <TextField fx:id="dureeField" promptText="ex: 12"/>
+            <ComboBox fx:id="dureeUnitCombo" prefWidth="140" promptText="Unité"/>
+        </HBox>
     </VBox>
 
     <HBox spacing="12">
@@ -69,3 +72,4 @@
         <Button fx:id="submitButton" text="Ajouter" onAction="#save" styleClass="btn-primary"/>
     </HBox>
 </VBox>
+

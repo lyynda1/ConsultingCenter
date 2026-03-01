@@ -89,3 +89,4 @@ public class Investment {
         return Objects.hash(idInv);
     }
 }
+

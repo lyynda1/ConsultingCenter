@@ -27,7 +27,7 @@ public class PasswordResetService {
 
         User u = userService.getByEmail(email);
         if (u == null) {
-            // Security: don’t reveal if email exists
+            // Security: donâ€™t reveal if email exists
             return false;
         }
 
@@ -124,7 +124,7 @@ public class PasswordResetService {
 
             if (!ok) return false;
 
-            // ✅ Update password
+            // âœ… Update password
             String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt(10));
             userService.updatePasswordHashed(u.getId(), hashed);
 

@@ -5,3 +5,4 @@ public enum RiskLevel {
     MEDIUM,
     HIGH
 }
+

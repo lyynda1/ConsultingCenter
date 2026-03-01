@@ -50,3 +50,4 @@ public class Top10CompanyItem {
         this.description = description;
     }
 }
+

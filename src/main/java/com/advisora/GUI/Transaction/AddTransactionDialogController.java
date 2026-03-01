@@ -84,9 +84,6 @@ public class AddTransactionDialogController {
         if (investmentCombo == null) return;
         int userId = SessionContext.getCurrentUserId();
         List<Investment> list = investmentService.getInvestmentsForClient(userId);
-        if (list.isEmpty()) {
-            list = investmentService.afficher();
-        }
         investmentCombo.getItems().setAll(list);
     }
 
@@ -154,7 +151,7 @@ public class AddTransactionDialogController {
         try {
             montant = Double.parseDouble(montantField.getText().trim());
         } catch (NumberFormatException e) {
-            new Alert(Alert.AlertType.ERROR, "Montant doit être un nombre.").showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Montant doit Ãªtre un nombre.").showAndWait();
             return;
         }
         String type = typeField.getText() == null ? "" : typeField.getText().trim();
@@ -180,7 +177,7 @@ public class AddTransactionDialogController {
             try {
                 idInv = Integer.parseInt(idInvField.getText().trim());
             } catch (NumberFormatException e) {
-                new Alert(Alert.AlertType.ERROR, "ID Investissement doit être un entier.").showAndWait();
+                new Alert(Alert.AlertType.ERROR, "ID Investissement doit Ãªtre un entier.").showAndWait();
                 return;
             }
         }
@@ -199,3 +196,4 @@ public class AddTransactionDialogController {
         onSaved.run();
     }
 }
+

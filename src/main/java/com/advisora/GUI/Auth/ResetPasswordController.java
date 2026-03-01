@@ -1,5 +1,7 @@
 package com.advisora.GUI.Auth;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Services.user.PasswordResetService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,7 +76,7 @@ public class ResetPasswordController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Login");
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,7 +88,7 @@ public class ResetPasswordController {
         hide(emailError); hide(codeError); hide(passError); hide(infoLabel);
     }
     private void show(Label l, String msg) {
-        if (l == null) return; // ✅ prevent crash
+        if (l == null) return; // âœ… prevent crash
         l.setText(msg);
         l.setVisible(true);
         l.setManaged(true);
@@ -94,7 +96,7 @@ public class ResetPasswordController {
 
 
     private void hide(Label l) {
-        if (l == null) return; // ✅ prevent crash
+        if (l == null) return; // âœ… prevent crash
         l.setText("");
         l.setVisible(false);
         l.setManaged(false);
@@ -121,3 +123,5 @@ public class ResetPasswordController {
     }
     private String safe(String s){ return s == null ? "" : s.trim(); }
 }
+
+

@@ -74,3 +74,4 @@ public class ProjectBadgeScore {
         this.hadRefusalHistory = hadRefusalHistory;
     }
 }
+

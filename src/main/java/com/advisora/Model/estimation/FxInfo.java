@@ -8,3 +8,4 @@ public record FxInfo(
         LocalDate date
 ) {
 }
+

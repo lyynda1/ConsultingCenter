@@ -229,3 +229,71 @@
 .check-box:focused .box{
     -fx-effect: dropshadow(gaussian, rgba(46,125,96,0.25), 10, 0.20, 0, 0);
 }
+
+/* Theme bridge */
+.theme-light .app {
+    -fx-background-color: -app-bg;
+}
+
+.theme-light .card,
+.theme-light .brand-card {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .card-title,
+.theme-light .brand-title,
+.theme-light .label,
+.theme-light .check-box {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-light .muted,
+.theme-light .hint,
+.theme-light .brand-sub {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .app {
+    -fx-background-color: linear-gradient(to bottom, #121821, #162232);
+}
+
+.theme-dark .card,
+.theme-dark .brand-card {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .card-title,
+.theme-dark .brand-title,
+.theme-dark .label,
+.theme-dark .check-box,
+.theme-dark .link-black {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .muted,
+.theme-dark .hint,
+.theme-dark .brand-sub {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .input,
+.theme-dark .text-field.input,
+.theme-dark .password-field.input,
+.theme-dark .check-box .box {
+    -fx-background-color: #243245;
+    -fx-border-color: -border-soft;
+    -fx-text-fill: -text-strong;
+    -fx-prompt-text-fill: rgba(237,243,251,0.55);
+}
+
+.theme-dark .btn-ghost {
+    -fx-background-color: #28364a;
+    -fx-border-color: -border-soft;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .icon-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+}

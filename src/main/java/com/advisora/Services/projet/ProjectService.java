@@ -112,6 +112,23 @@ public class ProjectService {
         });
     }
 
+    public Project getByTitleForClient(String titleProj, int idClient) {
+        if (titleProj == null || titleProj.isBlank()) return null;
+        if (idClient <= 0) return null;
+        return call(() -> {
+            try (Connection cnx = MyConnection.getInstance().getConnection()) {
+                String sql = selectClause(cnx) + " WHERE LOWER(TRIM(p.titleProj)) = LOWER(TRIM(?)) AND p.idClient = ? LIMIT 1";
+                try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+                    ps.setString(1, titleProj);
+                    ps.setInt(2, idClient);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        return rs.next() ? map(rs) : null;
+                    }
+                }
+            }
+        });
+    }
+
     public Project getById(int idProj) {
         return call(() -> {
             try (Connection cnx = MyConnection.getInstance().getConnection()) {
@@ -239,3 +256,4 @@ public class ProjectService {
         T exec() throws SQLException;
     }
 }
+

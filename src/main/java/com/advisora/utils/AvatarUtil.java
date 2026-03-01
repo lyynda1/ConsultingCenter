@@ -24,3 +24,4 @@ public class AvatarUtil {
         iv.setPreserveRatio(true);
     }
 }
+

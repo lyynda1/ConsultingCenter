@@ -1,5 +1,7 @@
 package com.advisora.Model.event;
 
+import com.advisora.enums.BookingStatus;
+
 import java.time.LocalDateTime;
 
 public class EventBooking {
@@ -13,6 +15,16 @@ public class EventBooking {
     private LocalDateTime eventEnd;
     private int idUser;
     private String clientName;
+    private BookingStatus bookingStatus;
+    private String paymentReference;
+    private Double refundAmountBk;
+    private LocalDateTime refundDateBk;
+    private String cancelReasonBk;
+    private boolean notificationSentBk;
+    private String clientEmail;
+    private String eventCurrencyCode;
+    private String qrTokenBk;
+    private String qrImagePathBk;
 
     public int getIdBk() {
         return idBk;
@@ -93,4 +105,85 @@ public class EventBooking {
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
+
+    public BookingStatus getBookingStatus() {
+        return bookingStatus;
+    }
+
+    public void setBookingStatus(BookingStatus bookingStatus) {
+        this.bookingStatus = bookingStatus;
+    }
+
+    public String getPaymentReference() {
+        return paymentReference;
+    }
+
+    public void setPaymentReference(String paymentReference) {
+        this.paymentReference = paymentReference;
+    }
+
+    public Double getRefundAmountBk() {
+        return refundAmountBk;
+    }
+
+    public void setRefundAmountBk(Double refundAmountBk) {
+        this.refundAmountBk = refundAmountBk;
+    }
+
+    public LocalDateTime getRefundDateBk() {
+        return refundDateBk;
+    }
+
+    public void setRefundDateBk(LocalDateTime refundDateBk) {
+        this.refundDateBk = refundDateBk;
+    }
+
+    public String getCancelReasonBk() {
+        return cancelReasonBk;
+    }
+
+    public void setCancelReasonBk(String cancelReasonBk) {
+        this.cancelReasonBk = cancelReasonBk;
+    }
+
+    public boolean isNotificationSentBk() {
+        return notificationSentBk;
+    }
+
+    public void setNotificationSentBk(boolean notificationSentBk) {
+        this.notificationSentBk = notificationSentBk;
+    }
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
+    }
+
+    public String getEventCurrencyCode() {
+        return eventCurrencyCode;
+    }
+
+    public void setEventCurrencyCode(String eventCurrencyCode) {
+        this.eventCurrencyCode = eventCurrencyCode;
+    }
+
+    public String getQrTokenBk() {
+        return qrTokenBk;
+    }
+
+    public void setQrTokenBk(String qrTokenBk) {
+        this.qrTokenBk = qrTokenBk;
+    }
+
+    public String getQrImagePathBk() {
+        return qrImagePathBk;
+    }
+
+    public void setQrImagePathBk(String qrImagePathBk) {
+        this.qrImagePathBk = qrImagePathBk;
+    }
 }
+

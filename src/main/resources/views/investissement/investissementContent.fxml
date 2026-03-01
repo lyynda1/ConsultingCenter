@@ -31,6 +31,8 @@
                     </Label>
                     <Region HBox.hgrow="ALWAYS" />
                     <Button onAction="#openTransactions" styleClass="btn-ghost" text="Transactions" />
+                    <Button onAction="#openExchangeRate" styleClass="btn-ghost" text="💱 Taux de Change" />
+                    <Button onAction="#openMacroAnalysis" styleClass="btn-ghost" text="📊 Analyse Macro" />
                     <Button onAction="#nouvelInvestissement" styleClass="btn-primary" text="+ Nouvel Investissement" />
                 </HBox>
 

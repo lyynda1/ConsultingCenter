@@ -63,3 +63,4 @@ public class Ressource {
         return "#" + idRs + " - " + (nomRs == null ? "" : nomRs);
     }
 }
+

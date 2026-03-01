@@ -27,6 +27,8 @@
                         <Button fx:id="btnAdd" text="Ajouter" onAction="#onAdd" styleClass="btn-primary"/>
                         <Button fx:id="btnEdit" text="Modifier" onAction="#onEdit" styleClass="btn-ghost"/>
                         <Button fx:id="btnDelete" text="Supprimer" onAction="#onDelete" styleClass="btn-ghost"/>
+                        <Button text="📍 Carte" onAction="#onShowMap" styleClass="btn-ghost"/>
+                        <Button text="📅 Calendrier" onAction="#onShowCalendar" styleClass="btn-ghost"/>
                         <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
                     </HBox>
 

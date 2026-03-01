@@ -127,11 +127,11 @@ public class InvestmentService implements IService<Investment> {
         return investments;
     }
 
-    /** Investissements visibles pour un client : créés par lui (idUser) ou liés à des projets dont il est propriétaire (idClient). */
+    /** Investissements visibles pour un client : crÃ©Ã©s par lui (idUser) ou liÃ©s Ã  des projets dont il est propriÃ©taire (idClient). */
     public List<Investment> getInvestmentsForClient(int userId) {
         List<Investment> investments = new ArrayList<>();
         String query = "SELECT i.* FROM investments i " +
-                "LEFT JOIN projects p ON i.idProj = p.idProj " +
+                "LEFT JOIN Projects p ON i.idProj = p.idProj " +
                 "WHERE i.idUser = ? OR p.idClient = ? " +
                 "ORDER BY i.idInv";
         try (Connection conn = MyConnection.getInstance().getConnection();
@@ -160,3 +160,4 @@ public class InvestmentService implements IService<Investment> {
         );
     }
 }
+

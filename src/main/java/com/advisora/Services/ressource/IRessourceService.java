@@ -14,3 +14,4 @@ public interface IRessourceService extends IService<Ressource> {
     Map<Integer, Integer> getReservedStockBulk(List<Integer> resourceIds);
     Map<Integer, Integer> getAvailableStockBulk(List<Ressource> resources, Map<Integer, Integer> reservedMap);
 }
+

@@ -60,9 +60,9 @@ public class ProjectFormController {
             p.setDescriptionProj(required(txtDescription.getText(), "Veuillez fournir une description"));
             p.setBudgetProj(parseNonNegative(txtBudget.getText(), "Le budget"));
             p.setTypeProj(required(txtType.getText(), "Le type de projet est requis"));
-            p.setAvancementProj(0);
 
             if (!editMode) {
+                p.setAvancementProj(0);
                 p.setIdClient(SessionContext.getCurrentUserId());
                 p.setStateProj(ProjectStatus.PENDING);
                 projectService.add(p);
@@ -86,8 +86,28 @@ public class ProjectFormController {
 
     @FXML
     private void onDelete() {
-        clearForm();
-        showInfo("Form cleared. Use Save to apply changes.");
+        try {
+            if (!editMode || currentProject == null || currentProject.getIdProj() <= 0) {
+                showInfo("Suppression indisponible pour un nouveau projet.");
+                return;
+            }
+
+            Alert confirm = new Alert(
+                    Alert.AlertType.CONFIRMATION,
+                    "Supprimer ce projet ?",
+                    ButtonType.YES,
+                    ButtonType.NO
+            );
+            confirm.setHeaderText("Confirmer la suppression");
+            if (confirm.showAndWait().orElse(ButtonType.NO) != ButtonType.YES) {
+                return;
+            }
+
+            projectService.delete(currentProject.getIdProj());
+            close();
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
     }
 
     private String required(String value, String message) {
@@ -134,3 +154,4 @@ public class ProjectFormController {
         txtType.clear();
     }
 }
+

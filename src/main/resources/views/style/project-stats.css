@@ -85,3 +85,49 @@
 .chart-legend {
     -fx-background-color: transparent;
 }
+
+/* Dark mode */
+.theme-dark .stats-page {
+    -fx-background-color: transparent;
+}
+
+.theme-dark .stats-toolbar {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .stats-title,
+.theme-dark .chart-title {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .btn-close {
+    -fx-background-color: #28364a;
+    -fx-text-fill: #edf3fb;
+    -fx-border-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .chart-card {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: rgba(237,243,251,0.16);
+}
+
+.theme-dark .chart-plot-background {
+    -fx-background-color: #172232;
+}
+
+.theme-dark .chart-vertical-grid-lines,
+.theme-dark .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(237,243,251,0.14);
+}
+
+.theme-dark .axis-label,
+.theme-dark .axis .tick-label,
+.theme-dark .chart-legend-item,
+.theme-dark .chart-pie-label {
+    -fx-text-fill: #d7e4f3;
+}
+
+.theme-dark .chart-legend-item-symbol {
+    -fx-background-insets: 0;
+}

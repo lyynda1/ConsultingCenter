@@ -54,7 +54,7 @@ public class NotificationPanelController implements Initializable {
 
             notificationBox.setOnMouseClicked(e -> {
                 NotificationManager.getInstance().markAsRead(notification);
-                NotificationManager.getInstance().notifyChanged(); // ✅ important
+                NotificationManager.getInstance().notifyChanged(); // âœ… important
                 loadNotifications();
             });
 
@@ -116,6 +116,7 @@ public class NotificationPanelController implements Initializable {
 
 
 }
+
 
 
 

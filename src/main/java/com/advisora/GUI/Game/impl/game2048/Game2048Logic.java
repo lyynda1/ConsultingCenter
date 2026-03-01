@@ -184,3 +184,4 @@ public class Game2048Logic {
         return empty;
     }
 }
+

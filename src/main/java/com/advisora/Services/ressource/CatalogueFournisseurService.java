@@ -158,3 +158,4 @@ public class CatalogueFournisseurService implements ICatalogueFournisseurService
         return f;
     }
 }
+

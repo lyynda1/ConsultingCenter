@@ -62,3 +62,4 @@ public class Objective {
         this.nomObjective = nomObjective;
     }
 }
+

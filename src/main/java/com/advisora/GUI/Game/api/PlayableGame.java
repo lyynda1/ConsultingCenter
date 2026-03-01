@@ -11,3 +11,4 @@ public interface PlayableGame {
     void stop();
     String statusText();
 }
+

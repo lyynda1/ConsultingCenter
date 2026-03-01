@@ -106,7 +106,7 @@ public class userPageController {
             }
         });
 
-        // ✁EDouble-click => open edit dialog (single click only selects)
+        // âœEDouble-click => open edit dialog (single click only selects)
         usersList.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
                 User u = usersList.getSelectionModel().getSelectedItem();
@@ -138,25 +138,25 @@ public class userPageController {
     @FXML
     private void onSortRoleAsc() {
         usersObs.sort((a, b) -> safeRole(a).compareToIgnoreCase(safeRole(b)));
-        if (rightStatus != null) rightStatus.setText("Sorted by role (A ↁEZ)");
+        if (rightStatus != null) rightStatus.setText("Sorted by role (A â†EZ)");
     }
 
     @FXML
     private void onSortRoleDesc() {
         usersObs.sort((a, b) -> safeRole(b).compareToIgnoreCase(safeRole(a)));
-        if (rightStatus != null) rightStatus.setText("Sorted by role (Z ↁEA)");
+        if (rightStatus != null) rightStatus.setText("Sorted by role (Z â†EA)");
     }
 
     @FXML
     private void onSortNomAsc() {
         usersObs.sort((a, b) -> safe(a.getNom()).compareToIgnoreCase(safe(b.getNom())));
-        if (rightStatus != null) rightStatus.setText("Sorted by name (A ↁEZ)");
+        if (rightStatus != null) rightStatus.setText("Sorted by name (A â†EZ)");
     }
 
     @FXML
     private void onSortNomDesc() {
         usersObs.sort((a, b) -> safe(b.getNom()).compareToIgnoreCase(safe(a.getNom())));
-        if (rightStatus != null) rightStatus.setText("Sorted by name (Z ↁEA)");
+        if (rightStatus != null) rightStatus.setText("Sorted by name (Z â†EA)");
     }
 
     // =========================
@@ -191,7 +191,7 @@ public class userPageController {
 
         try {
             userService.supprimerParId(u.getId());
-            if (rightStatus != null) rightStatus.setText("User deleted ✁EID=" + u.getId());
+            if (rightStatus != null) rightStatus.setText("User deleted âœEID=" + u.getId());
             refreshList();
         } catch (Exception e) {
             if (rightStatus != null) rightStatus.setText("Delete failed: " + e.getMessage());
@@ -280,3 +280,4 @@ public class userPageController {
         return s == null ? "" : s.trim();
     }
 }
+

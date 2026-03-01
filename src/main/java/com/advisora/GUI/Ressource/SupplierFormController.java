@@ -44,11 +44,11 @@ public class SupplierFormController {
         try {
             CatalogueFournisseur f = current == null ? new CatalogueFournisseur() : current;
             f.setNomFr(required(txtName.getText(), "Nom fournisseur obligatoire"));
-            f.setQuantite(requiredInt(txtQuantite.getText(), "Quantité du produit est obligatoire"));
+            f.setQuantite(requiredInt(txtQuantite.getText(), "QuantitÃƒÂ© du produit est obligatoire"));
             f.setFournisseur(required(txtFournisseur.getText(), "entreprise fournisseur obligatoire"));
             f.setEmailFr(requiredEmail(txtEmail.getText(), "Email obligatoire"));
             f.setLocalisationFr(required(txtLocalisation.getText(), "Localisation obligatoire"));
-            f.setNumTelFr(requiredTel(txtNumTel.getText(), "Numéro de téléphone obligatoire"));
+            f.setNumTelFr(requiredTel(txtNumTel.getText(), "NumÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone obligatoire"));
             if (editMode) {
                 service.modifier(f);
             } else {
@@ -60,10 +60,10 @@ public class SupplierFormController {
         }
     }
 
-    private String requiredTel(String text, String numéroDeTéléphoneObligatoire) {
-        String v = required(text, numéroDeTéléphoneObligatoire);
+    private String requiredTel(String text, String requiredMessage) {
+        String v = required(text, requiredMessage);
         if (!v.matches("^\\+?[0-9]{7,15}$")) {
-            throw new IllegalArgumentException("Numéro de téléphone invalide");
+            throw new IllegalArgumentException("NumÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone invalide");
         }
         return v;
     }
@@ -124,3 +124,4 @@ public class SupplierFormController {
         stage.close();
     }
 }
+

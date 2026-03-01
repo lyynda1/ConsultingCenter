@@ -11,15 +11,40 @@
       styleClass="module-root">
     <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
-    <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label text="Historique Reservations" styleClass="module-title"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label text="Nouvelle qte"/>
-        <TextField fx:id="txtNewQuantity" promptText="ex: 3" prefWidth="100"/>
-        <Button text="Modifier" onAction="#onUpdate" styleClass="btn-primary"/>
-        <Button text="Supprimer" onAction="#onDelete" styleClass="btn-ghost"/>
-        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
-    </HBox>
+    <VBox spacing="8" styleClass="toolbar-card">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Historique Reservations" styleClass="module-title"/>
+            <VBox spacing="4">
+                <Label text="Recherche dynamique"/>
+                <TextField fx:id="txtSearchReservations" prefWidth="340"
+                           promptText="Projet, ressource, fournisseur, client, quantite..."/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Reset filtres" onAction="#onResetFieldFilters" styleClass="btn-ghost"/>
+            <Button text="Export PDF" onAction="#onExportPdf" styleClass="btn-ghost"/>
+            <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+            <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <VBox spacing="4">
+                <Label text="Projet"/>
+                <ComboBox fx:id="comboProjectFilter" prefWidth="220"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Ressource"/>
+                <ComboBox fx:id="comboResourceFilter" prefWidth="220"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Fournisseur"/>
+                <ComboBox fx:id="comboSupplierFilter" prefWidth="220"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Client"/>
+                <ComboBox fx:id="comboClientFilter" prefWidth="220"/>
+            </VBox>
+        </HBox>
+    </VBox>
 
     <HBox fillHeight="true" spacing="16" styleClass="stats">
         <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
@@ -49,7 +74,9 @@
         </VBox>
     </HBox>
 
-    <ListView fx:id="listReservations" VBox.vgrow="ALWAYS" styleClass="card-list"/>
+    <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+        <ListView fx:id="listReservations" VBox.vgrow="ALWAYS" styleClass="card-list"/>
+    </VBox>
 
     <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
 </VBox>

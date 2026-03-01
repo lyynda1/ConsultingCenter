@@ -1,5 +1,7 @@
 package com.advisora.GUI.Auth;
 
+import com.advisora.utils.SceneThemeApplier;
+
 import com.advisora.Model.user.User;
 import com.advisora.Services.user.UserService;
 import com.advisora.enums.UserRole;
@@ -94,7 +96,7 @@ public class SignupController {
 
     private boolean validatePrenom() {
         String v = safe(prenomField.getText());
-        if (v.isEmpty()) return err(prenomField, prenomError, "Prénom obligatoire");
+        if (v.isEmpty()) return err(prenomField, prenomError, "PrÃ©nom obligatoire");
         return ok(prenomField, prenomError);
     }
 
@@ -112,7 +114,7 @@ public class SignupController {
 
     private boolean validateTel() {
         String v = safe(telField.getText());
-        if (!v.isEmpty() && !v.matches("\\d{8}")) return err(telField, telError, "Téléphone = 8 chiffres");
+        if (!v.isEmpty() && !v.matches("\\d{8}")) return err(telField, telError, "TÃ©lÃ©phone = 8 chiffres");
         return ok(telField, telError);
     }
 
@@ -125,7 +127,7 @@ public class SignupController {
 
     private boolean validatePassword() {
         String v = passwordShown ? safe(passwordVisibleField.getText()) : safe(passwordField.getText());
-        if (v.length() < 6) return err(passwordField, passwordError, "Mot de passe min 6 caractères");
+        if (v.length() < 6) return err(passwordField, passwordError, "Mot de passe min 6 caractÃ¨res");
         return ok(passwordField, passwordError);
     }
 
@@ -289,7 +291,7 @@ public class SignupController {
                                 if (statusLabel != null) statusLabel.setText("Face not saved.");
                                 return;
                             } else {
-                                if (statusLabel != null) statusLabel.setText("Face saved ✅");
+                                if (statusLabel != null) statusLabel.setText("Face saved âœ…");
                             }
                         }
                     }
@@ -312,7 +314,7 @@ public class SignupController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Auth/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) prenomField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Login");
         } catch (Exception e) {
             e.printStackTrace();
@@ -348,14 +350,14 @@ public class SignupController {
         desc.setWrapText(true);
         desc.setStyle("-fx-text-fill:#6b7280;");
 
-        Label p1 = new Label("• Takes about 10 seconds");
-        Label p2 = new Label("• Use good lighting");
-        Label p3 = new Label("• You can redo this later");
+        Label p1 = new Label("â€¢ Takes about 10 seconds");
+        Label p2 = new Label("â€¢ Use good lighting");
+        Label p3 = new Label("â€¢ You can redo this later");
 
         VBox textBox = new VBox(6, title, desc, new Separator(), p1, p2, p3);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
-        Label icon = new Label("👤");
+        Label icon = new Label("ðŸ‘¤");
         icon.setStyle("-fx-font-size:22px;");
         VBox iconBox = new VBox(icon);
         iconBox.setAlignment(Pos.CENTER);
@@ -494,3 +496,6 @@ public class SignupController {
         return s == null ? "" : s.trim();
     }
 }
+
+
+

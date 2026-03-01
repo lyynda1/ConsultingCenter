@@ -7,6 +7,7 @@ import com.advisora.enums.UserRole;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -28,10 +29,18 @@ public class EventFormController {
     @FXML private TextField txtOrganiser;
     @FXML private TextField txtCapacity;
     @FXML private TextField txtLocation;
+    @FXML private TextField txtTicketPrice;
+    @FXML private ComboBox<String> cbCurrency;
 
     private final EventService service = new EventService();
     private Event current;
     private boolean editMode;
+
+    @FXML
+    public void initialize() {
+        cbCurrency.getItems().addAll("TND", "USD", "EUR", "GBP");
+        cbCurrency.setValue("TND");
+    }
 
     public void initForCreate() {
         this.editMode = false;
@@ -55,6 +64,15 @@ public class EventFormController {
         txtOrganiser.setText(event.getOrganisateurName());
         txtCapacity.setText(String.valueOf(event.getCapaciteEvnt()));
         txtLocation.setText(event.getLocalisationEv());
+        
+        if (event.getTicketPrice() > 0) {
+            txtTicketPrice.setText(String.valueOf(event.getTicketPrice()));
+        }
+        if (event.getCurrencyCode() != null && !event.getCurrencyCode().isBlank()) {
+            cbCurrency.setValue(event.getCurrencyCode());
+        } else {
+            cbCurrency.setValue("TND");
+        }
     }
 
     @FXML
@@ -68,6 +86,15 @@ public class EventFormController {
             e.setOrganisateurName(required(txtOrganiser.getText(), "Nom organisateur requis"));
             e.setCapaciteEvnt(parsePositiveInt(txtCapacity.getText(), "Capacite invalide"));
             e.setLocalisationEv(required(txtLocation.getText(), "veuillez fournir une localisation"));
+            
+            double ticketPrice = parseDoubleOrZero(txtTicketPrice.getText());
+            e.setTicketPrice(ticketPrice);
+            
+            String currency = cbCurrency.getValue();
+            if (currency == null || currency.isBlank()) {
+                currency = "TND";
+            }
+            e.setCurrencyCode(currency);
 
             UserRole role = SessionContext.getCurrentRole();
             if (role == UserRole.ADMIN || role == UserRole.GERANT) {
@@ -140,6 +167,18 @@ public class EventFormController {
         }
     }
 
+    private double parseDoubleOrZero(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return 0.0;
+        }
+        try {
+            double v = Double.parseDouble(value.trim());
+            return Math.max(0.0, v);
+        } catch (NumberFormatException ex) {
+            return 0.0;
+        }
+    }
+
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
         a.setHeaderText("Form evenement");
@@ -151,3 +190,4 @@ public class EventFormController {
         stage.close();
     }
 }
+

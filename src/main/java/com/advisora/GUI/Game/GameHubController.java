@@ -120,3 +120,4 @@ public class GameHubController {
         alert.showAndWait();
     }
 }
+

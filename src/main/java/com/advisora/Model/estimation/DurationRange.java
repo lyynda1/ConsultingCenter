@@ -6,3 +6,4 @@ public record DurationRange(
         int maxDays
 ) {
 }
+

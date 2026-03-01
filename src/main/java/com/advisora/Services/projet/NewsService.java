@@ -406,3 +406,4 @@ public class NewsService {
     private record CacheEntry(List<NewsArticle> articles, Instant fetchedAt) {
     }
 }
+

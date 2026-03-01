@@ -79,3 +79,4 @@ public class Transaction {
         return Objects.hash(idTransac);
     }
 }
+

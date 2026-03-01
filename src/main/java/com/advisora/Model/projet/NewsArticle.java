@@ -97,3 +97,4 @@ public class NewsArticle {
         return value == null ? "" : value.trim();
     }
 }
+

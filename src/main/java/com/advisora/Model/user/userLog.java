@@ -7,3 +7,4 @@ public class userLog {
     String ipAddress;
 
 }
+

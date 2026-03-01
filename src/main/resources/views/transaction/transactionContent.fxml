@@ -31,6 +31,8 @@
                     </Label>
                     <Region HBox.hgrow="ALWAYS" />
                     <Button onAction="#openInvestissements" styleClass="btn-ghost" text="Investissements" />
+                    <Button onAction="#onOpenHistorique" styleClass="btn-ghost" text="Historique" />
+                    <Button onAction="#onExportPdf" styleClass="btn-ghost" text="Exporter PDF" />
                     <Button onAction="#nouvelleTransaction" styleClass="btn-primary" text="+ Nouvelle Transaction" />
                 </HBox>
 

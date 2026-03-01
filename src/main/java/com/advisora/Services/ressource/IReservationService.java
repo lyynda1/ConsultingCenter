@@ -13,3 +13,4 @@ public interface IReservationService {
     List<Booking> listClientReservations(int clientId);
     List<Booking> listAllReservations();
 }
+

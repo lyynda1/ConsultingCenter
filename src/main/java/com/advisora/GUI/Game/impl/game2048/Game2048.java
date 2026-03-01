@@ -117,10 +117,10 @@ public class Game2048 implements PlayableGame {
     }
 
     private Node buildMouseControls() {
-        Button up = dirButton("↑", Game2048Logic.Direction.UP);
-        Button down = dirButton("↓", Game2048Logic.Direction.DOWN);
-        Button left = dirButton("←", Game2048Logic.Direction.LEFT);
-        Button right = dirButton("→", Game2048Logic.Direction.RIGHT);
+        Button up = dirButton("\u2191", Game2048Logic.Direction.UP);
+        Button down = dirButton("\u2193", Game2048Logic.Direction.DOWN);
+        Button left = dirButton("\u2190", Game2048Logic.Direction.LEFT);
+        Button right = dirButton("\u2192", Game2048Logic.Direction.RIGHT);
 
         HBox middle = new HBox(8, left, down, right);
         middle.setAlignment(Pos.CENTER);
@@ -179,3 +179,4 @@ public class Game2048 implements PlayableGame {
         }
     }
 }
+

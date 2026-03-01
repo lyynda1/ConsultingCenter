@@ -248,10 +248,10 @@ public class ProjectPdfExportService {
     private String badgeEmoji(ProjectBadgeScore badge) {
         if (badge == null || badge.getBadge() == null) return "-";
         return switch (badge.getBadge().trim().toUpperCase(Locale.ROOT)) {
-            case "ARGENT" -> "🥈";
-            case "OR" -> "🥇";
-            case "PLATINE" -> "👑";
-            default -> "🥉";
+            case "ARGENT" -> "ðŸ¥ˆ";
+            case "OR" -> "ðŸ¥‡";
+            case "PLATINE" -> "ðŸ‘‘";
+            default -> "ðŸ¥‰";
         };
     }
 
@@ -275,3 +275,4 @@ public class ProjectPdfExportService {
         return VIEW_DF.format(new Date(ts.getTime()));
     }
 }
+

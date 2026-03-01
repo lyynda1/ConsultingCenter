@@ -5,6 +5,8 @@ Role: Domain model/entity used by business and UI layers
 */
 package com.advisora.Model.event;
 
+import com.advisora.enums.EventStatus;
+
 import java.time.LocalDateTime;
 
 public class Event {
@@ -17,6 +19,13 @@ public class Event {
     private int capaciteEvnt;
     private String localisationEv;
     private Integer idGerant;
+    private double ticketPrice;
+    private String currencyCode;
+    private Double minReservationThreshold;
+    private LocalDateTime thresholdDeadline;
+    private EventStatus statusEv;
+    private String categoryEv;
+    private String imageUrlEv;
 
     public int getIdEv() {
         return idEv;
@@ -89,4 +98,61 @@ public class Event {
     public void setIdGerant(Integer idGerant) {
         this.idGerant = idGerant;
     }
+
+    public double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(double ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public Double getMinReservationThreshold() {
+        return minReservationThreshold;
+    }
+
+    public void setMinReservationThreshold(Double minReservationThreshold) {
+        this.minReservationThreshold = minReservationThreshold;
+    }
+
+    public LocalDateTime getThresholdDeadline() {
+        return thresholdDeadline;
+    }
+
+    public void setThresholdDeadline(LocalDateTime thresholdDeadline) {
+        this.thresholdDeadline = thresholdDeadline;
+    }
+
+    public EventStatus getStatusEv() {
+        return statusEv;
+    }
+
+    public void setStatusEv(EventStatus statusEv) {
+        this.statusEv = statusEv;
+    }
+
+    public String getCategoryEv() {
+        return categoryEv;
+    }
+
+    public void setCategoryEv(String categoryEv) {
+        this.categoryEv = categoryEv;
+    }
+
+    public String getImageUrlEv() {
+        return imageUrlEv;
+    }
+
+    public void setImageUrlEv(String imageUrlEv) {
+        this.imageUrlEv = imageUrlEv;
+    }
 }
+

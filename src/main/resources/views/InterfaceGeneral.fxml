@@ -46,12 +46,12 @@
                 <!-- Navigation -->
                 <VBox spacing="10" styleClass="nav">
                     <Button fx:id="homeBtn" onAction="#handleOpenHome" prefWidth="237" styleClass="nav-btn" text="Home" />
-                    <Button fx:id="usersBtn" onAction="#handleOpenUsers" prefWidth="237" styleClass="nav-btn" text="Gestion Utilisateurs" />
-                    <Button fx:id="ressourceBtn" onAction="#handleOpenRessource" prefWidth="237" styleClass="nav-btn" text="Gestion Ressources" />
-                    <Button fx:id="projectsBtn" onAction="#handleOpenProjects" prefWidth="237" styleClass="nav-btn" text="Gestion Projets" />
+                    <Button fx:id="usersBtn" onAction="#handleOpenUsers" prefWidth="237" styleClass="nav-btn" text="Utilisateurs" />
+                    <Button fx:id="ressourceBtn" onAction="#handleOpenRessource" prefWidth="237" styleClass="nav-btn" text="Ressources" />
+                    <Button fx:id="projectsBtn" onAction="#handleOpenProjects" prefWidth="237" styleClass="nav-btn" text="Projets" />
                     <Button fx:id="eventsBtn" onAction="#handleOpenEvents" prefWidth="237" styleClass="nav-btn" text="Evenements" />
-                    <Button fx:id="strategiesBtn" onAction="#handleOpenStrategies" prefWidth="237" styleClass="nav-btn" text="Gestion Stratégies" />
-                    <Button fx:id="investissementsBtn" onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="Gestion Investissements" />
+                    <Button fx:id="strategiesBtn" onAction="#handleOpenStrategies" prefWidth="237" styleClass="nav-btn" text="Strategies" />
+                    <Button fx:id="investissementsBtn" onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="Investissements" />
                 </VBox>
 
                 <Region VBox.vgrow="ALWAYS" />
@@ -93,7 +93,7 @@
                             <graphic>
                                 <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                                     <image>
-                                        <Image url="@../Assets/vecteezy_bell-notification-icon-set-of-4-design-element-suitable-for_13421145.png" />
+                                        <Image url="@../Assets/bell.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -112,6 +112,7 @@
                     </children>
                 </HBox>
 
+                <Button fx:id="themeToggleBtn" onAction="#handleToggleTheme" styleClass="icon-btn" text="Mode nuit" />
                 <Button onAction="#handleLogout" styleClass="icon-btn" text="Logout" />
             </HBox>
         </top>
@@ -150,3 +151,4 @@
     </StackPane>
 
 </StackPane>
+

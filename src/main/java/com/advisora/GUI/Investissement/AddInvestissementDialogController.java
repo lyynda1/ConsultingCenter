@@ -26,6 +26,7 @@ public class AddInvestissementDialogController {
     @FXML private Button submitButton;
     @FXML private TextArea commentaireField;
     @FXML private TextField dureeField;
+    @FXML private ComboBox<String> dureeUnitCombo;
     @FXML private TextField budMinField;
     @FXML private TextField budMaxField;
     @FXML private ComboBox<String> currencyCombo;
@@ -46,6 +47,10 @@ public class AddInvestissementDialogController {
     public void initialize() {
         currencyCombo.getItems().setAll("TND", "EUR", "USD", "GBP");
         currencyCombo.getSelectionModel().select("TND");
+        if (dureeUnitCombo != null) {
+            dureeUnitCombo.getItems().setAll("Heures", "Jours", "Semaines", "Mois", "AnnÃ©es");
+            dureeUnitCombo.getSelectionModel().select("Heures");
+        }
         applyRoleVisibility();
     }
 
@@ -88,7 +93,15 @@ public class AddInvestissementDialogController {
             return;
         }
         commentaireField.setText(inv.getCommentaireInv() == null ? "" : inv.getCommentaireInv());
-        dureeField.setText(inv.getDureeInv() == null ? "" : inv.getDureeInv().toString());
+        if (inv.getDureeInv() != null) {
+            String[] parts = inv.getDureeInv().toString().split(":");
+            dureeField.setText(parts.length > 0 ? parts[0] : "");
+        } else {
+            dureeField.clear();
+        }
+        if (dureeUnitCombo != null) {
+            dureeUnitCombo.getSelectionModel().select("Heures");
+        }
         budMinField.setText(String.valueOf(inv.getBud_minInv()));
         budMaxField.setText(String.valueOf(inv.getBud_maxInv()));
         if (inv.getCurrencyInv() != null && currencyCombo.getItems().contains(inv.getCurrencyInv())) {
@@ -110,6 +123,7 @@ public class AddInvestissementDialogController {
     private void clearFields() {
         if (commentaireField != null) commentaireField.clear();
         if (dureeField != null) dureeField.clear();
+        if (dureeUnitCombo != null) dureeUnitCombo.getSelectionModel().select("Heures");
         if (budMinField != null) budMinField.clear();
         if (budMaxField != null) budMaxField.clear();
         if (currencyCombo != null) currencyCombo.getSelectionModel().select("TND");
@@ -127,21 +141,48 @@ public class AddInvestissementDialogController {
     private void save() {
         String commentaire = required(commentaireField.getText().trim(), "Le commentaire est requis");
 
-        String dureeStr = dureeField == null ? "00:00:00" : dureeField.getText().trim();
-        if (dureeStr.isEmpty()) dureeStr = "00:00:00";
-        Time duree;
+        double dureeValue;
         try {
-            duree = Time.valueOf(dureeStr);
-        } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Durée invalide. Utilisez HH:mm:ss").showAndWait();
+            String txt = dureeField == null ? "" : dureeField.getText().trim();
+            if (txt.isEmpty()) {
+                throw new NumberFormatException();
+            }
+            dureeValue = Double.parseDouble(txt);
+        } catch (NumberFormatException e) {
+            new Alert(Alert.AlertType.ERROR, "DurÃ©e invalide. Saisissez un nombre.").showAndWait();
             return;
         }
+        if (dureeValue <= 0) {
+            new Alert(Alert.AlertType.ERROR, "La durÃ©e doit Ãªtre positive.").showAndWait();
+            return;
+        }
+        String unit = (dureeUnitCombo == null || dureeUnitCombo.getValue() == null)
+                ? "Heures"
+                : dureeUnitCombo.getValue();
+        double hours;
+        switch (unit) {
+            case "Jours" -> hours = dureeValue * 24;
+            case "Semaines" -> hours = dureeValue * 7 * 24;
+            case "Mois" -> hours = dureeValue * 30 * 24;
+            case "AnnÃ©es" -> hours = dureeValue * 365 * 24;
+            default -> hours = dureeValue;
+        }
+        int h = (int) Math.max(0, Math.min(23, Math.round(hours)));
+        Time duree = Time.valueOf(String.format("%02d:00:00", h));
         double budMin, budMax;
         try {
             budMin = Double.parseDouble(budMinField.getText().trim());
             budMax = Double.parseDouble(budMaxField.getText().trim());
         } catch (NumberFormatException e) {
-            new Alert(Alert.AlertType.ERROR, "Budget min et max doivent être des nombres.").showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Budget min et max doivent Ãªtre des nombres.").showAndWait();
+            return;
+        }
+        if (budMin < 0 || budMax < 0) {
+            new Alert(Alert.AlertType.ERROR, "Les budgets ne peuvent pas Ãªtre nÃ©gatifs.").showAndWait();
+            return;
+        }
+        if (budMin > budMax) {
+            new Alert(Alert.AlertType.ERROR, "Le budget min ne peut pas Ãªtre supÃ©rieur au budget max.").showAndWait();
             return;
         }
         String currency = currencyCombo.getValue() == null ? "TND" : currencyCombo.getValue();
@@ -165,7 +206,7 @@ public class AddInvestissementDialogController {
                 idProj = Integer.parseInt(idProjField.getText().trim());
                 idUser = Integer.parseInt(idUserField.getText().trim());
             } catch (NumberFormatException e) {
-                new Alert(Alert.AlertType.ERROR, "ID Projet et ID Utilisateur doivent être des entiers.").showAndWait();
+                new Alert(Alert.AlertType.ERROR, "ID Projet et ID Utilisateur doivent Ãªtre des entiers.").showAndWait();
                 return;
             }
         }
@@ -193,3 +234,4 @@ public class AddInvestissementDialogController {
         return trim;
     }
 }
+
