@@ -17,6 +17,7 @@ import com.advisora.utils.SceneThemeApplier;
 import com.advisora.utils.ThemeMode;
 import com.advisora.utils.ThemeManager;
 import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -31,10 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
@@ -58,6 +56,7 @@ public class InterfaceGeneralController {
     @FXML private Button themeToggleBtn;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
+    @FXML private Button parametreBtn;
 
     @FXML private ImageView profileImageView;
 
@@ -66,6 +65,8 @@ public class InterfaceGeneralController {
     @FXML
     private Button notificationButton;
     @FXML private Pane popupLayer;
+    @FXML
+    private BorderPane root; // ou StackPane mainContent
 
     private HBox notificationPanel;
 
@@ -498,5 +499,27 @@ public class InterfaceGeneralController {
         }
     }
 
-}
+    public void handleOpenSettings(ActionEvent actionEvent) {
+
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/parametres.fxml"));
+                Parent page = loader.load();
+
+                // ✅ show settings page inside main content area
+                contentHost.getChildren().setAll(page);
+
+                // optional: highlight nav button
+                if (parametreBtn != null) setActiveNav(parametreBtn);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                showError("Paramètres", buildErrorMessage(e));
+            }
+        }
+
+
+
+    }
+
 

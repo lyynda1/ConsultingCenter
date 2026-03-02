@@ -17,12 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="rootPane"
-           styleClass="app"
-           stylesheets="@/GUI/Admin/admin.css"
-           xmlns="http://javafx.com/javafx/25"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.advisora.GUI.InterfaceGeneralController">
+<StackPane fx:id="rootPane" styleClass="app" stylesheets="@/GUI/Admin/admin.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.InterfaceGeneralController">
 
     <!-- ================= MAIN LAYOUT ================= -->
     <BorderPane prefHeight="720" prefWidth="1280">
@@ -52,6 +47,7 @@
                     <Button fx:id="eventsBtn" onAction="#handleOpenEvents" prefWidth="237" styleClass="nav-btn" text="Evenements" />
                     <Button fx:id="strategiesBtn" onAction="#handleOpenStrategies" prefWidth="237" styleClass="nav-btn" text="Strategies" />
                     <Button fx:id="investissementsBtn" onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="Investissements" />
+                    <Button fx:id="parametreBtn" onAction="#handleOpenSettings" prefWidth="237" styleClass="nav-btn" text="⚙ Parametre" />
                 </VBox>
 
                 <Region VBox.vgrow="ALWAYS" />
@@ -86,10 +82,7 @@
                 <!-- Notification Button with Badge -->
                 <HBox alignment="CENTER">
                     <children>
-                        <Button fx:id="notificationButton"
-                                onAction="#handleNotificationClick"
-                                prefHeight="35" prefWidth="40"
-                                styleClass="icon-btn">
+                        <Button fx:id="notificationButton" onAction="#handleNotificationClick" prefHeight="35" prefWidth="40" styleClass="icon-btn">
                             <graphic>
                                 <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
                                     <image>
@@ -102,11 +95,8 @@
                         <!-- Notification Badge -->
                         <StackPane layoutX="-10" layoutY="-10">
                             <children>
-                                <Circle fx:id="notificationBadge" radius="10" fill="red" visible="false" />
-                                <Label fx:id="notifCount"
-                                       textFill="white"
-                                       style="-fx-font-weight: bold; -fx-font-size: 10;"
-                                       visible="false" />
+                                <Circle fx:id="notificationBadge" fill="red" radius="10" visible="false" />
+                                <Label fx:id="notifCount" style="-fx-font-weight: bold; -fx-font-size: 10;" textFill="white" visible="false" />
                             </children>
                         </StackPane>
                     </children>
@@ -144,12 +134,8 @@
     <Pane fx:id="popupLayer" pickOnBounds="false" />
 
     <!-- ================= OVERLAY (PROFILE MODAL) ================= -->
-    <StackPane fx:id="overlay"
-               managed="false"
-               visible="false"
-               style="-fx-background-color: rgba(0,0,0,0.45);">
+    <StackPane fx:id="overlay" managed="false" style="-fx-background-color: rgba(0,0,0,0.45);" visible="false">
         <VBox fx:id="modalBox" alignment="CENTER" spacing="20" />
     </StackPane>
 
 </StackPane>
-

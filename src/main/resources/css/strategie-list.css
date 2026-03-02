@@ -909,3 +909,46 @@
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
+.page-root {
+    -fx-background-color: transparent;
+}
+
+.page-container {
+    -fx-padding: 22;
+}
+
+.page-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+}
+
+.page-subtitle {
+    -fx-opacity: 0.75;
+}
+
+.settings-card {
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 16 18 16 18;
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-border-color: rgba(255,255,255,0.10);
+}
+
+.card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+}
+
+.settings-label {
+    -fx-font-weight: 700;
+    -fx-opacity: 0.9;
+}
+
+.hint-text {
+    -fx-opacity: 0.75;
+}
+
+.font-preview {
+    -fx-font-weight: 800;
+    -fx-opacity: 0.85;
+}
