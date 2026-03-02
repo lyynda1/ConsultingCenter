@@ -50,10 +50,7 @@
         <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="catalog-action-row">
             <Button text="Reserver" onAction="#onReserve" styleClass="btn-primary"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <MenuButton text="" styleClass="options-trigger">
-                <graphic>
-                    <Label text="+" styleClass="menu-trigger-icon"/>
-                </graphic>
+            <MenuButton text="Avancer" styleClass="options-trigger">
                 <items>
                     <CustomMenuItem hideOnClick="false">
                         <content>

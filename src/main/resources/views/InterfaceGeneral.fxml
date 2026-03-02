@@ -112,6 +112,7 @@
                     </children>
                 </HBox>
 
+                <Button fx:id="voiceToggleBtn" onAction="#handleToggleVoiceAssistant" styleClass="icon-btn" text="Assistant vocal" />
                 <Button fx:id="themeToggleBtn" onAction="#handleToggleTheme" styleClass="icon-btn" text="Mode nuit" />
                 <Button onAction="#handleLogout" styleClass="icon-btn" text="Logout" />
             </HBox>

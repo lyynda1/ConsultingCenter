@@ -1,5 +1,6 @@
 package com.advisora.GUI;
 
+import com.advisora.accessibility.VoiceAssistantManager;
 import com.advisora.GUI.Game.GameHubController;
 import com.advisora.GUI.Investissement.InvestmentListController;
 import com.advisora.GUI.Transaction.TransactionListController;
@@ -53,6 +54,7 @@ public class InterfaceGeneralController {
     @FXML private Button eventsBtn;
     @FXML private Button strategiesBtn;
     @FXML private Button investissementsBtn;
+    @FXML private Button voiceToggleBtn;
     @FXML private Button themeToggleBtn;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
@@ -115,6 +117,7 @@ public class InterfaceGeneralController {
         handleOpenHome();
         AvatarUtil.makeCircular(profileImageView);
         refreshThemeToggleText();
+        hookVoiceToggleSync();
     }
 
     private void initNavButtons() {
@@ -418,6 +421,14 @@ public class InterfaceGeneralController {
     }
 
     @FXML
+    private void handleToggleVoiceAssistant() {
+        Scene scene = contentHost != null ? contentHost.getScene() : null;
+        boolean enabled = VoiceAssistantManager.toggle(scene);
+        System.out.println("[UI] Voice assistant " + (enabled ? "enabled" : "disabled"));
+        refreshVoiceToggleText();
+    }
+
+    @FXML
     private void handleToggleTheme() {
         Scene scene = contentHost != null ? contentHost.getScene() : null;
         ThemeMode mode = ThemeManager.toggleMode(scene);
@@ -432,6 +443,29 @@ public class InterfaceGeneralController {
     private void refreshThemeToggleText() {
         if (themeToggleBtn == null) return;
         themeToggleBtn.setText(ThemeManager.getCurrentMode() == ThemeMode.DARK ? "Mode clair" : "Mode nuit");
+    }
+
+    private void refreshVoiceToggleText() {
+        if (voiceToggleBtn == null) return;
+        voiceToggleBtn.setText(VoiceAssistantManager.isEnabled() ? "Assistant ON" : "Assistant vocal");
+    }
+
+    private void hookVoiceToggleSync() {
+        if (contentHost == null) {
+            refreshVoiceToggleText();
+            return;
+        }
+        contentHost.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                VoiceAssistantManager.registerStateListener(newScene, enabled -> refreshVoiceToggleText());
+            }
+            refreshVoiceToggleText();
+        });
+        Scene current = contentHost.getScene();
+        if (current != null) {
+            VoiceAssistantManager.registerStateListener(current, enabled -> refreshVoiceToggleText());
+        }
+        refreshVoiceToggleText();
     }
 
 

@@ -1,6 +1,7 @@
 package com.advisora.utils;
 
 
+import com.advisora.accessibility.VoiceAssistantManager;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -11,6 +12,7 @@ public final class SceneThemeApplier {
 
     public static Scene apply(Scene scene) {
         ThemeManager.applySavedTheme(scene);
+        VoiceAssistantManager.applyToScene(scene);
         return scene;
     }
 

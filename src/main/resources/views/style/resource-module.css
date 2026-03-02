@@ -198,9 +198,9 @@
 }
 
 .module-root .menu-button.options-trigger {
-    -fx-min-width: 44;
-    -fx-pref-width: 44;
-    -fx-max-width: 44;
+    -fx-min-width: 118;
+    -fx-pref-width: 118;
+    -fx-max-width: 118;
     -fx-min-height: 38;
     -fx-pref-height: 38;
     -fx-max-height: 38;
@@ -228,8 +228,10 @@
 }
 
 .module-root .menu-button.options-trigger > .label {
-    -fx-padding: 0;
+    -fx-padding: 0 6 0 10;
     -fx-text-fill: #a95a22;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
 }
 
 .module-root .menu-button.options-trigger > .arrow-button {
