@@ -76,6 +76,8 @@ public class ProjectListController implements Initializable {
     private double dragOffsetY;
     private final ObservableList<Strategie> allObs = FXCollections.observableArrayList();
     private final ObservableList<Strategie> viewObs = FXCollections.observableArrayList();
+    private static final String DB_SOURCE_LANG = "fr";
+
 
     private final ProjectService projectService = new ProjectService();
     private final ServiceStrategie strategyService = new ServiceStrategie();
@@ -102,6 +104,59 @@ public class ProjectListController implements Initializable {
     // Default sort: newest first (null-safe).
     private Comparator<Project> currentComparator =
             Comparator.comparing(Project::getCreatedAtProj, this::compareTsDescNullSafe);
+
+    private String targetLang() {
+        return com.advisora.utils.AppLanguage.ltTargetCode(); // "fr" or "en"
+    }
+
+    private String safe(String v) { return v == null ? "" : v.trim(); }
+
+    private void translateDbAsync(String raw, java.util.function.Consumer<String> onUi) {
+        String x = safe(raw);
+        if (x.isBlank()) { onUi.accept(""); return; }
+        com.advisora.AppServices.TRANSLATOR.translateAsync(x, DB_SOURCE_LANG, targetLang(), onUi);
+    }
+
+    /** Static UI text from i18n (changes instantly on locale change). */
+    private void bindI18nText(Label lbl, String key, java.util.function.Supplier<String> suffix) {
+        Runnable apply = () -> {
+            String base = com.advisora.utils.i18n.I18n.tr(key);
+            String extra = (suffix == null) ? "" : safe(suffix.get());
+            lbl.setText(extra.isBlank() ? base : base + " " + extra);
+        };
+        apply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty()
+                .addListener((obs, o, n) -> apply.run());
+    }
+
+    private void bindI18nText(Button btn, String key) {
+        Runnable apply = () -> btn.setText(com.advisora.utils.i18n.I18n.tr(key));
+        apply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty()
+                .addListener((obs, o, n) -> apply.run());
+    }
+
+
+    /** Prefix is i18n, value is DB -> translate value when locale changes. */
+    private void bindDbMeta(Label lbl, String prefixKey, String rawDbValue) {
+        lbl.setUserData(rawDbValue);
+
+        Runnable apply = () -> {
+            String prefix = com.advisora.utils.i18n.I18n.tr(prefixKey);
+            String raw = safe((String) lbl.getUserData());
+            if (raw.isBlank()) {
+                lbl.setText(prefix + " -");
+                return;
+            }
+            // show raw instantly, then translated
+            lbl.setText(prefix + " " + raw);
+            translateDbAsync(raw, tr -> lbl.setText(prefix + " " + tr));
+        };
+
+        apply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty()
+                .addListener((obs, o, n) -> apply.run());
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -149,6 +204,9 @@ public class ProjectListController implements Initializable {
         }
     }
 
+
+
+
     private void setupCardRenderer() {
         projectList.setCellFactory(list -> new ListCell<>() {
             @Override
@@ -170,77 +228,213 @@ public class ProjectListController implements Initializable {
             }
         });
     }
+    private void bindDbText(Label lbl, String rawDbText) {
+        lbl.setUserData(rawDbText);
+
+        Runnable apply = () -> {
+            String raw = safe((String) lbl.getUserData());
+            lbl.setText(raw);
+            translateDbAsync(raw, lbl::setText);
+        };
+
+        apply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty()
+                .addListener((obs, o, n) -> apply.run());
+    }
+
+    private void bindDbTextWithPrefix(Label lbl, String prefixKey, String rawDbText) {
+        lbl.setUserData(rawDbText);
+
+        Runnable apply = () -> {
+            String prefix = com.advisora.utils.i18n.I18n.tr(prefixKey);
+            String raw = safe((String) lbl.getUserData());
+
+            if (raw.isBlank() || raw.equals("-")) {
+                lbl.setText(prefix + " -");
+                return;
+            }
+
+            // raw immediately
+            lbl.setText(prefix + " " + raw);
+            // translated
+            translateDbAsync(raw, tr -> lbl.setText(prefix + " " + tr));
+        };
+
+        apply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty()
+                .addListener((obs, o, n) -> apply.run());
+    }
+
+    private void bindI18n(Control c, String key) {
+        Runnable apply = () -> {
+            String t = com.advisora.utils.i18n.I18n.tr(key);
+            if (c instanceof Labeled l) l.setText(t);
+            else if (c instanceof TextInputControl ti) ti.setPromptText(t);
+        };
+        apply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty()
+                .addListener((obs, o, n) -> apply.run());
+    }
 
     // =========================
     // Card building
     // =========================
     private VBox buildCard(Project p) {
 
-        // Title
-        String titleText =
+        // --------------------
+        // TITLE (DB -> translate)
+        // --------------------
+        String rawTitle =
                 (SessionContext.isGerant() || SessionContext.getCurrentRole() == UserRole.ADMIN)
                         ? "#" + p.getIdProj() + " - " + safe(p.getTitleProj())
                         : safe(p.getTitleProj());
 
-        Label title = new Label(titleText);
+        Label title = new Label();
         title.getStyleClass().add("card-title");
+        bindDbText(title, rawTitle);
+
         HBox head = new HBox(10, title);
 
-        // Left content
-        Label desc = new Label(p.getDescriptionProj() == null ? "" : p.getDescriptionProj());
+        // --------------------
+        // DESC (DB -> translate)
+        // --------------------
+        Label desc = new Label();
         desc.setWrapText(true);
         desc.getStyleClass().add("card-desc");
+        bindDbText(desc, safe(p.getDescriptionProj()));
 
-        StringBuilder metaText = new StringBuilder("Type: " + nullToDash(p.getTypeProj()) + "   |   Budget: " + p.getBudgetProj());
-        if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
-            metaText.append("   |   Client: ").append(clientNameForProject(p));
-        }
-        Label meta = new Label(metaText.toString());
+        // --------------------
+        // META (prefix i18n + DB values)
+        // --------------------
+        Label meta = new Label();
         meta.getStyleClass().add("card-meta");
 
+        String rawType = nullToDash(p.getTypeProj());
+        String rawClient = (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN)
+                ? safe(clientNameForProject(p))
+                : "";
+
+        meta.setUserData(List.of(rawType, rawClient, String.valueOf(p.getBudgetProj())));
+
+        Runnable metaApply = () -> {
+            @SuppressWarnings("unchecked")
+            List<String> data = (List<String>) meta.getUserData();
+
+            String typeRaw = safe(data.get(0));
+            String clientRaw = safe(data.get(1));
+            String budgetVal = safe(data.get(2));
+
+            String typePrefix   = com.advisora.utils.i18n.I18n.tr("project.meta.type");
+            String budgetPrefix = com.advisora.utils.i18n.I18n.tr("project.meta.budget");
+            String clientPrefix = com.advisora.utils.i18n.I18n.tr("project.meta.client");
+
+            // raw immediately
+            String base = typePrefix + " " + typeRaw + "   |   " + budgetPrefix + " " + budgetVal;
+            if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
+                base += "   |   " + clientPrefix + " " + clientRaw;
+            }
+            meta.setText(base);
+
+            // translate type & client
+            translateDbAsync(typeRaw, trType -> {
+                String txt = typePrefix + " " + trType + "   |   " + budgetPrefix + " " + budgetVal;
+
+                if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
+                    translateDbAsync(clientRaw, trClient -> meta.setText(txt + "   |   " + clientPrefix + " " + trClient));
+                } else {
+                    meta.setText(txt);
+                }
+            });
+        };
+
+        metaApply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs, o, n) -> metaApply.run());
+
+        // --------------------
+        // LEFT column
+        // --------------------
         VBox left = new VBox(8, desc, meta);
+        left.getStyleClass().add("card-left");
+        HBox.setHgrow(left, Priority.ALWAYS);
+
         if (p.getStateProj() == ProjectStatus.PENDING) {
-            Label pendingProgress = new Label("Avancement: En attente");
+            Label pendingProgress = new Label();
             pendingProgress.getStyleClass().add("card-meta");
+
+            Runnable ppApply = () -> pendingProgress.setText(
+                    com.advisora.utils.i18n.I18n.tr("project.progress") + " " +
+                            com.advisora.utils.i18n.I18n.tr("project.progress.pending")
+            );
+            ppApply.run();
+            com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs, o, n) -> ppApply.run());
+
             left.getChildren().add(pendingProgress);
 
             ProjectAcceptanceEstimate estimate = pendingEstimates.get(p.getIdProj());
-            if (estimate != null) {
-                left.getChildren().add(buildEstimateBox(estimate));
-            }
+            if (estimate != null) left.getChildren().add(buildEstimateBox(estimate));
+
         } else {
             double progress = Math.max(0, Math.min(100, p.getAvancementProj())) / 100.0;
             ProgressBar bar = new ProgressBar(progress);
             bar.setMaxWidth(Double.MAX_VALUE);
 
-            Label progressLabel = new Label("Avancement: " + String.format(Locale.US, "%.0f%%", p.getAvancementProj()));
+            Label progressLabel = new Label();
             progressLabel.getStyleClass().add("card-meta");
+
+            Runnable plApply = () -> progressLabel.setText(
+                    com.advisora.utils.i18n.I18n.tr("project.progress") + " " +
+                            String.format(Locale.US, "%.0f%%", p.getAvancementProj())
+            );
+            plApply.run();
+            com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs, o, n) -> plApply.run());
+
             left.getChildren().addAll(bar, progressLabel);
         }
-        left.getStyleClass().add("card-left");
-        HBox.setHgrow(left, Priority.ALWAYS);
 
+        // --------------------
+        // BADGES (status + PBS)
+        // --------------------
         boolean showPbsBadge = p.getStateProj() != ProjectStatus.PENDING && p.getStateProj() != ProjectStatus.REFUSED;
-        VBox badgeBox;
-        Label statusBadge = new Label(p.getStateProj() == null ? "-" : p.getStateProj().name());
+
+        Label statusBadge = new Label();
         statusBadge.getStyleClass().addAll("status-badge", statusClassFor(p.getStateProj()));
 
-        badgeBox = new VBox(8, statusBadge);
-        if (showPbsBadge) {
-            ProjectBadgeScore badgeScore = projectBadges.get(p.getIdProj());
-            Label pbsBadge = new Label(formatPbsLabel(badgeScore));
-            pbsBadge.getStyleClass().add("pbs-badge");
-            pbsBadge.getStyleClass().add(pbsClassFor(badgeScore == null ? null : badgeScore.getBadge()));
-            pbsBadge.setOnMouseClicked(e -> onBadgeDetails(p, badgeScore));
-            statusBadge.setOnMouseClicked(e -> onBadgeDetails(p, badgeScore));
-            badgeBox.getChildren().add(pbsBadge);
-        }
+        Runnable statusApply = () -> {
+            // map status to i18n key instead of enum.name()
+            String key = switch (p.getStateProj()) {
+                case ACCEPTED -> "project.status.accepted";
+                case REFUSED  -> "project.status.refused";
+                case ARCHIVED -> "project.status.archived";
+                case PENDING  -> "project.status.pending";
+                default       -> "project.status.pending";
+            };
+            statusBadge.setText(com.advisora.utils.i18n.I18n.tr(key));
+        };
+        statusApply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs, o, n) -> statusApply.run());
+
+        VBox badgeBox = new VBox(8, statusBadge);
         badgeBox.getStyleClass().add("badge-box");
         badgeBox.setMinWidth(Region.USE_PREF_SIZE);
 
+        if (showPbsBadge) {
+            ProjectBadgeScore badgeScore = projectBadges.get(p.getIdProj());
 
-        // ===== MID (conditional) =====
+            Label pbsBadge = new Label(formatPbsLabel(badgeScore));
+            pbsBadge.getStyleClass().add("pbs-badge");
+            pbsBadge.getStyleClass().add(pbsClassFor(badgeScore == null ? null : badgeScore.getBadge()));
+
+            pbsBadge.setOnMouseClicked(e -> onBadgeDetails(p, badgeScore));
+            statusBadge.setOnMouseClicked(e -> onBadgeDetails(p, badgeScore));
+
+            badgeBox.getChildren().add(pbsBadge);
+        }
+
+        // --------------------
+        // MID (depends on role)
+        // --------------------
         HBox mid;
+
         if (SessionContext.isClient()) {
             VBox right = buildStrategiesPanel(p);
             right.getStyleClass().add("card-right");
@@ -248,54 +442,50 @@ public class ProjectListController implements Initializable {
             Region divider = new Region();
             divider.getStyleClass().add("card-divider");
 
-            if (badgeBox != null) {
-                mid = new HBox(16, left, badgeBox, divider, right);
-            } else {
-                mid = new HBox(16, left, divider, right);
-            }
+            mid = new HBox(16, left, badgeBox, divider, right);
         } else {
-            // No divider, no right panel => no empty space
-            if (badgeBox != null) {
-                mid = new HBox(16, left, badgeBox);
-            } else {
-                mid = new HBox(16, left);
-            }
+            mid = new HBox(16, left, badgeBox);
         }
         mid.getStyleClass().add("card-mid");
+
+        // --------------------
+        // ACTIONS row
+        // --------------------
         HBox actionRow = new HBox(8);
         actionRow.getStyleClass().add("card-actions");
-        // Actions row (same logic)
-        // Only show strategy recommendation when the project is accepted.
-        if (!SessionContext.isClient() && p.getStateProj() == ProjectStatus.ACCEPTED) {
-            Button recommendBtn = new Button("Prevoir strategie");
-            recommendBtn.disableProperty().bind(Bindings.createBooleanBinding(
-                    () -> recommendBusy));
-            recommendBtn.getStyleClass().add("btn-ghost");
 
+        if (!SessionContext.isClient() && p.getStateProj() == ProjectStatus.ACCEPTED) {
+            Button recommendBtn = new Button();
+            bindI18n(recommendBtn, "project.action.recommend");
+            recommendBtn.disableProperty().bind(Bindings.createBooleanBinding(() -> recommendBusy));
+            recommendBtn.getStyleClass().add("btn-ghost");
             recommendBtn.setOnAction(e -> runRecommendation(p));
             actionRow.getChildren().add(recommendBtn);
         }
 
-
         if (p.getStateProj() == ProjectStatus.PENDING) {
-            Label pendingLabel = new Label("En attente de decision du manager");
+            Label pendingLabel = new Label();
             pendingLabel.getStyleClass().add("btn-ghost");
+            bindI18n(pendingLabel, "project.action.pendingDecision");
             actionRow.getChildren().add(pendingLabel);
         } else {
-            Button currentDecision = new Button("Decision actuelle");
+            Button currentDecision = new Button();
+            bindI18n(currentDecision, "project.action.currentDecision");
             currentDecision.getStyleClass().add("btn-ghost");
             currentDecision.setOnAction(e -> onShowCurrentDecision(p));
             actionRow.getChildren().add(currentDecision);
         }
 
         if (p.getStateProj() == ProjectStatus.ACCEPTED) {
-            Button tasks = new Button("Taches");
+            Button tasks = new Button();
+            bindI18n(tasks, "project.action.tasks");
             tasks.getStyleClass().add("btn-ghost");
             tasks.setOnAction(e -> onOpenTasks(p));
             actionRow.getChildren().add(tasks);
         }
 
-        Button news = new Button("News");
+        Button news = new Button();
+        bindI18n(news, "project.action.news");
         news.getStyleClass().add("btn-ghost");
         news.setOnAction(e -> onOpenNews(p));
         actionRow.getChildren().add(news);
@@ -305,11 +495,13 @@ public class ProjectListController implements Initializable {
                         || (SessionContext.isClient() && p.getIdClient() == SessionContext.getCurrentUserId());
 
         if (canEditDelete) {
-            Button edit = new Button("Modifier");
+            Button edit = new Button();
+            bindI18n(edit, "project.action.edit");
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> onEditProject(p));
 
-            Button delete = new Button("Supprimer");
+            Button delete = new Button();
+            bindI18n(delete, "project.action.delete");
             delete.getStyleClass().add("btn-ghost");
             delete.setOnAction(e -> onDeleteProject(p));
 
@@ -317,7 +509,8 @@ public class ProjectListController implements Initializable {
         }
 
         if (SessionContext.isManager() || SessionContext.getCurrentRole() == UserRole.ADMIN) {
-            Button decide = new Button("Decider");
+            Button decide = new Button();
+            bindI18n(decide, "project.action.decide");
             decide.getStyleClass().add("btn-primary");
             decide.setOnAction(e -> onDecideProject(p));
             actionRow.getChildren().add(decide);
@@ -336,6 +529,9 @@ public class ProjectListController implements Initializable {
         HBox titleRow = new HBox();
         Label title = new Label("strategies proposees :");
         title.getStyleClass().add("strategies-title");
+        Runnable stApply = () -> title.setText(com.advisora.utils.i18n.I18n.tr("project.strategies.title"));
+        stApply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> stApply.run());
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -349,8 +545,9 @@ public class ProjectListController implements Initializable {
         List<Strategie> strategies = strategyService.getByProject(p.getIdProj());
 
         if (strategies == null || strategies.isEmpty()) {
-            Label empty = new Label("Aucune strategie.");
+            Label empty = new Label();
             empty.getStyleClass().add("card-meta");
+            bindI18n(empty, "project.strategies.empty");
             panel.getChildren().add(empty);
             return panel;
         }
@@ -375,22 +572,27 @@ public class ProjectListController implements Initializable {
     private HBox buildStrategyRow(Project p, Strategie s, VBox panel) {
 
         Label name = new Label(safe(s.getNomStrategie()));
+
         name.getStyleClass().add("strategy-name");
+        bindDbText(name, safe(s.getNomStrategie()));
         name.setMaxWidth(Double.MAX_VALUE);
         name.setTextOverrun(OverrunStyle.ELLIPSIS);
         name.setWrapText(false);
         HBox.setHgrow(name, Priority.ALWAYS);
 
-        Button ok = new Button("Accepter");
+        Button ok = new Button();
         ok.getStyleClass().add("chip-ok");
+        bindI18n(ok, "project.strategy.accept");
         ok.setMinWidth(80);
         ok.setPrefWidth(90);
-
-
-        Button no = new Button("Refuser");
+        Button no = new Button();
         no.getStyleClass().add("chip-no");
+        bindI18n(no, "project.strategy.refuse");
         no.setMinWidth(80);
         no.setPrefWidth(90);
+
+
+
 
         HBox actions = new HBox(8, ok, no);
         actions.getStyleClass().add("strategy-actions");
@@ -961,9 +1163,7 @@ public class ProjectListController implements Initializable {
         return (value == null || value.isBlank()) ? "-" : value;
     }
 
-    private String safe(String value) {
-        return value == null ? "" : value.trim();
-    }
+
 
     private String statusClassFor(ProjectStatus status) {
         if (status == null) return "status-pending";

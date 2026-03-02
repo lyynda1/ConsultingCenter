@@ -4,6 +4,8 @@ import com.advisora.Model.investment.Investment;
 import com.advisora.Services.investment.InvestmentService;
 import com.advisora.Services.user.SessionContext;
 import com.advisora.Services.investment.TransactionService;
+import com.advisora.utils.i18n.I18n;
+import com.advisora.utils.i18n.LangBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +34,19 @@ public class InvestmentListController {
     @FXML private VBox chartContainer;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
+    @FXML private Label pageTitle;
+    @FXML private Button btnTransactions;
+    @FXML private Button btnExchangeRate;
+    @FXML private Button btnMacro;
+    @FXML private Button btnNewInvestment;
+    @FXML private MenuButton btnFilter;
+
+    @FXML private MenuItem miCommentAsc;
+    @FXML private MenuItem miCommentDesc;
+    @FXML private MenuItem miBudgetAsc;
+    @FXML private MenuItem miBudgetDesc;
+    @FXML private MenuItem miIdAsc;
+    @FXML private MenuItem miIdDesc;
 
     private final InvestmentService investmentService = new InvestmentService();
     private final TransactionService transactionService = new TransactionService();
@@ -66,18 +81,113 @@ public class InvestmentListController {
             viewObs.clear();
 
         }
+
+        if (pageTitle != null) bindI18n(pageTitle, "invest.page.title");
+        if (btnTransactions != null) bindI18n(btnTransactions, "invest.btn.transactions");
+        if (btnExchangeRate != null) bindI18n(btnExchangeRate, "invest.btn.exchangeRate");
+        if (btnMacro != null) bindI18n(btnMacro, "invest.btn.macro");
+        if (btnNewInvestment != null) bindI18n(btnNewInvestment, "invest.btn.new");
+        if (btnFilter != null) btnFilter.setText(I18n.tr("invest.btn.filter"));
+
+        if (txtSearch != null) bindPrompt(txtSearch, "invest.search.prompt");
+
+        if (miCommentAsc != null) miCommentAsc.setText(I18n.tr("invest.sort.comment.asc"));
+        if (miCommentDesc != null) miCommentDesc.setText(I18n.tr("invest.sort.comment.desc"));
+        if (miBudgetAsc != null) miBudgetAsc.setText(I18n.tr("invest.sort.budget.asc"));
+        if (miBudgetDesc != null) miBudgetDesc.setText(I18n.tr("invest.sort.budget.desc"));
+        if (miIdAsc != null) miIdAsc.setText(I18n.tr("invest.sort.id.asc"));
+        if (miIdDesc != null) miIdDesc.setText(I18n.tr("invest.sort.id.desc"));
+
+        // Re-apply menu texts on language change
+        LangBus.localeProperty().addListener((obs, o, n) -> {
+            if (btnFilter != null) btnFilter.setText(I18n.tr("invest.btn.filter"));
+            if (miCommentAsc != null) miCommentAsc.setText(I18n.tr("invest.sort.comment.asc"));
+            if (miCommentDesc != null) miCommentDesc.setText(I18n.tr("invest.sort.comment.desc"));
+            if (miBudgetAsc != null) miBudgetAsc.setText(I18n.tr("invest.sort.budget.asc"));
+            if (miBudgetDesc != null) miBudgetDesc.setText(I18n.tr("invest.sort.budget.desc"));
+            if (miIdAsc != null) miIdAsc.setText(I18n.tr("invest.sort.id.asc"));
+            if (miIdDesc != null) miIdDesc.setText(I18n.tr("invest.sort.id.desc"));
+            buildEvolutionChart(); // chart labels/title update too
+        });
+
+        investmentList.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Investment inv, boolean empty) {
+                super.updateItem(inv, empty);
+                if (empty || inv == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+                setText(null);
+                setGraphic(buildCard(inv));
+            }
+        });
+
+        txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+
+        try {
+            refresh();
+        } catch (Exception ex) {
+            showError(I18n.tr("invest.error.load") + ": " + ex.getMessage());
+            viewObs.clear();
+        }
     }
+
+    private static final String DB_SOURCE_LANG = "fr";
+
+    private String targetLang() {
+        return com.advisora.utils.AppLanguage.ltTargetCode(); // "fr" / "en" / "ar" ...
+    }
+
+    private void translateDbAsync(String raw, java.util.function.Consumer<String> onUi) {
+        String x = safe(raw);
+        if (x.isBlank()) { onUi.accept(""); return; }
+        com.advisora.AppServices.TRANSLATOR.translateAsync(x, DB_SOURCE_LANG, targetLang(), onUi);
+    }
+
+    private void bindI18n(Labeled c, String key) {
+        Runnable apply = () -> c.setText(I18n.tr(key));
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+    }
+
+    private void bindPrompt(TextField tf, String key) {
+        Runnable apply = () -> tf.setPromptText(I18n.tr(key));
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+    }
+
+    /** DB text -> translate on locale change */
+    private void bindDbText(Label lbl, String rawDbText) {
+        lbl.setUserData(rawDbText);
+        Runnable apply = () -> {
+            String raw = safe((String) lbl.getUserData());
+            lbl.setText(raw);
+            translateDbAsync(raw, lbl::setText);
+        };
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+    }
+
+
+
+
+
 
     private void buildEvolutionChart() {
         if (chartContainer == null) return;
         chartContainer.getChildren().clear();
+
         try {
             CategoryAxis xAxis = new CategoryAxis();
-            xAxis.setLabel("Mois");
+            xAxis.setLabel(I18n.tr("invest.chart.x"));
+
             NumberAxis yAxis = new NumberAxis();
-            yAxis.setLabel("Montant (TND)");
+            yAxis.setLabel(I18n.tr("invest.chart.y"));
+
             LineChart<String, Number> chart = new LineChart<>(xAxis, yAxis);
-            chart.setTitle("Ã‰volution des Transactions (6 derniers mois)");
+            chart.setTitle(I18n.tr("invest.chart.title"));
             chart.setLegendVisible(false);
             chart.setCreateSymbols(true);
             chart.setAnimated(false);
@@ -85,15 +195,19 @@ public class InvestmentListController {
             chart.getStyleClass().add("evolution-chart");
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName("Montants");
+            series.setName(I18n.tr("invest.chart.series"));
+
             var data = SessionContext.isClient()
                     ? transactionService.getTransactionEvolutionLast6MonthsForClient(SessionContext.getCurrentUserId())
                     : transactionService.getTransactionEvolutionLast6Months();
+
             for (var e : data.entrySet()) {
                 series.getData().add(new XYChart.Data<>(e.getKey(), e.getValue()));
             }
+
             chart.getData().add(series);
             chartContainer.getChildren().add(chart);
+
         } catch (Exception ex) {
             chartContainer.getChildren().clear();
         }
@@ -185,15 +299,33 @@ public class InvestmentListController {
     }
 
     private VBox buildCard(Investment inv) {
-        String comment = safe(inv.getCommentaireInv());
-        if (comment.length() > 80) comment = comment.substring(0, 77) + "...";
-        Label title = new Label(comment);
+
+        // Comment (DB -> translate)
+        String rawComment = safe(inv.getCommentaireInv());
+        String shortRaw = rawComment.length() > 80 ? rawComment.substring(0, 77) + "..." : rawComment;
+
+        Label title = new Label();
         title.getStyleClass().add("card-title");
         title.setWrapText(true);
+        bindDbText(title, shortRaw);
 
-        String badge = String.format("%s %.0f - %.0f", safe(inv.getCurrencyInv()), inv.getBud_minInv(), inv.getBud_maxInv());
-        Label statut = new Label(badge);
+        // badge contains currency (DB) + numbers (no translate for numbers)
+        Label statut = new Label();
         statut.getStyleClass().add("badge");
+        String rawCurrency = safe(inv.getCurrencyInv());
+
+        Runnable badgeApply = () -> {
+            String min = String.format(Locale.US, "%.0f", inv.getBud_minInv());
+            String max = String.format(Locale.US, "%.0f", inv.getBud_maxInv());
+
+            // show raw first
+            statut.setText(rawCurrency + " " + min + " - " + max);
+
+            // translate currency if needed (optional)
+            translateDbAsync(rawCurrency, trCur -> statut.setText(trCur + " " + min + " - " + max));
+        };
+        badgeApply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> badgeApply.run());
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -201,26 +333,46 @@ public class InvestmentListController {
 
         VBox card = new VBox(10);
         card.getChildren().add(head);
+
         if (!SessionContext.isClient()) {
-            Label detail = new Label("Projet #" + inv.getIdProj() + " â€¢ Utilisateur #" + inv.getIdUser());
+            Label detail = new Label();
             detail.getStyleClass().add("card-sub");
-            Label idLabel = new Label("ID: " + inv.getIdInv());
+
+            Label idLabel = new Label();
             idLabel.getStyleClass().add("card-sub");
+
+            Runnable detailApply = () -> {
+                detail.setText(
+                        I18n.tr("invest.card.project") + " #" + inv.getIdProj() +
+                                " • " +
+                                I18n.tr("invest.card.user") + " #" + inv.getIdUser()
+                );
+                idLabel.setText(I18n.tr("invest.card.id") + ": " + inv.getIdInv());
+            };
+            detailApply.run();
+            LangBus.localeProperty().addListener((obs, o, n) -> detailApply.run());
+
             card.getChildren().addAll(detail, idLabel);
         }
+
         HBox actions = new HBox(8);
-        Button edit = new Button("Modifier");
+
+        Button edit = new Button();
         edit.getStyleClass().add("btn-ghost");
+        bindI18n(edit, "invest.card.edit");
         edit.setOnAction(e -> openEditDialog(inv));
-        Button delete = new Button("Supprimer");
+
+        Button delete = new Button();
         delete.getStyleClass().add("btn-danger");
+        bindI18n(delete, "invest.card.delete");
         delete.setOnAction(e -> deleteInvestment(inv));
+
         actions.getChildren().addAll(edit, delete);
         card.getChildren().add(actions);
+
         card.getStyleClass().add("card");
         return card;
     }
-
     private void openAddDialog() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/investissement/AddInvestissement.fxml"));
@@ -259,15 +411,18 @@ public class InvestmentListController {
 
     private void deleteInvestment(Investment inv) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Supprimer cet investissement ?");
-        confirm.setContentText("ID: " + inv.getIdInv() + "\nCette action est irrÃ©versible.");
+        confirm.setTitle(I18n.tr("common.confirmation"));
+        confirm.setHeaderText(I18n.tr("invest.delete.header"));
+        confirm.setContentText(I18n.tr("invest.delete.content")
+                .replace("{id}", String.valueOf(inv.getIdInv())));
+
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
         try {
             investmentService.supprimer(inv);
             refresh();
         } catch (Exception ex) {
-            showError("Suppression Ã©chouÃ©e: " + ex.getMessage());
+            showError(I18n.tr("invest.error.delete") + ": " + ex.getMessage());
         }
     }
 
@@ -337,7 +492,7 @@ public class InvestmentListController {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        alert.setHeaderText("Gestion Investissements");
+        alert.setHeaderText(I18n.tr("invest.error.header"));
         alert.showAndWait();
     }
 }

@@ -9,6 +9,8 @@ import com.advisora.Services.investment.TransactionService;
 import com.advisora.Services.investment.TransactionPdfExportService;
 import com.advisora.Services.user.SessionContext;
 import com.advisora.enums.transactionStatut;
+import com.advisora.utils.i18n.I18n;
+import com.advisora.utils.i18n.LangBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +36,24 @@ public class TransactionListController {
     @FXML private Label lblTotalInvesti;
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
+    @FXML private Label pageTitle;
+    @FXML private Button btnInvestissements;
+    @FXML private Button btnHistorique;
+    @FXML private Button btnExportPdf;
+    @FXML private Button btnNewTransaction;
+    @FXML private MenuButton btnFilter;
+
+    @FXML private MenuItem miDateDesc;
+    @FXML private MenuItem miDateAsc;
+    @FXML private MenuItem miMontantDesc;
+    @FXML private MenuItem miMontantAsc;
+    @FXML private MenuItem miIdAsc;
+    @FXML private MenuItem miIdDesc;
+
+    @FXML private Label lblTotalTitle;
+    @FXML private Label lblPendingTitle;
+    @FXML private Label lblSuccessTitle;
+    @FXML private Label lblTotalInvestiTitle;
 
     private final TransactionService transactionService = new TransactionService();
     private final TransactionPdfExportService pdfExportService = new TransactionPdfExportService();
@@ -70,6 +90,98 @@ public class TransactionListController {
             viewObs.clear();
             updateStats(Collections.emptyList());
         }
+        if (pageTitle != null) bindI18n(pageTitle, "trans.page.title");
+        if (btnInvestissements != null) bindI18n(btnInvestissements, "trans.btn.investments");
+        if (btnHistorique != null) bindI18n(btnHistorique, "trans.btn.history");
+        if (btnExportPdf != null) bindI18n(btnExportPdf, "trans.btn.exportPdf");
+        if (btnNewTransaction != null) bindI18n(btnNewTransaction, "trans.btn.new");
+
+        if (txtSearch != null) bindPrompt(txtSearch, "trans.search.prompt");
+
+        if (btnFilter != null) {
+            Runnable apply = () -> btnFilter.setText(I18n.tr("trans.btn.filter"));
+            apply.run();
+            LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+        }
+
+        if (miDateDesc != null) bindMenuText(miDateDesc, "trans.sort.date.desc");
+        if (miDateAsc != null) bindMenuText(miDateAsc, "trans.sort.date.asc");
+        if (miMontantDesc != null) bindMenuText(miMontantDesc, "trans.sort.amount.desc");
+        if (miMontantAsc != null) bindMenuText(miMontantAsc, "trans.sort.amount.asc");
+        if (miIdAsc != null) bindMenuText(miIdAsc, "trans.sort.id.asc");
+        if (miIdDesc != null) bindMenuText(miIdDesc, "trans.sort.id.desc");
+
+        if (lblTotalTitle != null) bindI18n(lblTotalTitle, "trans.stats.total");
+        if (lblPendingTitle != null) bindI18n(lblPendingTitle, "trans.stats.pending");
+        if (lblSuccessTitle != null) bindI18n(lblSuccessTitle, "trans.stats.success");
+        if (lblTotalInvestiTitle != null) bindI18n(lblTotalInvestiTitle, "trans.stats.totalInvested");
+
+        // ----- Your existing list setup
+        transactionList.setItems(viewObs);
+        transactionList.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Transaction t, boolean empty) {
+                super.updateItem(t, empty);
+                if (empty || t == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+                setText(null);
+                setGraphic(buildCard(t));
+            }
+        });
+
+        txtSearch.textProperty().addListener((obs, oldV, q) -> applyFilter(q));
+        try {
+            refresh();
+        } catch (Exception ex) {
+            showError(I18n.tr("trans.error.load") + ": " + ex.getMessage());
+            viewObs.clear();
+            updateStats(Collections.emptyList());
+        }
+    }
+
+    private static final String DB_SOURCE_LANG = "fr";
+
+    private String targetLang() {
+        return com.advisora.utils.AppLanguage.ltTargetCode(); // "fr" / "en" / "ar" ...
+    }
+
+    private void translateDbAsync(String raw, java.util.function.Consumer<String> onUi) {
+        String x = safe(raw);
+        if (x.isBlank()) { onUi.accept(""); return; }
+        com.advisora.AppServices.TRANSLATOR.translateAsync(x, DB_SOURCE_LANG, targetLang(), onUi);
+    }
+
+    private void bindI18n(Labeled c, String key) {
+        Runnable apply = () -> c.setText(I18n.tr(key));
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+    }
+
+    private void bindMenuText(MenuItem mi, String key) {
+        Runnable apply = () -> mi.setText(I18n.tr(key));
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+    }
+
+    private void bindPrompt(TextField tf, String key) {
+        Runnable apply = () -> tf.setPromptText(I18n.tr(key));
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
+    }
+
+    /** DB text -> translate and re-translate on locale change */
+    private void bindDbText(Label lbl, String rawDbText) {
+        lbl.setUserData(rawDbText);
+        Runnable apply = () -> {
+            String raw = safe((String) lbl.getUserData());
+            lbl.setText(raw);
+            translateDbAsync(raw, lbl::setText);
+        };
+        apply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> apply.run());
     }
 
     public void setOnOpenInvestissements(Runnable r) {
@@ -128,11 +240,11 @@ public class TransactionListController {
     }
 
     private VBox buildCard(Transaction t) {
-        if (SessionContext.isClient()) {
-            return buildClientCard(t);
-        }
-        Label title = new Label(safe(t.getType()));
+        if (SessionContext.isClient()) return buildClientCard(t);
+
+        Label title = new Label();
         title.getStyleClass().add("card-title");
+        bindDbText(title, safe(t.getType())); // DB -> translate
 
         Label statut = new Label(t.getStatut() == null ? "" : t.getStatut().name());
         statut.getStyleClass().add("badge");
@@ -141,17 +253,32 @@ public class TransactionListController {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox head = new HBox(10, title, spacer, statut);
 
-        String dateStr = t.getDateTransac() == null ? "-" : t.getDateTransac().toString();
-        Label detail = new Label("Date: " + dateStr + " - Montant: " + t.getMontantTransac() + " - Inv# " + t.getIdInv());
+        Label detail = new Label();
         detail.getStyleClass().add("card-sub");
 
+        Runnable detailApply = () -> {
+            String dateStr = t.getDateTransac() == null ? "-" : t.getDateTransac().toString();
+            detail.setText(
+                    I18n.tr("trans.card.date") + ": " + dateStr +
+                            " - " + I18n.tr("trans.card.amount") + ": " + t.getMontantTransac() +
+                            " - " + I18n.tr("trans.card.inv") + "# " + t.getIdInv()
+            );
+        };
+        detailApply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> detailApply.run());
+
         HBox actions = new HBox(8);
-        Button edit = new Button("Modifier");
+
+        Button edit = new Button();
         edit.getStyleClass().add("btn-ghost");
+        bindI18n(edit, "common.edit");
         edit.setOnAction(e -> openEditDialog(t));
-        Button delete = new Button("Supprimer");
+
+        Button delete = new Button();
         delete.getStyleClass().add("btn-danger");
+        bindI18n(delete, "common.delete");
         delete.setOnAction(e -> deleteTransaction(t));
+
         actions.getChildren().addAll(edit, delete);
 
         VBox card = new VBox(10, head, detail, actions);
@@ -161,17 +288,30 @@ public class TransactionListController {
 
     private VBox buildClientCard(Transaction t) {
         Investment inv = investmentById.get(t.getIdInv());
-        String invName = (inv != null && inv.getCommentaireInv() != null)
+
+        String rawInvName = (inv != null && inv.getCommentaireInv() != null)
                 ? safe(inv.getCommentaireInv())
-                : ("Investissement #" + t.getIdInv());
-        if (invName.length() > 80) invName = invName.substring(0, 77) + "...";
+                : (I18n.tr("trans.card.investment") + " #" + t.getIdInv());
+
+        if (rawInvName.length() > 80) rawInvName = rawInvName.substring(0, 77) + "...";
+
         String dureeStr = (inv != null && inv.getDureeInv() != null)
                 ? inv.getDureeInv().toString()
                 : "-";
 
-        Label title = new Label(invName);
+        Label title = new Label();
         title.getStyleClass().add("card-title");
         title.setWrapText(true);
+
+        // translate only if it came from DB commentaire, not fallback text
+        if (inv != null && inv.getCommentaireInv() != null) {
+            bindDbText(title, rawInvName);
+        } else {
+            title.setText(rawInvName);
+            LangBus.localeProperty().addListener((obs, o, n) ->
+                    title.setText(I18n.tr("trans.card.investment") + " #" + t.getIdInv())
+            );
+        }
 
         Label statutLabel = new Label(t.getStatut() == null ? "" : t.getStatut().name());
         statutLabel.getStyleClass().add("badge");
@@ -180,19 +320,30 @@ public class TransactionListController {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox head = new HBox(10, title, spacer, statutLabel);
 
-        Label detail = new Label("Montant: " + t.getMontantTransac() + "  â€¢  DurÃ©e: " + dureeStr);
+        Label detail = new Label();
         detail.getStyleClass().add("card-sub");
+
+        Runnable detailApply = () -> detail.setText(
+                I18n.tr("trans.card.amount") + ": " + t.getMontantTransac() +
+                        "  •  " + I18n.tr("trans.card.duration") + ": " + dureeStr
+        );
+        detailApply.run();
+        LangBus.localeProperty().addListener((obs, o, n) -> detailApply.run());
 
         HBox actions = new HBox(8);
         boolean canEdit = t.getStatut() == transactionStatut.PENDING;
+
         if (canEdit) {
-            Button edit = new Button("Modifier");
+            Button edit = new Button();
             edit.getStyleClass().add("btn-ghost");
+            bindI18n(edit, "common.edit");
             edit.setOnAction(e -> openEditDialog(t));
             actions.getChildren().add(edit);
         }
-        Button delete = new Button("Supprimer");
+
+        Button delete = new Button();
         delete.getStyleClass().add("btn-danger");
+        bindI18n(delete, "common.delete");
         delete.setOnAction(e -> deleteTransaction(t));
         actions.getChildren().add(delete);
 
@@ -218,7 +369,7 @@ public class TransactionListController {
 
     private void openEditDialog(Transaction t) {
         if (SessionContext.isClient() && t.getStatut() != transactionStatut.PENDING) {
-            showError("Seules les transactions en attente (PENDING) peuvent Ãªtre modifiÃ©es. Un admin a dÃ©jÃ  validÃ© cette transaction.");
+            showError(I18n.tr("trans.error.editNotAllowed"));
             return;
         }
         try {
@@ -237,15 +388,17 @@ public class TransactionListController {
 
     private void deleteTransaction(Transaction t) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Supprimer cette transaction ?");
-        confirm.setContentText("ID: " + t.getIdTransac() + ". Cette action est irrÃ©versible.");
+        confirm.setTitle(I18n.tr("common.confirmation"));
+        confirm.setHeaderText(I18n.tr("trans.delete.header"));
+        confirm.setContentText(I18n.tr("trans.delete.content").replace("{id}", String.valueOf(t.getIdTransac())));
+
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+
         try {
             transactionService.supprimer(t);
             refresh();
         } catch (Exception ex) {
-            showError("Suppression Ã©chouÃ©e: " + ex.getMessage());
+            showError(I18n.tr("trans.error.delete") + ": " + ex.getMessage());
         }
     }
 
@@ -409,7 +562,7 @@ public class TransactionListController {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        alert.setHeaderText("Gestion Transactions");
+        alert.setHeaderText(I18n.tr("trans.error.header"));
         alert.showAndWait();
     }
 }

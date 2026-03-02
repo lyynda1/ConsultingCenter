@@ -49,6 +49,7 @@ public class StrategieListController {
     private final ServiceStrategie strategieService = new ServiceStrategie();
     private final ServiceObjective objectiveService = new ServiceObjective();
     private final serviceSWOT swotService = new serviceSWOT();
+    private static final String DB_SOURCE_LANG = "fr";
 
     private final ObservableList<Strategie> allObs  = FXCollections.observableArrayList();
     private final ObservableList<Strategie> viewObs = FXCollections.observableArrayList();
@@ -95,7 +96,53 @@ public class StrategieListController {
         if (v == null) return 0;
         return Math.max(v, 0);
     }
+    private String targetLang() {
+        return com.advisora.utils.AppLanguage.ltTargetCode(); // "fr" or "en"
+    }
 
+    /**
+     * Sets label to "prefix + raw", then translates only "raw" and updates label.
+     * Example: prefix="Projet associé : ", raw="Mon Projet"
+     */
+    private void setTranslatedLabel(Label label, String prefix, String raw) {
+        String x = safe(raw);
+        label.setText(prefix + (x.isBlank() ? "-" : x));
+
+        if (x.isBlank()) return;
+
+        String source = DB_SOURCE_LANG;
+        String target = targetLang();
+
+        com.advisora.AppServices.TRANSLATOR.translateAsync(x, source, target, tr -> {
+            // Only update if still the same raw value (simple guard)
+            if (x.equals(safe(raw))) {
+                label.setText(prefix + tr);
+            } else {
+                label.setText(prefix + tr); // fallback; raw reference might have changed
+            }
+        });
+    }
+
+    /**
+     * Translates a button text (DB content) safely.
+     */
+    private void setTranslatedButton(Button btn, String raw) {
+        String x = safe(raw);
+        btn.setText(x);
+        if (x.isBlank()) return;
+
+        com.advisora.AppServices.TRANSLATOR.translateAsync(x, DB_SOURCE_LANG, targetLang(), btn::setText);
+    }
+
+    /**
+     * Translates plain text and gives you the result.
+     */
+    private void translateTextAsync(String raw, java.util.function.Consumer<String> onUi) {
+        String x = safe(raw);
+        if (x.isBlank()) { onUi.accept(x); return; }
+        com.advisora.AppServices.TRANSLATOR.translateAsync(x, DB_SOURCE_LANG, targetLang(), onUi);
+    }
+///   ///////countdown
     private static LocalDateTime computeDeadlineFromLockedAt(Strategie s) {
         if (s == null) return null;
         if (s.getProjet() == null) return null;
@@ -163,6 +210,28 @@ public class StrategieListController {
                     applyFilter(txtSearch == null ? "" : txtSearch.getText())
             );
         }
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs, o, n) -> {
+            // update prompts / fixed texts if needed
+            if (cmbStatusFilter != null) cmbStatusFilter.setPromptText(com.advisora.utils.i18n.I18n.tr("strategie.filter.status"));
+
+            if (cmbProjectFilter != null) {
+                // keep same selected project but update the "All" label
+                String all = com.advisora.utils.i18n.I18n.tr("strategie.filter.allProjects");
+                if (!cmbProjectFilter.getItems().isEmpty()) {
+                    cmbProjectFilter.getItems().set(0, all); // assuming index 0 is "Tous/All"
+                }
+                if ("Tous".equalsIgnoreCase(cmbProjectFilter.getValue()) || "All".equalsIgnoreCase(cmbProjectFilter.getValue())) {
+                    cmbProjectFilter.setValue(all);
+                }
+            }
+
+            // ✅ THIS forces updateItem() -> buildCard() -> translations run again
+            strategieList.refresh();
+        });
+        com.advisora.utils.i18n.I18n.localeProperty().addListener((obs, o, n) -> {
+            // re-run buildCard() for visible cells
+            strategieList.refresh();
+        });
 
         // ---- List cell factory (cards + countdown) ----
         /**
@@ -454,11 +523,37 @@ public class StrategieListController {
     // ============================
     // Card UI
     // ============================
+    private void bindDbText(Label lbl, String prefixKey, String rawDbText) {
+        lbl.setUserData(rawDbText);
+
+        String prefix = com.advisora.utils.i18n.I18n.tr(prefixKey);
+        String raw = safe(rawDbText);
+
+        if (raw.isBlank()) {
+            lbl.setText(prefix + " -");
+            return;
+        }
+
+        translateTextAsync(raw, tr -> lbl.setText(prefix + " " + tr));
+    }
+
+    private void bindDbButton(Button btn, String rawDbText) {
+        btn.setUserData(rawDbText);
+
+        String raw = safe(rawDbText);
+        if (raw.isBlank()) {
+            btn.setText("-");
+            return;
+        }
+
+        translateTextAsync(raw, btn::setText);
+    }
 
     private CardWithCountdown buildCard(Strategie s) {
 
-        Label title = new Label(safe(s.getNomStrategie()));
+        Label title = new Label();
         title.getStyleClass().add("card-title");
+        translateTextAsync(s.getNomStrategie(), title::setText);
 
         String statusText = (s.getStatut() == null) ? "" : s.getStatut().toDb();
         String statusIcon = (s.getStatut() == null) ? "" : switch (s.getStatut()) {
@@ -480,21 +575,42 @@ public class StrategieListController {
         head.getStyleClass().add("card-head");
 
         // ---- META LEFT ----
-        Label projet = new Label("Projet associé : " +
-                (s.getProjet() == null ? "-" : safe(s.getProjet().getTitleProj())));
+        Label projet = new Label();
         projet.getStyleClass().add("card-meta");
 
-        Label date = new Label("Date de création : " +
-                (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
+        String projTitle = (s.getProjet() == null) ? "" : safe(s.getProjet().getTitleProj());
+        bindDbText(projet, "strategie.project", projTitle);
+        Label date = new Label();
         date.getStyleClass().add("card-meta");
+        date.setText(com.advisora.utils.i18n.I18n.tr("strategie.created") + " " +
+                (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
 
-        Label type = new Label("Type : " +
-                (s.getTypeStrategie() == null ? "-" : safe(s.getTypeStrategie().name())));
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs, o, n) -> {
+            date.setText(com.advisora.utils.i18n.I18n.tr("strategie.created") + " " +
+                    (s.getCreatedAt() == null ? "-" : s.getCreatedAt().toLocalDate()));
+        });
+
+        Label type = new Label();
         type.getStyleClass().add("card-meta");
+        Runnable typeApply = () -> type.setText(
+                com.advisora.utils.i18n.I18n.tr("strategie.type") + " " +
+                        (s.getTypeStrategie() == null ? "-" : safe(s.getTypeStrategie().name()))
+        );
+        typeApply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> typeApply.run());
 
         Integer d = s.getDureeTerme();
-        Label duree = new Label("Durée du terme : " + (d == null ? "-" : d + " jours"));
+        Label duree = new Label();
         duree.getStyleClass().add("card-meta");
+
+        Runnable dureeApply = () -> {
+
+            String days = com.advisora.utils.i18n.I18n.tr("strategie.unit.days");
+            duree.setText(com.advisora.utils.i18n.I18n.tr("strategie.term") + " " +
+                    (d == null ? "-" : d + " " + days));
+        };
+        dureeApply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> dureeApply.run());
 
         Label lockedAtLbl = new Label("LockedAt : " + (s.getLockedAt() == null ? "-" : s.getLockedAt().toString()));
         lockedAtLbl.getStyleClass().add("card-meta");
@@ -508,8 +624,17 @@ public class StrategieListController {
 
         // SWOT info
         int swotCount = swotService.countByStrategie(s.getId());
-        Label swotInfo = new Label(swotCount == 0 ? "SWOT : -" : "SWOT : " + swotCount + " points");
+        Label swotInfo = new Label();
         swotInfo.getStyleClass().add("card-meta");
+
+        Runnable swotApply = () -> {
+            if (swotCount == 0) swotInfo.setText(com.advisora.utils.i18n.I18n.tr("strategie.swot.none"));
+            else swotInfo.setText(java.text.MessageFormat.format(
+                    com.advisora.utils.i18n.I18n.tr("strategie.swot.points"), swotCount
+            ));
+        };
+        swotApply.run();
+        com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> swotApply.run());
 
         VBox metaLeft = new VBox(6, projet, date, type, duree, swotInfo, lockedAtLbl, countdown);
         metaLeft.getStyleClass().add("card-meta-col");
@@ -547,29 +672,52 @@ public class StrategieListController {
 
         List<Objective> objectives = objectivesByStrategie.getOrDefault(s.getId(), List.of());
         if (objectives.isEmpty()) {
-            Label none = new Label("Aucun objectif");
+            Label none = new Label();
             none.getStyleClass().add("obj-empty");
+
+            Runnable noneApply = () -> none.setText(com.advisora.utils.i18n.I18n.tr("strategie.noneObjective"));
+            noneApply.run();
+            com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> noneApply.run());
+
             objChips.getChildren().add(none);
         } else {
             for (Objective o : objectives) {
-                Button chip = new Button(safe(o.getNomObjective()));
+                Button chip = new Button();
                 chip.getStyleClass().add("obj-chip");
+                bindDbButton(chip, safe(o.getNomObjective())); // DB translation reactive
                 chip.setOnAction(ev -> openObjectiveInfoDialog(o, s));
                 objChips.getChildren().add(chip);
             }
         }
 
         // ---- JUSTIF ----
+
+
+
+
         Label justificationLabel = new Label();
         justificationLabel.getStyleClass().add("justification");
         justificationLabel.setWrapText(true);
         justificationLabel.setMaxWidth(Double.MAX_VALUE);
 
-        String j = s.getJustification();
-        boolean hasJustif = j != null && !j.trim().isEmpty();
-        justificationLabel.setText(hasJustif ? "Justification : " + j.trim() : "");
+        String j = safe(s.getJustification());
+        boolean hasJustif = !j.isBlank();
         justificationLabel.setVisible(hasJustif);
         justificationLabel.setManaged(hasJustif);
+
+        if (hasJustif) {
+            justificationLabel.setUserData(j);
+
+            Runnable justApply = () -> {
+                String raw = (String) justificationLabel.getUserData();
+                translateTextAsync(raw, tr ->
+                        justificationLabel.setText(com.advisora.utils.i18n.I18n.tr("strategie.justification") + " " + tr)
+                );
+            };
+            justApply.run();
+            com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> justApply.run());
+        }
+
 
         // ---- ACTIONS ----
         HBox actions = new HBox(10);
@@ -582,7 +730,10 @@ public class StrategieListController {
         actions.getChildren().add(swotBtn);
 
         if (canManage()) {
-            Button edit = new Button("Modifier");
+            Button edit = new Button();
+            Runnable editApply = () -> edit.setText(com.advisora.utils.i18n.I18n.tr("strategie.actions.edit"));
+            editApply.run();
+            com.advisora.utils.i18n.LangBus.localeProperty().addListener((obs,o,n)-> editApply.run());
             edit.getStyleClass().add("btn-ghost");
             edit.setOnAction(e -> openEditStrategieDialog(s));
 
@@ -616,6 +767,7 @@ public class StrategieListController {
         VBox card = new VBox(14);
         card.getStyleClass().add("card");
         card.getChildren().addAll(head, topRow, objChips, justificationLabel, actions);
+
 
         return new CardWithCountdown(card, countdown);
     }

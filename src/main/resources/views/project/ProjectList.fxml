@@ -27,43 +27,43 @@ Role: Project module UI layout (FXML/CSS) -->
                 </padding>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Gerer vos projets" styleClass="title"/>
+                    <Label text="%project.page.title" styleClass="title"/>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="btnStats" text="Statistiques" onAction="#onOpenStats" styleClass="btn-ghost"/>
-                    <Button fx:id="btnTop10" text="Top 10" onAction="#onOpenTop10" styleClass="btn-ghost"/>
-                    <Button fx:id="btnEstimate" text="Estimation" onAction="#onOpenEstimation" styleClass="btn-ghost"/>
-                    <Button fx:id="btnExportPdf" text="Exporter PDF" onAction="#onExportPdf">
+                    <Button fx:id="btnStats" text="%project.btn.stats" onAction="#onOpenStats" styleClass="btn-ghost"/>
+                    <Button fx:id="btnTop10" text="%project.btn.top10" onAction="#onOpenTop10" styleClass="btn-ghost"/>
+                    <Button fx:id="btnEstimate" text="%project.btn.estimate" onAction="#onOpenEstimation" styleClass="btn-ghost"/>
+                    <Button fx:id="btnExportPdf" text="%project.btn.exportPdf" onAction="#onExportPdf">
                         <styleClass>
                             <String fx:value="btn-primary"/>
                             <String fx:value="export-btn"/>
                         </styleClass>
                     </Button>
-                    <Button fx:id="btnUsers" text="Utilisateurs" onAction="#onOpenUsers" styleClass="btn-ghost"/>
-                    <Button fx:id="btnNewProject" text="Nouveau projet" onAction="#onAdd" styleClass="btn-primary"/>
+                    <Button fx:id="btnUsers" text="%project.btn.users" onAction="#onOpenUsers" styleClass="btn-ghost"/>
+                    <Button fx:id="btnNewProject" text="%project.btn.new" onAction="#onAdd" styleClass="btn-primary"/>
                 </HBox>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <HBox spacing="8" styleClass="tabs">
-                        <ToggleButton fx:id="tabAll" text="Tous les projets" onAction="#onTabAll" toggleGroup="$statusGroup" selected="true" styleClass="tab"/>
-                        <ToggleButton fx:id="tabValid" text="Valide" onAction="#onTabValid" toggleGroup="$statusGroup" styleClass="tab"/>
-                        <ToggleButton fx:id="tabPending" text="En attente" onAction="#onTabPending" toggleGroup="$statusGroup" styleClass="tab"/>
-                        <ToggleButton fx:id="tabRefused" text="Refuse" onAction="#onTabRefused" toggleGroup="$statusGroup" styleClass="tab"/>
+                        <ToggleButton fx:id="tabAll" text="%project.tab.all" onAction="#onTabAll" toggleGroup="$statusGroup" selected="true" styleClass="tab"/>
+                        <ToggleButton fx:id="tabValid" text="%project.tab.valid" onAction="#onTabValid" toggleGroup="$statusGroup" styleClass="tab"/>
+                        <ToggleButton fx:id="tabPending" text="%project.tab.pending" onAction="#onTabPending" toggleGroup="$statusGroup" styleClass="tab"/>
+                        <ToggleButton fx:id="tabRefused" text="%project.tab.refused" onAction="#onTabRefused" toggleGroup="$statusGroup" styleClass="tab"/>
                     </HBox>
 
                     <Region HBox.hgrow="ALWAYS"/>
 
                     <TextField fx:id="txtSearch"
-                               promptText="Rechercher un projet..."
+                               promptText="%project.search.prompt"
                                onKeyReleased="#onSearch"
                                styleClass="search"/>
 
                     <MenuButton text="Filtrer" styleClass="btn-ghost">
                         <items>
-                            <MenuItem text="Budget croissant" onAction="#onSortBudgetAsc"/>
-                            <MenuItem text="Budget decroissant" onAction="#onSortBudgetDesc"/>
+                            <MenuItem text="%project.sort.budgetAsc" onAction="#onSortBudgetAsc"/>
+                            <MenuItem text="%project.sort.budgetDesc" onAction="#onSortBudgetDesc"/>
                             <SeparatorMenuItem/>
-                            <MenuItem text="Avancement croissant" onAction="#onSortAvancementAsc"/>
-                            <MenuItem text="Avancement decroissant" onAction="#onSortAvancementDesc"/>
+                            <MenuItem text="%project.sort.progressAsc" onAction="#onSortAvancementAsc"/>
+                            <MenuItem text="%project.sort.progressDesc" onAction="#onSortAvancementDesc"/>
                         </items>
                     </MenuButton>
                 </HBox>

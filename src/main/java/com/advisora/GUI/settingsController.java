@@ -1,7 +1,10 @@
 package com.advisora.GUI;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import java.io.*;
@@ -44,12 +47,21 @@ public class settingsController {
     }
 
     public enum LanguageMode {
-        FR("Français", Locale.FRENCH),
-        EN("English", Locale.ENGLISH);
-        public final String label;
+        FR("language.fr", Locale.FRENCH),
+        EN("language.en", Locale.ENGLISH);
+
+        private final String key;
         public final Locale locale;
-        LanguageMode(String label, Locale locale) { this.label = label; this.locale = locale; }
-        @Override public String toString() { return label; }
+
+        LanguageMode(String key, Locale locale) {
+            this.key = key;
+            this.locale = locale;
+        }
+
+        @Override
+        public String toString() {
+            return com.advisora.utils.i18n.I18n.tr(key);
+        }
     }
 
     // ===================== DTO =====================
@@ -61,8 +73,12 @@ public class settingsController {
     }
 
     // ===================== init =====================
+    private boolean initializing = false;
+
     @FXML
     public void initialize() {
+        initializing = true;
+
         cmbTheme.getItems().setAll(ThemeMode.values());
         cmbFontSize.getItems().setAll(FontSizeMode.values());
         cmbLanguage.getItems().setAll(LanguageMode.values());
@@ -70,16 +86,23 @@ public class settingsController {
         loadedPrefs = loadPrefs();
         setUiFromPrefs(loadedPrefs);
 
-        cmbFontSize.valueProperty().addListener((obs, o, nv) -> updateFontPreview(nv));
-
-        // Live apply (UX pro)
-        cmbTheme.valueProperty().addListener((obs, o, nv) -> applyLive());
-        cmbFontSize.valueProperty().addListener((obs, o, nv) -> applyLive());
-        chkCompact.selectedProperty().addListener((obs, o, nv) -> applyLive());
-        // Language: usually needs reloading views; we store it but don’t force-refresh everything here.
-
         updateFontPreview(cmbFontSize.getValue());
         lblSaved.setText("");
+
+        // listeners
+        cmbFontSize.valueProperty().addListener((obs, o, nv) -> updateFontPreview(nv));
+
+        cmbTheme.valueProperty().addListener((obs, o, nv) -> { if (!initializing) applyLive(); });
+        cmbFontSize.valueProperty().addListener((obs, o, nv) -> { if (!initializing) applyLive(); });
+        chkCompact.selectedProperty().addListener((obs, o, nv) -> { if (!initializing) applyLive(); });
+
+        cmbLanguage.valueProperty().addListener((obs, oldV, newV) -> {
+            if (initializing) return;
+            if (newV == null || newV == oldV) return;
+            onLanguageSelected(newV);
+        });
+
+        initializing = false;
     }
 
     private void applyLive() {
@@ -148,6 +171,70 @@ public class settingsController {
         lblFontPreview.setStyle("-fx-font-size: " + x.px + "px; -fx-font-weight: 800;");
         lblFontPreview.setText("Aperçu (" + x.px + "px)");
     }
+    private void onLanguageSelected(LanguageMode nv) {
+        if (nv == null) nv = LanguageMode.FR;
+
+        UserPrefs p = readPrefsFromUi();
+        p.language = nv;
+        try {
+            savePrefs(p);
+            loadedPrefs = p;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // ✅ single source of truth
+        com.advisora.utils.i18n.I18n.setLocale(nv.locale);
+
+        // ✅ easiest: reload main window so all %keys in FXML update
+        reloadMainWindow();
+    }
+    private void reloadMainWindow() {
+        try {
+            Scene scene = cmbLanguage.getScene();
+            if (scene == null) return;
+
+            var stage = (javafx.stage.Stage) scene.getWindow();
+            if (stage == null) return;
+
+            double w = stage.getWidth();
+            double h = stage.getHeight();
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/InterfaceGeneral.fxml"),
+                    com.advisora.utils.i18n.I18n.bundle()
+            );
+            Parent root = loader.load();
+
+            stage.setScene(new Scene(root, w, h));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Language reload failed: " + e.getMessage(), ButtonType.OK).showAndWait();
+        }
+    }
+
+    private void reloadSettingsIntoContentHost() {
+        try {
+            var scene = cmbLanguage.getScene();
+            if (scene == null) return;
+
+            // contentHost is in InterfaceGeneral.fxml
+            StackPane host = (StackPane) scene.lookup("#contentHost");
+            if (host == null) return;
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/parametres.fxml"),
+                    com.advisora.utils.i18n.I18n.bundle()
+            );
+            Parent settings = loader.load();
+            host.getChildren().setAll(settings);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // ===================== Apply styles =====================
     private void applyToScene(UserPrefs p, Scene scene) {

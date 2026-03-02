@@ -19,9 +19,10 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.CustomMenuItem?>
-<StackPane fx:id="pageRoot" styleClass="page-root" stylesheets="@/css/strategie-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Strategie.StrategieListController">
+<StackPane fx:id="pageRoot" styleClass="page-root" stylesheets="@/css/strategie-list.css"
+           xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.advisora.GUI.Strategie.StrategieListController">
 
-    <!-- MAIN PAGE -->
     <BorderPane fx:id="mainPane" styleClass="page">
 
         <top>
@@ -31,7 +32,7 @@
                 </padding>
 
                 <HBox alignment="CENTER_LEFT">
-                    <Label styleClass="title" text="Gestion des Stratégies">
+                    <Label styleClass="title" text="%strategie.page.title">
                         <font>
                             <Font name="System Bold" size="31.0" />
                         </font>
@@ -40,25 +41,25 @@
                     <Region HBox.hgrow="ALWAYS" />
 
                     <Button text="↻" onAction="#onRefresh" styleClass="btn-icon"/>
-                    <Button onAction="#onOpenCharts"
-                            styleClass="btn-icon">
+                    <Button onAction="#onOpenCharts" styleClass="btn-icon">
                         <graphic>
                             <Label text="📊"/>
                         </graphic>
                     </Button>
-                    <Button onAction="#nouvelleStrategie" styleClass="btn-primary" text="+ Nouvelle Stratégie" />
+
+                    <Button onAction="#nouvelleStrategie" styleClass="btn-primary" text="%strategie.page.new" />
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <MenuButton text="Filtrer" styleClass="btn-ghost">
+                    <MenuButton text="%strategie.page.filter" styleClass="btn-ghost">
                         <items>
                             <CustomMenuItem hideOnClick="false">
                                 <content>
                                     <ComboBox fx:id="cmbStatusFilter"
                                               onAction="#onFilterStatus"
-                                              promptText="Statut"/>
+                                              promptText="%strategie.filter.status"/>
                                 </content>
                             </CustomMenuItem>
 
@@ -66,21 +67,20 @@
                                 <content>
                                     <ComboBox fx:id="cmbProjectFilter"
                                               onAction="#onFilterProject"
-                                              promptText="Projet"/>
+                                              promptText="%strategie.filter.project"/>
                                 </content>
                             </CustomMenuItem>
 
                             <SeparatorMenuItem />
-                            <MenuItem onAction="#onSortNomAsc" text="Nom A → Z" />
-                            <MenuItem onAction="#onSortNomDesc" text="Nom Z → A" />
+                            <MenuItem onAction="#onSortNomAsc" text="%strategie.sort.nameAsc" />
+                            <MenuItem onAction="#onSortNomDesc" text="%strategie.sort.nameDesc" />
                             <SeparatorMenuItem />
-                            <MenuItem onAction="#onSortDateDesc" text="Date récente" />
-                            <MenuItem onAction="#onSortDateAsc" text="Date ancienne" />
+                            <MenuItem onAction="#onSortDateDesc" text="%strategie.sort.dateDesc" />
+                            <MenuItem onAction="#onSortDateAsc" text="%strategie.sort.dateAsc" />
                         </items>
                     </MenuButton>
                 </HBox>
 
-                <!-- Stats row (your 3 boxes) -->
                 <HBox fillHeight="true" spacing="16" styleClass="stats">
 
                     <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
@@ -91,11 +91,10 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <StackPane>
                                 <Label text="📈" textFill="#ea7527">
-                           <font>
-                              <Font size="20.0" />
-                           </font></Label>
+                                    <font><Font size="20.0" /></font>
+                                </Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="Total Stratégies" />
+                            <Label styleClass="stat-label" text="%strategie.stats.total" />
                         </HBox>
                         <Label fx:id="lblTotalStrategies" styleClass="stat-value" text="0" />
                     </VBox>
@@ -108,11 +107,10 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <StackPane>
                                 <Label text="👥" textFill="#ea7527">
-                           <font>
-                              <Font size="20.0" />
-                           </font></Label>
+                                    <font><Font size="20.0" /></font>
+                                </Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="En attente d'approbation" />
+                            <Label styleClass="stat-label" text="%strategie.stats.pending" />
                         </HBox>
                         <Label fx:id="lblPending" styleClass="stat-value" text="0" />
                     </VBox>
@@ -125,11 +123,10 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <StackPane>
                                 <Label text="✅" textFill="#ea7527">
-                           <font>
-                              <Font size="20.0" />
-                           </font></Label>
+                                    <font><Font size="20.0" /></font>
+                                </Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="Taux de réussite" />
+                            <Label styleClass="stat-label" text="%strategie.stats.success" />
                         </HBox>
                         <Label fx:id="lblSuccess" styleClass="stat-value" text="0%" />
                     </VBox>
@@ -149,10 +146,8 @@
         </center>
     </BorderPane>
 
-    <!-- ✅ OVERLAY ABOVE EVERYTHING -->
     <StackPane fx:id="overlay" visible="false" managed="false" styleClass="overlay">
         <VBox fx:id="modalBox" styleClass="dialog-host"/>
     </StackPane>
-
 
 </StackPane>

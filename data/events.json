@@ -2,14 +2,14 @@
   "source" : "GDELT",
   "eventType" : "ECONOMY",
   "eventName" : "Tunisia economy risk (last 48h)",
-  "currentValue" : 27.0,
+  "currentValue" : 0.0,
   "unit" : "articles/48h",
-  "severity" : "DANGER",
-  "description" : "Economy news volume in last 48h = 27\nThis is a macro risk signal. Detailed news is fetched based on the strategy title.",
+  "severity" : "INFO",
+  "description" : "Données économiques indisponibles (GDELT). Dernière tentative échouée.",
   "suggestions" : [ ],
-  "startDate" : "2026-03-02T02:25:09.055772",
-  "endDate" : null,
-  "active" : true
+  "startDate" : null,
+  "endDate" : "2026-03-02T22:04:49.3832161",
+  "active" : false
 }, {
   "source" : "WHO",
   "eventType" : "HEALTH",
@@ -20,6 +20,6 @@
   "description" : "WHO Disease Outbreak News (recent) = 0\n\nNo recent outbreak titles available.\n",
   "suggestions" : [ ],
   "startDate" : null,
-  "endDate" : "2026-03-02T02:25:09.3321612",
+  "endDate" : "2026-03-02T22:04:50.3582276",
   "active" : false
 } ]

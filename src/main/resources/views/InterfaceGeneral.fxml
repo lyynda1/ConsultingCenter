@@ -17,12 +17,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="rootPane" styleClass="app" stylesheets="@/GUI/Admin/admin.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.InterfaceGeneralController">
+<StackPane fx:id="rootPane" styleClass="app" stylesheets="@/GUI/Admin/admin.css"
+           xmlns="http://javafx.com/javafx/25"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.advisora.GUI.InterfaceGeneralController">
 
-    <!-- ================= MAIN LAYOUT ================= -->
     <BorderPane prefHeight="720" prefWidth="1280">
 
-        <!-- ================= LEFT SIDEBAR ================= -->
         <left>
             <VBox prefWidth="270" styleClass="sidebar">
                 <padding>
@@ -40,14 +41,14 @@
 
                 <!-- Navigation -->
                 <VBox spacing="10" styleClass="nav">
-                    <Button fx:id="homeBtn" onAction="#handleOpenHome" prefWidth="237" styleClass="nav-btn" text="Home" />
-                    <Button fx:id="usersBtn" onAction="#handleOpenUsers" prefWidth="237" styleClass="nav-btn" text="Utilisateurs" />
-                    <Button fx:id="ressourceBtn" onAction="#handleOpenRessource" prefWidth="237" styleClass="nav-btn" text="Ressources" />
-                    <Button fx:id="projectsBtn" onAction="#handleOpenProjects" prefWidth="237" styleClass="nav-btn" text="Projets" />
-                    <Button fx:id="eventsBtn" onAction="#handleOpenEvents" prefWidth="237" styleClass="nav-btn" text="Evenements" />
-                    <Button fx:id="strategiesBtn" onAction="#handleOpenStrategies" prefWidth="237" styleClass="nav-btn" text="Strategies" />
-                    <Button fx:id="investissementsBtn" onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="Investissements" />
-                    <Button fx:id="parametreBtn" onAction="#handleOpenSettings" prefWidth="237" styleClass="nav-btn" text="⚙ Parametre" />
+                    <Button fx:id="homeBtn" onAction="#handleOpenHome" prefWidth="237" styleClass="nav-btn" text="%nav.home" />
+                    <Button fx:id="usersBtn" onAction="#handleOpenUsers" prefWidth="237" styleClass="nav-btn" text="%nav.users" />
+                    <Button fx:id="ressourceBtn" onAction="#handleOpenRessource" prefWidth="237" styleClass="nav-btn" text="%nav.resources" />
+                    <Button fx:id="projectsBtn" onAction="#handleOpenProjects" prefWidth="237" styleClass="nav-btn" text="%nav.projects" />
+                    <Button fx:id="eventsBtn" onAction="#handleOpenEvents" prefWidth="237" styleClass="nav-btn" text="%nav.events" />
+                    <Button fx:id="strategiesBtn" onAction="#handleOpenStrategies" prefWidth="237" styleClass="nav-btn" text="%nav.strategies" />
+                    <Button fx:id="investissementsBtn" onAction="#handleOpenInvestissements" prefWidth="237" styleClass="nav-btn" text="%nav.investments" />
+                    <Button fx:id="parametreBtn" onAction="#handleOpenSettings" prefWidth="237" styleClass="nav-btn" text="%nav.settings" />
                 </VBox>
 
                 <Region VBox.vgrow="ALWAYS" />
@@ -56,16 +57,15 @@
                 <HBox alignment="CENTER_LEFT" onMouseClicked="#openProfile" spacing="10" styleClass="profile">
                     <ImageView fx:id="profileImageView" fitHeight="40" fitWidth="40" preserveRatio="true" />
                     <VBox spacing="2">
-                        <Label fx:id="nomUser" styleClass="profile-name" text="Admin" />
-                        <Label fx:id="roleStatut" styleClass="profile-role" text="ROLE_ADMIN" />
+                        <Label fx:id="nomUser" styleClass="profile-name" text="%profile.defaultName" />
+                        <Label fx:id="roleStatut" styleClass="profile-role" text="%profile.defaultRole" />
                     </VBox>
                 </HBox>
 
-                <Label styleClass="sidebar-foot" text="v1.0 • Users module" />
+                <Label styleClass="sidebar-foot" text="%sidebar.footer" />
             </VBox>
         </left>
 
-        <!-- ================= TOP BAR ================= -->
         <top>
             <HBox fx:id="topBar" alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
                 <padding>
@@ -73,8 +73,8 @@
                 </padding>
 
                 <VBox spacing="2">
-                    <Label styleClass="top-title" text="Bienvenue dans Advisora" />
-                    <Label styleClass="top-sub" text="Votre succès est notre mission " />
+                    <Label styleClass="top-title" text="%top.welcomeTitle" />
+                    <Label styleClass="top-sub" text="%top.welcomeSub" />
                 </VBox>
 
                 <Region HBox.hgrow="ALWAYS" />
@@ -92,7 +92,6 @@
                             </graphic>
                         </Button>
 
-                        <!-- Notification Badge -->
                         <StackPane layoutX="-10" layoutY="-10">
                             <children>
                                 <Circle fx:id="notificationBadge" fill="red" radius="10" visible="false" />
@@ -102,23 +101,22 @@
                     </children>
                 </HBox>
 
-                <Button fx:id="voiceToggleBtn" onAction="#handleToggleVoiceAssistant" styleClass="icon-btn" text="Assistant vocal" />
-                <Button fx:id="themeToggleBtn" onAction="#handleToggleTheme" styleClass="icon-btn" text="Mode nuit" />
-                <Button onAction="#handleLogout" styleClass="icon-btn" text="Logout" />
+                <Button fx:id="voiceToggleBtn" onAction="#handleToggleVoiceAssistant" styleClass="icon-btn" text="%top.voice" />
+                <Button fx:id="themeToggleBtn" onAction="#handleToggleTheme" styleClass="icon-btn" text="%top.themeNight" />
+                <Button onAction="#handleLogout" styleClass="icon-btn" text="%top.logout" />
             </HBox>
         </top>
 
-        <!-- ================= CENTER CONTENT ================= -->
         <center>
             <StackPane fx:id="contentHost">
                 <AnchorPane>
                     <children>
-                        <Text layoutX="79" layoutY="75" text="Bienvenue">
+                        <Text layoutX="79" layoutY="75" text="%center.welcome">
                             <font>
                                 <Font name="System Bold" size="34" />
                             </font>
                         </Text>
-                        <Text layoutX="79" layoutY="114" text="Que souhaitez-vous faire aujourd'hui?" wrappingWidth="500">
+                        <Text layoutX="79" layoutY="114" text="%center.question" wrappingWidth="500">
                             <font>
                                 <Font size="22" />
                             </font>
@@ -130,10 +128,8 @@
 
     </BorderPane>
 
-    <!-- ================= POPUP LAYER (notifications, dropdowns) ================= -->
     <Pane fx:id="popupLayer" pickOnBounds="false" />
 
-    <!-- ================= OVERLAY (PROFILE MODAL) ================= -->
     <StackPane fx:id="overlay" managed="false" style="-fx-background-color: rgba(0,0,0,0.45);" visible="false">
         <VBox fx:id="modalBox" alignment="CENTER" spacing="20" />
     </StackPane>

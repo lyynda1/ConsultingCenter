@@ -16,35 +16,35 @@ import com.advisora.utils.LocalSessionStore;
 import com.advisora.utils.SceneThemeApplier;
 import com.advisora.utils.ThemeMode;
 import com.advisora.utils.ThemeManager;
+import com.advisora.utils.i18n.I18n;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InterfaceGeneralController {
+
     private final AuthSessionService authSessionService = new AuthSessionService();
     private final TaskService taskService = new TaskService();
 
     @FXML private StackPane contentHost;
+
     @FXML private Button homeBtn;
     @FXML private Button usersBtn;
     @FXML private Button ressourceBtn;
@@ -52,51 +52,74 @@ public class InterfaceGeneralController {
     @FXML private Button eventsBtn;
     @FXML private Button strategiesBtn;
     @FXML private Button investissementsBtn;
+    @FXML private Button parametreBtn;
+    @FXML private Label lblWelcomeTitle;
+    @FXML private Label lblWelcomeSub;
+
     @FXML private Button voiceToggleBtn;
     @FXML private Button themeToggleBtn;
+
     @FXML private StackPane overlay;
     @FXML private VBox modalBox;
-    @FXML private Button parametreBtn;
 
     @FXML private ImageView profileImageView;
-
     @FXML private Label nomUser;
     @FXML private Label roleStatut;
-    @FXML
-    private Button notificationButton;
+
+    @FXML private Button notificationButton;
     @FXML private Pane popupLayer;
-    @FXML
-    private BorderPane root; // ou StackPane mainContent
+
+    @FXML private BorderPane root;
+    @FXML private HBox topBar;
+
+    @FXML private Circle notificationBadge;
+    @FXML private Label notifCount;
 
     private HBox notificationPanel;
-
-
-    @FXML
-    private HBox topBar; // Add this field and link it to your top bar HBox in FXML
-
-    @FXML
-    private Circle notificationBadge;
-
-    @FXML
-    private Label notifCount;
     private final List<Button> navButtons = new ArrayList<>();
 
+    // =========================
+    // ✅ FXML loader helpers (ALWAYS with bundle)
+    // =========================
+    private Parent loadView(String fxmlPath) throws Exception {
+        URL url = getClass().getResource(fxmlPath);
+        if (url == null) throw new IllegalArgumentException("FXML introuvable: " + fxmlPath);
+        FXMLLoader loader = new FXMLLoader(url, I18n.bundle());
+        return loader.load();
+    }
+
+    private <T> Loaded<T> loadViewWithController(String fxmlPath) throws Exception {
+        URL url = getClass().getResource(fxmlPath);
+        if (url == null) throw new IllegalArgumentException("FXML introuvable: " + fxmlPath);
+        FXMLLoader loader = new FXMLLoader(url, I18n.bundle());
+        Parent root = loader.load();
+        return new Loaded<>(root, loader.getController());
+    }
+
+    private static final class Loaded<T> {
+        final Parent root;
+        final T controller;
+        Loaded(Parent root, T controller) {
+            this.root = root;
+            this.controller = controller;
+        }
+    }
+
+    // =========================
+    // init
+    // =========================
     @FXML
     public void initialize() throws SQLException {
-
         User u = SessionContext.getCurrentUser();
         initNavButtons();
 
-        NotificationManager.getInstance()
-                .loadNotificationsForUser(u.getRole(), u.getId());
-        // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ important to refresh data from DB
-
+        NotificationManager.getInstance().loadNotificationsForUser(u.getRole(), u.getId());
         updateNotificationBadge();
-
 
         NotificationManager.getInstance().getNotifications().addListener(
                 (ListChangeListener<Notification>) c -> updateNotificationBadge()
         );
+
         nomUser.setText(u.getNom());
         roleStatut.setText(u.getRole().name());
 
@@ -108,17 +131,45 @@ public class InterfaceGeneralController {
         }
 
         boolean isAdmin = (u.getRole() == UserRole.ADMIN);
-        usersBtn.setVisible(isAdmin);
-        usersBtn.setManaged(isAdmin);
-
-        if (eventsBtn != null) {
-            eventsBtn.setText("Evenements");
+        if (usersBtn != null) {
+            usersBtn.setVisible(isAdmin);
+            usersBtn.setManaged(isAdmin);
         }
 
         handleOpenHome();
         AvatarUtil.makeCircular(profileImageView);
+
         refreshThemeToggleText();
         hookVoiceToggleSync();
+
+        // ✅ react to language changes
+        com.advisora.utils.i18n.I18n.localeProperty().addListener((obs, oldL, newL) -> refreshI18nTexts());
+        refreshI18nTexts();
+    }
+    private void refreshI18nTexts() {
+        if (homeBtn != null) homeBtn.setText(I18n.tr("nav.home"));
+        if (usersBtn != null) usersBtn.setText(I18n.tr("nav.users"));
+        if (ressourceBtn != null) ressourceBtn.setText(I18n.tr("nav.resources"));
+        if (projectsBtn != null) projectsBtn.setText(I18n.tr("nav.projects"));
+        if (eventsBtn != null) eventsBtn.setText(I18n.tr("nav.events"));
+        if (strategiesBtn != null) strategiesBtn.setText(I18n.tr("nav.strategies"));
+        if (investissementsBtn != null) investissementsBtn.setText(I18n.tr("nav.investments"));
+        if (parametreBtn != null) parametreBtn.setText(I18n.tr("nav.settings"));
+
+        if (themeToggleBtn != null) {
+            themeToggleBtn.setText(
+                    com.advisora.utils.ThemeManager.getCurrentMode() == com.advisora.utils.ThemeMode.DARK
+                            ? I18n.tr("top.themeLight")
+                            : I18n.tr("top.themeNight")
+            );
+        }
+        if (voiceToggleBtn != null) {
+            voiceToggleBtn.setText(
+                    com.advisora.accessibility.VoiceAssistantManager.isEnabled()
+                            ? I18n.tr("top.voiceOn")
+                            : I18n.tr("top.voiceOff")
+            );
+        }
     }
 
     private void initNavButtons() {
@@ -130,6 +181,7 @@ public class InterfaceGeneralController {
         if (eventsBtn != null) navButtons.add(eventsBtn);
         if (strategiesBtn != null) navButtons.add(strategiesBtn);
         if (investissementsBtn != null) navButtons.add(investissementsBtn);
+        if (parametreBtn != null) navButtons.add(parametreBtn);
     }
 
     private void setActiveNav(Button active) {
@@ -141,6 +193,10 @@ public class InterfaceGeneralController {
             active.getStyleClass().add("nav-active");
         }
     }
+
+    // =========================
+    // Overlay
+    // =========================
     @FXML
     private void closeOverlay() {
         overlay.setVisible(false);
@@ -151,10 +207,11 @@ public class InterfaceGeneralController {
     @FXML
     private void openProfile() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Profile/ProfilePage.fxml"));
-            Node view = loader.load();
+            Loaded<com.advisora.GUI.Profil.ProfileController> loaded =
+                    loadViewWithController("/GUI/Profile/ProfilePage.fxml");
 
-            com.advisora.GUI.Profil.ProfileController ctrl = loader.getController();
+            Node view = loaded.root;
+            com.advisora.GUI.Profil.ProfileController ctrl = loaded.controller;
             ctrl.setOnClose(this::closeOverlay);
 
             modalBox.getChildren().setAll(view);
@@ -163,31 +220,34 @@ public class InterfaceGeneralController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Profile", buildErrorMessage(e));
         }
     }
+
+    // =========================
+    // Pages
+    // =========================
     @FXML
     private void handleOpenHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
-            Parent root = loader.load();
-            HomeController controller = loader.getController();
-            controller.setOnOpenGames(this::handleOpenGames);
-            contentHost.getChildren().setAll(root);
+            Loaded<HomeController> loaded = loadViewWithController("/views/Home.fxml");
+            loaded.controller.setOnOpenGames(this::handleOpenGames);
+
+            contentHost.getChildren().setAll(loaded.root);
             setActiveNav(homeBtn);
         } catch (Exception ex) {
-            showError("Home", ex.getMessage());
+            showError("Home", buildErrorMessage(ex));
         }
     }
 
     private void handleOpenGames() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/game/GameHub.fxml"));
-            Parent root = loader.load();
-            GameHubController controller = loader.getController();
-            controller.setOnBack(this::handleOpenHome);
-            contentHost.getChildren().setAll(root);
+            Loaded<GameHubController> loaded = loadViewWithController("/views/game/GameHub.fxml");
+            loaded.controller.setOnBack(this::handleOpenHome);
+
+            contentHost.getChildren().setAll(loaded.root);
         } catch (Exception ex) {
-            showError("Games", ex.getMessage());
+            showError("Games", buildErrorMessage(ex));
         }
     }
 
@@ -195,7 +255,7 @@ public class InterfaceGeneralController {
     private void handleOpenUsers() {
         UserRole r = SessionContext.getCurrentRole();
         if (r != UserRole.ADMIN) {
-            showError("Gestion Utilisateurs", "AccÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨s refusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©: ADMIN requis.");
+            showError("Gestion Utilisateurs", "Accès refusé: ADMIN requis.");
             return;
         }
         try {
@@ -203,7 +263,7 @@ public class InterfaceGeneralController {
             setActiveNav(usersBtn);
         } catch (Exception ex) {
             ex.printStackTrace();
-            showError("Gestion Utilisateurs", ex.getMessage());
+            showError("Gestion Utilisateurs", buildErrorMessage(ex));
         }
     }
 
@@ -218,7 +278,7 @@ public class InterfaceGeneralController {
             loadProjectListIntoContent();
             setActiveNav(projectsBtn);
         } catch (Exception ex) {
-            showError("Gestion Projets", ex.getMessage());
+            showError("Gestion Projets", buildErrorMessage(ex));
         }
     }
 
@@ -228,7 +288,7 @@ public class InterfaceGeneralController {
             loadIntoContent("/views/event/EventList.fxml");
             setActiveNav(eventsBtn);
         } catch (Exception ex) {
-            showError("Gestion Evenements", ex);
+            showError("Gestion Evenements", buildErrorMessage(ex));
         }
     }
 
@@ -241,12 +301,12 @@ public class InterfaceGeneralController {
             } else if (role == UserRole.ADMIN || role == UserRole.GERANT) {
                 loadIntoContent("/views/resource/InventoryDashboard.fxml");
             } else {
-                showError("Gestion Ressources", "Acces refuse.");
+                showError("Gestion Ressources", "Accès refusé.");
                 return;
             }
             setActiveNav(ressourceBtn);
         } catch (Exception ex) {
-            showError("Gestion Ressources", ex.getMessage());
+            showError("Gestion Ressources", buildErrorMessage(ex));
         }
     }
 
@@ -255,11 +315,14 @@ public class InterfaceGeneralController {
         try {
             UserRole r = SessionContext.getCurrentRole();
             if (r != UserRole.ADMIN && r != UserRole.GERANT) {
-                showError("Gestion Strategies", "AccÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨s refusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©: GERANT ou ADMIN requis.");
+                showError("Gestion Strategies", "Accès refusé: GERANT ou ADMIN requis.");
                 return;
             }
+
+            // ✅ LOAD THE STRATEGY PAGE (not InterfaceGeneral again)
             loadIntoContent("/views/strategie/interfaceStrategie.fxml");
             setActiveNav(strategiesBtn);
+
         } catch (Exception ex) {
             showError("Gestion Strategies", buildErrorMessage(ex));
         }
@@ -268,28 +331,30 @@ public class InterfaceGeneralController {
     @FXML
     private void handleOpenInvestissements() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/investissement/investissementContent.fxml"));
-            Parent root = loader.load();
-            InvestmentListController ctrl = loader.getController();
-            ctrl.setOnOpenTransactions(this::handleOpenTransactions);
-            contentHost.getChildren().setAll(root);
+            Loaded<InvestmentListController> loaded =
+                    loadViewWithController("/views/investissement/investissementContent.fxml");
+
+            loaded.controller.setOnOpenTransactions(this::handleOpenTransactions);
+
+            contentHost.getChildren().setAll(loaded.root);
             setActiveNav(investissementsBtn);
         } catch (Exception ex) {
-            showError("Gestion Investissements", ex.getMessage());
+            showError("Gestion Investissements", buildErrorMessage(ex));
         }
     }
 
     @FXML
     private void handleOpenTransactions() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/transaction/transactionContent.fxml"));
-            Parent root = loader.load();
-            TransactionListController ctrl = loader.getController();
-            ctrl.setOnOpenInvestissements(this::handleOpenInvestissements);
-            contentHost.getChildren().setAll(root);
+            Loaded<TransactionListController> loaded =
+                    loadViewWithController("/views/transaction/transactionContent.fxml");
+
+            loaded.controller.setOnOpenInvestissements(this::handleOpenInvestissements);
+
+            contentHost.getChildren().setAll(loaded.root);
             setActiveNav(investissementsBtn);
         } catch (Exception ex) {
-            showError("Gestion Transactions", ex.getMessage());
+            showError("Gestion Transactions", buildErrorMessage(ex));
         }
     }
 
@@ -308,97 +373,62 @@ public class InterfaceGeneralController {
             NotificationManager.getInstance().getNotifications().clear();
             SessionContext.clear();
 
-            Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
+            // ✅ bundle-enabled login load
+            Parent loginRoot = loadView("/GUI/Auth/login.fxml");
+
             Stage stage = (Stage) contentHost.getScene().getWindow();
-            SceneThemeApplier.setScene(stage, root);
+            SceneThemeApplier.setScene(stage, loginRoot);
             stage.setTitle("Advisora - Login");
 
         } catch (Exception ex) {
-            showError("Logout", ex.getMessage());
+            showError("Logout", buildErrorMessage(ex));
         }
     }
 
-
+    // =========================
+    // ✅ Content loaders (bundle)
+    // =========================
     private void loadIntoContent(String fxmlPath) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Parent root = loadView(fxmlPath);
         contentHost.getChildren().setAll(root);
     }
 
     private void loadProjectListIntoContent() throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
-        Parent root = loader.load();
-        com.advisora.GUI.Project.ProjectListController controller = loader.getController();
-        controller.setContentNavigator(view -> contentHost.getChildren().setAll(view));
-        contentHost.getChildren().setAll(root);
+        Loaded<com.advisora.GUI.Project.ProjectListController> loaded =
+                loadViewWithController("/views/project/ProjectList.fxml");
+
+        loaded.controller.setContentNavigator(view -> contentHost.getChildren().setAll(view));
+        contentHost.getChildren().setAll(loaded.root);
     }
 
-    private void showError(String header, String message) {
-        Alert a = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        a.setHeaderText(header);
-        a.showAndWait();
-    }
-
-    private void showError(String header, Throwable ex) {
-        String message = buildErrorMessage(ex);
-        Alert a = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        a.setHeaderText(header);
-        a.showAndWait();
-    }
-
-    private String buildErrorMessage(Throwable ex) {
-        if (ex == null) {
-            return "Erreur inconnue.";
-        }
-        StringBuilder sb = new StringBuilder();
-        Throwable cur = ex;
-        int depth = 0;
-        while (cur != null && depth < 4) {
-            if (depth == 0) {
-                sb.append(cur.getClass().getSimpleName()).append(": ");
-                sb.append(cur.getMessage() == null ? "(no message)" : cur.getMessage());
-            } else {
-                sb.append("\nCause ").append(depth).append(": ");
-                sb.append(cur.getClass().getSimpleName()).append(": ");
-                sb.append(cur.getMessage() == null ? "(no message)" : cur.getMessage());
-            }
-            cur = cur.getCause();
-            depth++;
-        }
-        return sb.toString();
-    }
+    // =========================
+    // Notifications UI
+    // =========================
     @FXML
     private void handleNotificationClick() {
         try {
-            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ toggle close if already open
             if (notificationPanel != null && popupLayer.getChildren().contains(notificationPanel)) {
                 popupLayer.getChildren().remove(notificationPanel);
                 notificationPanel = null;
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Notification.fxml"));
-            notificationPanel = loader.load();
-
+            Parent panel = loadView("/views/Notification.fxml");
+            notificationPanel = (HBox) panel;
             popupLayer.getChildren().add(notificationPanel);
 
-            // Let CSS/layout compute real size
             notificationPanel.applyCss();
             notificationPanel.layout();
 
-            // Button bounds in scene coordinates
             Bounds b = notificationButton.localToScene(notificationButton.getBoundsInLocal());
-
-            // Convert scene coords -> popupLayer coords
             Point2D p = popupLayer.sceneToLocal(b.getMinX(), b.getMaxY());
 
             double panelW = notificationPanel.prefWidth(-1);
             double panelH = notificationPanel.prefHeight(-1);
 
             double x = p.getX() + b.getWidth() - panelW;
-            // aligned with button left
-            double y = p.getY() + 6;  // below button
+            double y = p.getY() + 6;
 
-            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ keep inside window
             double maxX = popupLayer.getWidth() - panelW - 10;
             double maxY = popupLayer.getHeight() - panelH - 10;
             x = Math.max(10, Math.min(x, maxX));
@@ -406,7 +436,6 @@ public class InterfaceGeneralController {
 
             notificationPanel.relocate(x, y);
 
-            // ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ close when clicking outside (without breaking other clicks)
             popupLayer.setOnMousePressed(e -> {
                 if (notificationPanel != null &&
                         !notificationPanel.getBoundsInParent().contains(e.getX(), e.getY())) {
@@ -418,9 +447,13 @@ public class InterfaceGeneralController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Notification", buildErrorMessage(e));
         }
     }
 
+    // =========================
+    // Voice / Theme
+    // =========================
     @FXML
     private void handleToggleVoiceAssistant() {
         Scene scene = contentHost != null ? contentHost.getScene() : null;
@@ -443,12 +476,24 @@ public class InterfaceGeneralController {
 
     private void refreshThemeToggleText() {
         if (themeToggleBtn == null) return;
-        themeToggleBtn.setText(ThemeManager.getCurrentMode() == ThemeMode.DARK ? "Mode clair" : "Mode nuit");
+        // ✅ keys you should add:
+        // top.themeLight / top.themeNight
+        themeToggleBtn.setText(
+                ThemeManager.getCurrentMode() == ThemeMode.DARK
+                        ? I18n.tr("top.themeLight")
+                        : I18n.tr("top.themeNight")
+        );
     }
 
     private void refreshVoiceToggleText() {
         if (voiceToggleBtn == null) return;
-        voiceToggleBtn.setText(VoiceAssistantManager.isEnabled() ? "Assistant ON" : "Assistant vocal");
+        // ✅ keys you should add:
+        // top.voiceOn / top.voiceOff
+        voiceToggleBtn.setText(
+                VoiceAssistantManager.isEnabled()
+                        ? I18n.tr("top.voiceOn")
+                        : I18n.tr("top.voiceOff")
+        );
     }
 
     private void hookVoiceToggleSync() {
@@ -469,14 +514,9 @@ public class InterfaceGeneralController {
         refreshVoiceToggleText();
     }
 
-
-
-
-
-
-
-
-
+    // =========================
+    // Notification badge
+    // =========================
     public void updateNotificationCount(int count) {
         if (count > 0) {
             notifCount.setText(String.valueOf(count));
@@ -487,6 +527,7 @@ public class InterfaceGeneralController {
             notificationBadge.setVisible(false);
         }
     }
+
     private void updateNotificationBadge() {
         int unread = NotificationManager.getInstance().getUnreadCount();
         boolean show = unread > 0;
@@ -499,27 +540,46 @@ public class InterfaceGeneralController {
         }
     }
 
+    // =========================
+    // Settings
+    // =========================
+    @FXML
     public void handleOpenSettings(ActionEvent actionEvent) {
-
-
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/parametres.fxml"));
-                Parent page = loader.load();
-
-                // ✅ show settings page inside main content area
-                contentHost.getChildren().setAll(page);
-
-                // optional: highlight nav button
-                if (parametreBtn != null) setActiveNav(parametreBtn);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                showError("Paramètres", buildErrorMessage(e));
-            }
+        try {
+            loadIntoContent("/views/parametres.fxml");
+            if (parametreBtn != null) setActiveNav(parametreBtn);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Paramètres", buildErrorMessage(e));
         }
-
-
-
     }
 
+    // =========================
+    // Errors
+    // =========================
+    private void showError(String header, String message) {
+        Alert a = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+        a.setHeaderText(header);
+        a.showAndWait();
+    }
 
+    private String buildErrorMessage(Throwable ex) {
+        if (ex == null) return "Erreur inconnue.";
+        StringBuilder sb = new StringBuilder();
+        Throwable cur = ex;
+        int depth = 0;
+        while (cur != null && depth < 4) {
+            if (depth == 0) {
+                sb.append(cur.getClass().getSimpleName()).append(": ");
+                sb.append(cur.getMessage() == null ? "(no message)" : cur.getMessage());
+            } else {
+                sb.append("\nCause ").append(depth).append(": ");
+                sb.append(cur.getClass().getSimpleName()).append(": ");
+                sb.append(cur.getMessage() == null ? "(no message)" : cur.getMessage());
+            }
+            cur = cur.getCause();
+            depth++;
+        }
+        return sb.toString();
+    }
+}

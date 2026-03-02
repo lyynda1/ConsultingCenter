@@ -26,29 +26,29 @@
                 <padding><Insets bottom="12" left="18" right="18" top="18" /></padding>
 
                 <HBox alignment="CENTER_LEFT">
-                    <Label styleClass="title" text="Gestion des Transactions">
+                    <Label styleClass="title" text="%trans.page.title">
                         <font><Font name="System Bold" size="31.0" /></font>
                     </Label>
                     <Region HBox.hgrow="ALWAYS" />
-                    <Button onAction="#openInvestissements" styleClass="btn-ghost" text="Investissements" />
-                    <Button onAction="#onOpenHistorique" styleClass="btn-ghost" text="Historique" />
-                    <Button onAction="#onExportPdf" styleClass="btn-ghost" text="Exporter PDF" />
-                    <Button onAction="#nouvelleTransaction" styleClass="btn-primary" text="+ Nouvelle Transaction" />
+                    <Button onAction="#openInvestissements" styleClass="btn-ghost" text="%trans.btn.investments" />
+                    <Button onAction="#onOpenHistorique" styleClass="btn-ghost" text="%trans.btn.history" />
+                    <Button onAction="#onExportPdf" styleClass="btn-ghost" text="%trans.btn.exportPdf" />
+                    <Button onAction="#nouvelleTransaction" styleClass="btn-primary" text="%trans.btn.new" />
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Region HBox.hgrow="ALWAYS" />
-                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher une transaction..." styleClass="search" />
+                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="%trans.search.prompt" styleClass="search" />
                     <MenuButton styleClass="btn-ghost" text="Filtrer ▾">
                         <items>
-                            <MenuItem onAction="#onSortDateDesc" text="Date récente" />
-                            <MenuItem onAction="#onSortDateAsc" text="Date ancienne" />
+                            <MenuItem onAction="#onSortDateDesc" text="%trans.sort.date.desc" />
+                            <MenuItem onAction="#onSortDateAsc" text="%trans.sort.date.asc" />
                             <SeparatorMenuItem />
-                            <MenuItem onAction="#onSortMontantDesc" text="Montant décroissant" />
-                            <MenuItem onAction="#onSortMontantAsc" text="Montant croissant" />
+                            <MenuItem onAction="#onSortMontantDesc" text="%trans.sort.amount.desc" />
+                            <MenuItem onAction="#onSortMontantAsc" text="%trans.sort.amount.asc" />
                             <SeparatorMenuItem />
-                            <MenuItem onAction="#onSortIdAsc" text="ID croissant" />
-                            <MenuItem onAction="#onSortIdDesc" text="ID décroissant" />
+                            <MenuItem onAction="#onSortIdAsc" text="%trans.sort.id.asc" />
+                            <MenuItem onAction="#onSortIdDesc" text="%trans.sort.id.desc" />
                         </items>
                     </MenuButton>
                 </HBox>
@@ -59,7 +59,7 @@
                             <StackPane>
                                 <Label text="📋" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="Total Transactions" />
+                            <Label styleClass="stat-label" text="%trans.stats.total" />
                         </HBox>
                         <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
                     </VBox>
@@ -68,7 +68,7 @@
                             <StackPane>
                                 <Label text="⏳" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="En attente" />
+                            <Label styleClass="stat-label" text="%trans.stats.pending" />
                         </HBox>
                         <Label fx:id="lblPending" styleClass="stat-value" text="0" />
                     </VBox>
@@ -77,7 +77,7 @@
                             <StackPane>
                                 <Label text="✅" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="Réussies" />
+                            <Label styleClass="stat-label" text="%trans.stats.success" />
                         </HBox>
                         <Label fx:id="lblSuccess" styleClass="stat-value" text="0" />
                     </VBox>
@@ -86,7 +86,7 @@
                             <StackPane>
                                 <Label text="💵" textFill="#ea7527"><font><Font size="20.0" /></font></Label>
                             </StackPane>
-                            <Label styleClass="stat-label" text="Total investi" />
+                            <Label styleClass="stat-label" text="%trans.stats.totalInvested" />
                         </HBox>
                         <Label fx:id="lblTotalInvesti" styleClass="stat-value" text="0" />
                     </VBox>

@@ -9,6 +9,7 @@ import com.advisora.Services.user.SessionContext;
 import com.advisora.Services.user.UserService;
 import com.advisora.utils.LocalSessionStore;
 import com.advisora.utils.TokenUtil;
+import com.advisora.utils.i18n.I18n;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +23,8 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+
+import java.net.URL;
 
 public class VerifyLoginCodeController {
 
@@ -165,9 +168,8 @@ public class VerifyLoginCodeController {
         try {
             stopResendCooldown(true);
 
-            Parent root = FXMLLoader.load(getClass().getResource("/GUI/Auth/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Admin/InterfaceGeneral.fxml"));
             Stage stage = (Stage) codeField.getScene().getWindow();
-            SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Login");
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +178,10 @@ public class VerifyLoginCodeController {
     }
 
     private void openGeneralInterface(User user) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InterfaceGeneral.fxml"));
+        URL url = getClass().getResource("/views/InterfaceGeneral.fxml");
+        if (url == null) throw new IllegalStateException("FXML not found: /views/InterfaceGeneral.fxml");
+
+        FXMLLoader loader = new FXMLLoader(url, I18n.bundle()); // ✅ IMPORTANT
         Parent root = loader.load();
 
         Stage stage = (Stage) codeField.getScene().getWindow();

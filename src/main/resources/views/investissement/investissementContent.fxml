@@ -26,29 +26,27 @@
                 <padding><Insets bottom="12" left="18" right="18" top="18" /></padding>
 
                 <HBox alignment="CENTER_LEFT">
-                    <Label styleClass="title" text="Gestion des Investissements">
+                    <Label fx:id="pageTitle" styleClass="title" text="Gestion des Investissements">
                         <font><Font name="System Bold" size="31.0" /></font>
                     </Label>
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button onAction="#openTransactions" styleClass="btn-ghost" text="Transactions" />
-                    <Button onAction="#openExchangeRate" styleClass="btn-ghost" text="💱 Taux de Change" />
-                    <Button onAction="#openMacroAnalysis" styleClass="btn-ghost" text="📊 Analyse Macro" />
-                    <Button onAction="#nouvelInvestissement" styleClass="btn-primary" text="+ Nouvel Investissement" />
-                </HBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Region HBox.hgrow="ALWAYS" />
-                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher un investissement..." styleClass="search" />
-                    <MenuButton styleClass="btn-ghost" text="Filtrer ▾">
+                    <Button fx:id="btnTransactions" onAction="#openTransactions" styleClass="btn-ghost" text="%invest.btn.transactions" />
+                    <Button fx:id="btnExchangeRate" onAction="#openExchangeRate" styleClass="btn-ghost" text="%invest.btn.exchangeRate" />
+                    <Button fx:id="btnMacro" onAction="#openMacroAnalysis" styleClass="btn-ghost" text="%invest.btn.macro" />
+                    <Button fx:id="btnNewInvestment" onAction="#nouvelInvestissement" styleClass="btn-primary" text="%invest.btn.new" />
+
+                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="%invest.search.prompt" styleClass="search" />
+
+                    <MenuButton fx:id="btnFilter" styleClass="btn-ghost" text="Filtrer ▾">
                         <items>
-                            <MenuItem onAction="#onSortCommentaireAsc" text="Commentaire A → Z" />
-                            <MenuItem onAction="#onSortCommentaireDesc" text="Commentaire Z → A" />
+                            <MenuItem fx:id="miCommentAsc" onAction="#onSortCommentaireAsc" text="%invest.sort.comment.asc" />
+                            <MenuItem fx:id="miCommentDesc" onAction="#onSortCommentaireDesc" text="%invest.sort.comment.desc" />
                             <SeparatorMenuItem />
-                            <MenuItem onAction="#onSortBudgetAsc" text="Budget croissant" />
-                            <MenuItem onAction="#onSortBudgetDesc" text="Budget décroissant" />
+                            <MenuItem fx:id="miBudgetAsc" onAction="#onSortBudgetAsc" text="%invest.sort.budget.asc" />
+                            <MenuItem fx:id="miBudgetDesc" onAction="#onSortBudgetDesc" text="%invest.sort.budget.desc" />
                             <SeparatorMenuItem />
-                            <MenuItem onAction="#onSortIdAsc" text="ID croissant" />
-                            <MenuItem onAction="#onSortIdDesc" text="ID décroissant" />
+                            <MenuItem fx:id="miIdAsc" onAction="#onSortIdAsc" text="%invest.sort.id.asc" />
+                            <MenuItem fx:id="miIdDesc" onAction="#onSortIdDesc" text="%invest.sort.id.desc" />
                         </items>
                     </MenuButton>
                 </HBox>

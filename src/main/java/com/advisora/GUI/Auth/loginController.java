@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Pattern;
+import com.advisora.utils.i18n.FxLoader;
+import com.advisora.utils.i18n.FxLoader.Loaded;
+import com.advisora.utils.i18n.I18n;
 
 public class loginController {
 
@@ -86,6 +89,10 @@ public class loginController {
         // âœ… auto-login after scene/window exists
         Platform.runLater(this::tryAutoLogin);
     }
+    private Parent loadView(String fxmlPath) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath), com.advisora.utils.i18n.I18n.bundle());
+        return loader.load();
+    }
 
     private void tryAutoLogin() {
         try {
@@ -123,10 +130,10 @@ public class loginController {
     // NAVIGATION
     // =========================
     @FXML
+
     private void handleOpenForgotPassword() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ForgotPassword.fxml"));
-            Parent root = loader.load();
+            Parent root = FxLoader.load("/views/ForgotPassword.fxml");
             Stage stage = (Stage) emailField.getScene().getWindow();
             SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Forgot Password");
@@ -139,8 +146,7 @@ public class loginController {
     @FXML
     private void handleOpenSignup() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Signup.fxml"));
-            Parent root = loader.load();
+            Parent root = FxLoader.load("/views/Signup.fxml");
             Stage stage = (Stage) emailField.getScene().getWindow();
             SceneThemeApplier.setScene(stage, root);
             stage.setTitle("Advisora - Sign up");
@@ -149,26 +155,23 @@ public class loginController {
             showLoginError(e.getMessage());
         }
     }
-
+    @FXML
     private void openGeneralInterface(User user) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InterfaceGeneral.fxml"));
-        Parent root = loader.load();
-
+        Parent root = FxLoader.load("/views/InterfaceGeneral.fxml");
         Stage stage = (Stage) emailField.getScene().getWindow();
         SceneThemeApplier.setScene(stage, root);
         stage.setTitle("Advisora - Interface Generale (" + user.getRole() + ")");
     }
-
+    @FXML
     private void openVerifyLoginCodePage(String email, boolean remember) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Auth/VerifyLoginCode.fxml"));
-            Parent root = loader.load();
+            Loaded<VerifyLoginCodeController> loaded =
+                    FxLoader.loadWithController("/GUI/Auth/VerifyLoginCode.fxml");
 
-            VerifyLoginCodeController c = loader.getController();
-            c.init(email, remember);
+            loaded.controller.init(email, remember);
 
             Stage stage = (Stage) emailField.getScene().getWindow();
-            SceneThemeApplier.setScene(stage, root);
+            SceneThemeApplier.setScene(stage, loaded.root);
             stage.setTitle("Advisora - Verify Login Code");
 
         } catch (Exception e) {

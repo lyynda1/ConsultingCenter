@@ -6,6 +6,7 @@ Role: Application bootstrap/entrypoint
 
 package com.advisora;
 
+import com.advisora.Services.TranslationService;
 import com.advisora.Services.event.EventThresholdService;
 import com.advisora.Services.event.EventReminderScheduler;
 import com.advisora.Services.projet.TaskService;
@@ -13,6 +14,7 @@ import com.advisora.Services.strategie.RiskContext;
 import com.advisora.Services.user.AdminAlertService;
 import com.advisora.Services.user.UserService;
 import com.advisora.utils.SceneThemeApplier;
+import com.advisora.utils.i18n.I18n;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,24 +25,48 @@ public class App extends Application {
     private final EventReminderScheduler eventReminderScheduler = new EventReminderScheduler();
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        RiskContext.init();
-        seedDefaultAdmin();
-        seedDemoTasksForNotifications();
-        scanAdminAlerts();
-        scanEventThresholds();
-        startEventReminders();
+    public void start(Stage primaryStage) {
+        try {
+            RiskContext.init();
+            seedDefaultAdmin();
+            seedDemoTasksForNotifications();
+            scanAdminAlerts();
+            scanEventThresholds();
+            startEventReminders();
 
-        String startView = "/GUI/Auth/login.fxml";
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(startView));
-        Parent root = loader.load();
-        Scene scene = SceneThemeApplier.createScene(root);
-        primaryStage.setTitle("Advisora - Login");
+            initLocaleFromPrefs();
+            System.out.println("Bundle test: " + com.advisora.utils.i18n.I18n.bundle().getString("nav.home"));// IMPORTANT
 
-        SceneThemeApplier.setScene(primaryStage, scene);
-        primaryStage.sceneProperty().addListener((obs, oldScene, newScene) -> SceneThemeApplier.apply(newScene));
+            Parent root = com.advisora.utils.i18n.FxLoader.load("/GUI/Auth/login.fxml");
 
-        primaryStage.show();
+            Scene scene = SceneThemeApplier.createScene(root);
+            primaryStage.setTitle("Advisora - Login");
+            SceneThemeApplier.setScene(primaryStage, scene);
+            primaryStage.sceneProperty().addListener((obs, oldScene, newScene) -> SceneThemeApplier.apply(newScene));
+            primaryStage.show();
+
+        } catch (Throwable t) {
+            // ✅ prints the REAL cause even if Maven hides it
+            t.printStackTrace();
+            System.exit(1);
+        }
+    }
+    private void initLocaleFromPrefs() {
+        try {
+            java.nio.file.Path p = java.nio.file.Path.of(System.getProperty("user.home"), ".advisora", "user_prefs.properties");
+            if (!java.nio.file.Files.exists(p)) {
+                I18n.setLocale(java.util.Locale.FRENCH);
+                return;
+            }
+            java.util.Properties props = new java.util.Properties();
+            try (var in = java.nio.file.Files.newInputStream(p)) {
+                props.load(in);
+            }
+            String lang = props.getProperty("language", "FR").trim();
+            I18n.setLocale("EN".equalsIgnoreCase(lang) ? java.util.Locale.ENGLISH : java.util.Locale.FRENCH);
+        } catch (Exception e) {
+            I18n.setLocale(java.util.Locale.FRENCH);
+        }
     }
     @Override
     public void stop() {
