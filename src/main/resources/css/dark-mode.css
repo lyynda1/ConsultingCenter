@@ -1,0 +1,135 @@
+.root {
+    -fx-base: #121820;
+    -fx-background: #121820;
+    -fx-control-inner-background: #1a2330;
+    -fx-accent: #47b384;
+    -fx-focus-color: #47b384;
+    -fx-faint-focus-color: rgba(71, 179, 132, 0.22);
+}
+
+.app {
+    -fx-background-color: linear-gradient(to bottom, #121820, #172233);
+}
+
+.label,
+.text,
+.text-field,
+.password-field,
+.check-box,
+.radio-button,
+.tab-label,
+.menu-item,
+.button {
+    -fx-text-fill: #e5ecf4;
+}
+
+.text-field,
+.password-field,
+.combo-box,
+.date-picker,
+.spinner,
+.list-view,
+.table-view,
+.tree-table-view,
+.tree-view,
+.text-area {
+    -fx-background-color: #1b2431;
+    -fx-control-inner-background: #1b2431;
+    -fx-text-fill: #e5ecf4;
+    -fx-prompt-text-fill: rgba(229, 236, 244, 0.55);
+    -fx-border-color: rgba(229, 236, 244, 0.16);
+}
+
+.button {
+    -fx-background-color: #2a3647;
+    -fx-border-color: rgba(229, 236, 244, 0.14);
+}
+
+.button:hover {
+    -fx-background-color: #34445a;
+}
+
+.sidebar {
+    -fx-background-color: #161f2b;
+    -fx-border-color: rgba(229, 236, 244, 0.1);
+}
+
+.sidebar .nav .nav-btn .label {
+    -fx-text-fill: #cfd9e4;
+}
+
+.sidebar .nav .nav-btn:hover,
+.sidebar .nav .nav-btn:hover .content {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+}
+
+.sidebar .nav .nav-btn.nav-active,
+.sidebar .nav .nav-btn.nav-active .content {
+    -fx-background-color: rgba(71, 179, 132, 0.2);
+}
+
+.sidebar .nav .nav-btn.nav-active .label {
+    -fx-text-fill: #eaf9f2;
+}
+
+.topbar {
+    -fx-background-color: rgba(22, 31, 43, 0.9);
+    -fx-border-color: rgba(229, 236, 244, 0.1);
+}
+
+.top-title {
+    -fx-text-fill: #f3f7fb;
+}
+
+.top-sub,
+.muted,
+.hint,
+.profile-role,
+.sidebar-foot {
+    -fx-text-fill: #aeb9c7;
+}
+
+.profile {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: rgba(229, 236, 244, 0.1);
+}
+
+.profile-name {
+    -fx-text-fill: #eaf1f8;
+}
+
+.card,
+.brand-card,
+.notification-panel,
+.notification-item {
+    -fx-background-color: #1a2432;
+    -fx-border-color: rgba(229, 236, 244, 0.1);
+}
+
+.notification-item:hover {
+    -fx-background-color: #233042;
+}
+
+.field-error {
+    -fx-text-fill: #ff7e7e;
+}
+
+.table-view .column-header-background,
+.table-view .column-header {
+    -fx-background-color: #223043;
+}
+
+.table-row-cell {
+    -fx-background-color: #1b2431;
+    -fx-text-fill: #e5ecf4;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #2d4e67;
+}
+
+.scroll-pane,
+.split-pane {
+    -fx-background: #121820;
+    -fx-background-color: #121820;
+}

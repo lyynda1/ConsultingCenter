@@ -1,0 +1,288 @@
+.gamehub-root {
+    -fx-background-color: #F6F3E7;
+}
+
+.gamehub-top,
+.gamehub-left,
+.gamehub-center,
+.gamehub-bottom {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.07);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 14, 0.14, 0, 5);
+}
+
+.gamehub-top,
+.gamehub-left,
+.gamehub-bottom {
+    -fx-padding: 2;
+}
+
+.gamehub-center {
+    -fx-padding: 16;
+}
+
+.gamehub-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #111827;
+}
+
+.gamehub-subtitle {
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #111827;
+}
+
+.gamehub-status {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #4b5563;
+}
+
+.gamehub-btn,
+.gamehub-btn-primary {
+    -fx-cursor: hand;
+    -fx-font-weight: 900;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 10 16 10 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+}
+
+.gamehub-btn-primary {
+    -fx-background-color: #E67A2E;
+    -fx-text-fill: white;
+}
+
+.gamehub-btn-primary:hover {
+    -fx-background-color: #CF6E29;
+}
+
+.gamehub-btn {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #111827;
+}
+
+.gamehub-btn:hover {
+    -fx-background-color: #e5e7eb;
+}
+
+.gamehub-list {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+
+.gamehub-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #111827;
+    -fx-padding: 12 10 12 10;
+}
+
+.gamehub-list .list-cell:filled:hover {
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+
+.gamehub-list .list-cell:filled:selected {
+    -fx-background-color: rgba(230,122,46,0.16);
+}
+
+.g2048-root {
+    -fx-padding: 12;
+    -fx-background-color: #f7f7f7;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+}
+
+.g2048-cell {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #111827;
+}
+
+.g2048-tile {
+    -fx-background-color: #d9d9d9;
+    -fx-background-radius: 8;
+}
+
+.g2048-v2 { -fx-text-fill: #374151; }
+.g2048-v4 { -fx-text-fill: #111827; }
+.g2048-v8,
+.g2048-v16,
+.g2048-v32,
+.g2048-v64,
+.g2048-v128,
+.g2048-v256,
+.g2048-v512,
+.g2048-v1024,
+.g2048-v2048 { -fx-text-fill: #b91c1c; }
+
+.game-status {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #374151;
+}
+
+.game-dir-btn {
+    -fx-cursor: hand;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #111827;
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.12);
+    -fx-border-width: 1;
+    -fx-padding: 6 14 6 14;
+}
+
+.game-dir-btn:hover {
+    -fx-background-color: #e5e7eb;
+}
+
+.chess-root {
+    -fx-padding: 8;
+    -fx-background-color: #f7f7f7;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+}
+
+.chess-cell {
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-font-family: "Segoe UI Symbol", "Noto Sans Symbols2", "Arial Unicode MS", "Segoe UI", sans-serif;
+}
+
+.chess-light {
+    -fx-background-color: #f1f5f9;
+}
+
+.chess-dark {
+    -fx-background-color: #94a3b8;
+}
+
+.chess-piece-white {
+    -fx-text-fill: #f97316;
+}
+
+.chess-piece-black {
+    -fx-text-fill: #111827;
+}
+
+.chess-outline-dark {
+    -fx-effect: dropshadow(gaussian, rgba(17,24,39,0.95), 2, 0.2, 0, 0);
+}
+
+.chess-outline-light {
+    -fx-effect: dropshadow(gaussian, rgba(248,250,252,0.95), 2, 0.2, 0, 0);
+}
+
+.chess-selected {
+    -fx-border-color: #10b981;
+    -fx-border-width: 3;
+}
+
+.chess-target {
+    -fx-border-color: #f59e0b;
+    -fx-border-width: 3;
+}
+
+.pacman-root {
+    -fx-padding: 8;
+    -fx-background-color: #0f172a;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+
+.snake-root {
+    -fx-padding: 8;
+    -fx-background-color: #0b1220;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+
+.ttt-root {
+    -fx-padding: 10;
+    -fx-background-color: #f7f7f7;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+}
+
+.ttt-cell {
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.15);
+    -fx-border-width: 1;
+}
+
+.ttt-cell:hover {
+    -fx-background-color: #f3f4f6;
+}
+
+.ttt-x {
+    -fx-text-fill: #E67A2E;
+}
+
+.ttt-o {
+    -fx-text-fill: #2563eb;
+}
+
+/* Dark mode fixes for Game Hub readability */
+.theme-dark .gamehub-root {
+    -fx-background-color: transparent;
+}
+
+.theme-dark .gamehub-top,
+.theme-dark .gamehub-left,
+.theme-dark .gamehub-center,
+.theme-dark .gamehub-bottom {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: rgba(237, 243, 251, 0.16);
+}
+
+.theme-dark .gamehub-title,
+.theme-dark .gamehub-subtitle {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .gamehub-status,
+.theme-dark .game-status {
+    -fx-text-fill: #c7d4e5;
+}
+
+.theme-dark .gamehub-list {
+    -fx-background-color: #243245;
+    -fx-border-color: rgba(237, 243, 251, 0.16);
+}
+
+.theme-dark .gamehub-list .list-cell {
+    -fx-text-fill: #edf3fb;
+}
+
+.theme-dark .gamehub-list .list-cell:filled:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.theme-dark .gamehub-list .list-cell:filled:selected {
+    -fx-background-color: rgba(243,155,76,0.28);
+    -fx-text-fill: #ffffff;
+}

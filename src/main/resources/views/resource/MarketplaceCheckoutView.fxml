@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.MarketplaceCheckoutController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="toolbar-card">
+        <Label text="Checkout + Livraison" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <Label text="Finalisez votre achat puis envoyez la commande au transporteur." styleClass="hint"/>
+
+    <VBox spacing="8" styleClass="wizard-box">
+        <Label text="Resume commande" styleClass="wizard-step"/>
+        <GridPane hgap="10" vgap="8">
+            <columnConstraints>
+                <ColumnConstraints minWidth="130"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <Label text="Ressource" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="lblResourceName" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Vendeur" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label fx:id="lblSeller" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Quantite" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label fx:id="lblQty" text="1" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Prix unitaire" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="lblUnitPrice" text="◎ 0.000 coins" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Total" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label fx:id="lblTotal" text="◎ 0.000 coins" styleClass="module-subtitle" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <VBox spacing="8" styleClass="wizard-box">
+        <Label text="Informations de livraison" styleClass="wizard-step"/>
+        <GridPane hgap="10" vgap="8">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <TextField fx:id="txtFirstName" promptText="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtLastName" promptText="Prenom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <TextField fx:id="txtCity" promptText="Ville" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtPhone" promptText="Telephone (recommande)" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <TextField fx:id="txtAddress" promptText="Adresse complete" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+            <TextField fx:id="txtPhone2" promptText="Telephone 2 (optionnel)" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        </GridPane>
+    </VBox>
+
+    <VBox spacing="8" styleClass="wizard-box">
+        <Label text="Paiement integre (ouverture automatique)" styleClass="wizard-step"/>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Provider"/>
+            <ComboBox fx:id="comboPaymentProvider" prefWidth="170"/>
+            <Label text="Le checkout s'ouvre automatiquement dans l'application." styleClass="hint"/>
+        </HBox>
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="surface-strip">
+        <Button text="Confirmer la commande" onAction="#onConfirmCheckout" styleClass="btn-primary"/>
+        <Button text="Annuler" onAction="#onCancel" styleClass="btn-ghost"/>
+        <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+    </HBox>
+</VBox>

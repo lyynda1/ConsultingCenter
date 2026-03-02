@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Project.NewsController"
+      spacing="10"
+      prefWidth="860"
+      prefHeight="620"
+      stylesheets="@../style/project-list.css"
+      styleClass="dialog-card">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label fx:id="lblProjectTitle" text="Project News" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnRefresh" text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+        <Button text="X" onAction="#onClose" styleClass="btn-close"/>
+    </HBox>
+
+    <ProgressIndicator fx:id="loadingIndicator" maxWidth="45" maxHeight="45"/>
+
+    <Label fx:id="lblStatus" styleClass="news-error" wrapText="true"/>
+    <Label fx:id="lblEmpty" styleClass="news-empty" wrapText="true"/>
+
+    <ListView fx:id="newsList" VBox.vgrow="ALWAYS" styleClass="news-list"/>
+</VBox>

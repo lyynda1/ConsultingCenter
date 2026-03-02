@@ -1,0 +1,230 @@
+.theme-dark {
+    -app-bg: #121821;
+    -surface-1: #1a2431;
+    -surface-2: #202d3d;
+    -surface-3: #243449;
+    -text-strong: #edf3fb;
+    -text-muted: #b6c3d3;
+    -border-soft: rgba(237, 243, 251, 0.16);
+    -accent-primary: #f39b4c;
+    -focus-ring: rgba(243, 155, 76, 0.55);
+}
+
+.theme-dark.app,
+.theme-dark .app {
+    -fx-background-color: linear-gradient(to bottom, #121821, #162232);
+}
+
+.theme-dark .sidebar,
+.theme-dark .brand-card,
+.theme-dark .profile {
+    -fx-background-color: -surface-3;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .topbar {
+    -fx-background-color: rgba(20, 29, 41, 0.92);
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .top-title,
+.theme-dark .module-title,
+.theme-dark .module-root .label,
+.theme-dark .home-page .label,
+.theme-dark .card-title,
+.theme-dark .stat-value,
+.theme-dark .profile-name,
+.theme-dark .home-hero-title,
+.theme-dark .home-section-title,
+.theme-dark .sidebar .nav .nav-btn .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .top-sub,
+.theme-dark .hint,
+.theme-dark .muted,
+.theme-dark .home-page .muted,
+.theme-dark .catalog-toolbar-caption,
+.theme-dark .stat-label,
+.theme-dark .card-meta,
+.theme-dark .profile-role,
+.theme-dark .sidebar-foot {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .card,
+.theme-dark .surface-panel,
+.theme-dark .toolbar-card,
+.theme-dark .resource-card,
+.theme-dark .stat-card,
+.theme-dark .reservation-section,
+.theme-dark .wizard-box,
+.theme-dark .review-panel,
+.theme-dark .notification-panel,
+.theme-dark .notification-item {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .module-root,
+.theme-dark .tab-pane {
+    -fx-background-color: linear-gradient(to bottom, #162232, #1a2638);
+}
+
+.theme-dark .module-root .text-field,
+.theme-dark .module-root .password-field,
+.theme-dark .module-root .combo-box,
+.theme-dark .module-root .text-area,
+.theme-dark .input,
+.theme-dark .search,
+.theme-dark .search-wrap {
+    -fx-background-color: #243245;
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+    -fx-prompt-text-fill: rgba(237, 243, 251, 0.55);
+}
+
+.theme-dark .text-field:focused,
+.theme-dark .password-field:focused,
+.theme-dark .combo-box:focused,
+.theme-dark .text-area:focused {
+    -fx-border-color: -focus-ring;
+}
+
+.theme-dark .icon-btn,
+.theme-dark .btn-ghost,
+.theme-dark .menu-ghost {
+    -fx-background-color: #28364a;
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .btn-primary {
+    -fx-background-color: -accent-primary;
+    -fx-text-fill: #0f1822;
+}
+
+.theme-dark .sidebar .nav .nav-btn:hover,
+.theme-dark .sidebar .nav .nav-btn:hover .content {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+}
+
+.theme-dark .sidebar .nav .nav-btn {
+    -fx-opacity: 1;
+}
+
+.theme-dark .sidebar .nav .nav-btn .label {
+    -fx-text-fill: #e7eef8;
+    -fx-opacity: 1;
+}
+
+.theme-dark .sidebar .nav .nav-btn.nav-active,
+.theme-dark .sidebar .nav .nav-btn.nav-active .content {
+    -fx-background-color: rgba(243, 155, 76, 0.30);
+}
+
+.theme-dark .sidebar .nav .nav-btn.nav-active .label {
+    -fx-text-fill: #ffffff;
+}
+
+.theme-dark .combo-box-base > .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .combo-box .arrow {
+    -fx-background-color: -text-muted;
+}
+
+.theme-dark .combo-box-popup .list-view {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .combo-box-popup .list-cell:hover,
+.theme-dark .combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: rgba(243, 155, 76, 0.2);
+}
+
+.theme-dark .context-menu {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: -border-soft;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 4;
+}
+
+.theme-dark .context-menu .separator .line {
+    -fx-border-color: rgba(237, 243, 251, 0.14);
+}
+
+.theme-dark .context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+}
+
+.theme-dark .context-menu .menu-item > .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .context-menu .menu-item:hover,
+.theme-dark .context-menu .menu-item:focused {
+    -fx-background-color: rgba(243, 155, 76, 0.22);
+}
+
+.theme-dark .context-menu .menu-item:disabled > .label {
+    -fx-text-fill: rgba(237, 243, 251, 0.45);
+}
+
+.theme-dark .status-accepted {
+    -fx-background-color: rgba(46, 163, 106, 0.26);
+    -fx-text-fill: #d8ffe9;
+}
+
+.theme-dark .status-pending {
+    -fx-background-color: rgba(244, 197, 66, 0.24);
+    -fx-text-fill: #fff1c3;
+}
+
+.theme-dark .status-refused {
+    -fx-background-color: rgba(230, 84, 84, 0.24);
+    -fx-text-fill: #ffd5d5;
+}
+
+.theme-dark .table-view,
+.theme-dark .list-view {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .table-view .column-header-background,
+.theme-dark .table-view .column-header {
+    -fx-background-color: -surface-2;
+}
+
+.theme-dark .table-row-cell {
+    -fx-background-color: -surface-1;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .table-row-cell:odd {
+    -fx-background-color: #223244;
+}
+
+.theme-dark .table-row-cell:selected,
+.theme-dark .list-cell:selected {
+    -fx-background-color: rgba(243, 155, 76, 0.25);
+}
+
+.theme-dark .button:disabled,
+.theme-dark .text-field:disabled,
+.theme-dark .password-field:disabled,
+.theme-dark .combo-box:disabled,
+.theme-dark .menu-button:disabled {
+    -fx-opacity: 0.75;
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.MarketplaceSellController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="toolbar-card">
+        <Label text="Publier une annonce" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+        <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
+    </HBox>
+
+    <Label text="Vente rapide: selectionner la ressource, saisir quantite et prix, puis publier." styleClass="hint"/>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Ressource" styleClass="module-subtitle"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Total:" styleClass="hint"/>
+        <Label fx:id="lblSellReservationsCount" text="0" styleClass="hint"/>
+    </HBox>
+    <HBox styleClass="surface-strip">
+        <ComboBox fx:id="comboSellResource" prefWidth="540" promptText="Selectionnez une ressource"/>
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="wizard-box">
+        <Label text="Quantite"/>
+        <TextField fx:id="txtSellQuantity" promptText="ex: 1" prefWidth="120"/>
+        <Label text="Prix unitaire"/>
+        <TextField fx:id="txtSellPrice" promptText="ex: 45.0" prefWidth="140"/>
+        <Button text="Importer image" onAction="#onChooseImage" styleClass="btn-ghost"/>
+        <Label fx:id="lblImageName" text="Aucune image" styleClass="hint"/>
+        <Button text="Publier" onAction="#onPublishListing" styleClass="btn-primary"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblSellGuide" text="Selectionnez une ressource." styleClass="hint"/>
+    </HBox>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>
