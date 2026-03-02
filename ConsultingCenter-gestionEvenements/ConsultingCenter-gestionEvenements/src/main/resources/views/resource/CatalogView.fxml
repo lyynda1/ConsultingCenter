@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.CatalogController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <Label text="Catalogue &amp; Reservation" styleClass="module-title"/>
+    <Label text="Interface simplifiee pour consulter, rechercher et reserver rapidement." styleClass="catalog-toolbar-caption"/>
+
+    <VBox spacing="10" styleClass="toolbar-card toolbar-catalog">
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="catalog-filter-row">
+            <VBox spacing="6">
+                <Label text="Fournisseur"/>
+                <ComboBox fx:id="comboSupplier" prefWidth="250"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Statut"/>
+                <ComboBox fx:id="comboStatusFilter" prefWidth="170"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Recherche dynamique"/>
+                <TextField fx:id="txtSearchCatalog"
+                           promptText="Nom, statut, prix, stock, fournisseur..." HBox.hgrow="ALWAYS"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Prix"/>
+                <ComboBox fx:id="comboPriceFilter" prefWidth="150"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Stock"/>
+                <ComboBox fx:id="comboStockFilter" prefWidth="150"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Projet (optionnel)"/>
+                <ComboBox fx:id="comboProject" prefWidth="250"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Quantite"/>
+                <TextField fx:id="txtQuantity" prefWidth="90" text="1"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="catalog-action-row">
+            <Button text="Reserver" onAction="#onReserve" styleClass="btn-primary"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <MenuButton text="" styleClass="options-trigger">
+                <graphic>
+                    <Label text="+" styleClass="menu-trigger-icon"/>
+                </graphic>
+                <items>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Label text="ACTIONS RAPIDES" styleClass="menu-section-title"/>
+                        </content>
+                    </CustomMenuItem>
+                    <MenuItem text="Ouvrir Mini Shop" onAction="#onOpenMiniShop">
+                        <graphic>
+                            <Label text="&#128722;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <SeparatorMenuItem/>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Label text="SUIVI" styleClass="menu-section-title"/>
+                        </content>
+                    </CustomMenuItem>
+                    <MenuItem text="Mes reservations" onAction="#onOpenReservations">
+                        <graphic>
+                            <Label text="&#128203;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="Statistiques" onAction="#onStatistics">
+                        <graphic>
+                            <Label text="&#128202;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="Export PDF" onAction="#onExportPdf">
+                        <graphic>
+                            <Label text="&#128462;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Refresh" onAction="#onRefresh">
+                        <graphic>
+                            <Label text="&#8635;" styleClass="menu-item-icon"/>
+                        </graphic>
+                    </MenuItem>
+                </items>
+            </MenuButton>
+        </HBox>
+    </VBox>
+
+    <HBox fillHeight="true" spacing="16" styleClass="stats">
+        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+            <styleClass>
+                <String fx:value="stat-card"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                    <Label text="&#128203;" styleClass="stat-icon-text"/>
+                </StackPane>
+                <Label text="Total ressources" styleClass="stat-label"/>
+            </HBox>
+            <Label fx:id="lblTotalResources" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+            <styleClass>
+                <String fx:value="stat-card"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                    <Label text="&#128230;" styleClass="stat-icon-text"/>
+                </StackPane>
+                <Label text="Stock reserve" styleClass="stat-label"/>
+            </HBox>
+            <Label fx:id="lblReservedStock" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+            <styleClass>
+                <String fx:value="stat-card"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <StackPane styleClass="stat-icon-chip stat-icon-green">
+                    <Label text="&#9989;" styleClass="stat-icon-text"/>
+                </StackPane>
+                <Label text="Stock disponible" styleClass="stat-label"/>
+            </HBox>
+            <Label fx:id="lblAvailableStock" text="0" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+    <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+        <ListView fx:id="listResources" VBox.vgrow="ALWAYS" styleClass="card-list"/>
+    </VBox>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>

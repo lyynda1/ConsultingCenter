@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Investissement.MacroAnalysisController"
+      spacing="16" styleClass="dialog-card" minWidth="460" maxWidth="520">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" styleClass="dialog-header">
+        <Label text="📊 Analyse Macro-Économique" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✖" onAction="#close" styleClass="btn-ghost"/>
+    </HBox>
+
+    <Label text="Tunisie (TN) — données World Bank (aucune clé requise)"
+           style="-fx-text-fill: #999; -fx-font-size: 11px;"/>
+
+    <Separator/>
+
+    <!-- ── Loading / Error ────────────────────────────────────── -->
+    <Label fx:id="statusLabel" text="⏳ Récupération des données World Bank..."
+           style="-fx-text-fill: #777; -fx-font-size: 13px;" wrapText="true"/>
+
+    <!-- ── Indicators Grid ────────────────────────────────────── -->
+    <VBox fx:id="dataPane" visible="false" managed="false" spacing="14">
+
+        <!-- Section title -->
+        <Label text="📈 Indicateurs macro-économiques"
+               style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #444;"/>
+
+        <GridPane hgap="20" vgap="10">
+            <padding><Insets top="2" bottom="2"/></padding>
+
+            <!-- Inflation -->
+            <Label text="📈  Inflation (CPI annual %)" style="-fx-font-size: 13px;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="inflLabel" text="—"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E97B2C;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Label fx:id="inflYearLabel" text=""
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaa;"
+                   GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+
+            <!-- Lending rate -->
+            <Label text="🏦  Taux d'intérêt (Lending rate %)" style="-fx-font-size: 13px;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="lendLabel" text="—"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E97B2C;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label fx:id="lendYearLabel" text=""
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaa;"
+                   GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+
+            <!-- GDP growth -->
+            <Label text="🌍  Croissance PIB (GDP growth %)" style="-fx-font-size: 13px;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="gdpLabel" text="—"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E97B2C;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            <Label fx:id="gdpYearLabel" text=""
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaa;"
+                   GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <Separator/>
+
+        <!-- Section: Risk -->
+        <Label text="⚠️  Niveau de risque macro-économique"
+               style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #444;"/>
+
+        <HBox spacing="14" alignment="CENTER_LEFT">
+            <Label fx:id="riskBadge" text="— / 100"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 6 16 6 16;
+                          -fx-background-radius: 999; -fx-background-color: #eee;"/>
+            <VBox spacing="3">
+                <Label fx:id="riskLevelLabel" text="—"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label fx:id="riskScoreLabel" text=""
+                       style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+            </VBox>
+        </HBox>
+
+        <Separator/>
+
+        <!-- Section: Adjusted ROI -->
+        <Label text="💰  Rentabilité ajustée (ROI)"
+               style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #444;"/>
+
+        <GridPane hgap="20" vgap="7">
+            <Label text="ROI brut supposé :" style="-fx-font-size: 13px;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label text="12.00 %" style="-fx-font-size: 13px;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label fx:id="inflDeductLabel" text="Inflation :"
+                   style="-fx-font-size: 13px; -fx-text-fill: #e05252;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="inflDeductValue" text="— %"
+                   style="-fx-font-size: 13px; -fx-text-fill: #e05252;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label fx:id="riskPremLabel" text="Prime de risque :"
+                   style="-fx-font-size: 13px; -fx-text-fill: #e05252;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="riskPremValue" text="— %"
+                   style="-fx-font-size: 13px; -fx-text-fill: #e05252;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <!-- Big adjusted ROI result -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="ROI Ajusté :" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+            <Label fx:id="adjRoiLabel" text="— %"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+        </HBox>
+
+        <Label text="* ROI brut supposé = 12% (hypothèse standard). Basé sur données World Bank."
+               style="-fx-font-size: 10px; -fx-text-fill: #bbb;" wrapText="true"/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_RIGHT" spacing="8">
+        <Button text="← Retour" onAction="#close" styleClass="btn-ghost"/>
+    </HBox>
+
+</VBox>
+

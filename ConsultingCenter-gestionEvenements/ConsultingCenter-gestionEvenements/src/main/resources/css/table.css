@@ -1,0 +1,78 @@
+/* Outer teal card */
+.user-table-card {
+    -fx-background-color: transparent;        /* teal background like your example */
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+}
+
+/* Title bar (USERS) */
+.user-table-title {
+    -fx-text-fill: black;
+    -fx-font-size: 29px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 0 12 0;
+    -fx-alignment: left;
+}
+
+/* The white table panel inside the card */
+.user-table-view {
+    -fx-background-color: transparent;        /* white background like your example */
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent;   /* remove grid lines */
+}
+
+/* Column header background (row with Picture / Name / …) */
+.user-table-view .column-header-background {
+    -fx-background-color: #f1db9a;
+    -fx-background-radius: 8 8 0 0;
+}
+
+/* Individual header cells */
+.user-table-view .column-header,
+.user-table-view .filler {
+    -fx-size: 32px;
+    -fx-border-color: transparent transparent #d6d6d6 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Header text */
+.user-table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+/* Row height */
+.user-table-view .table-row-cell {
+    -fx-cell-size: 70px;     /* taller rows like screenshot */
+}
+
+/* Zebra rows */
+.user-table-view .table-row-cell:even {
+    -fx-background-color: #ffffff;
+}
+.user-table-view .table-row-cell:odd {
+    -fx-background-color: #f4fbfb;
+}
+
+/* Row separators */
+.user-table-view .table-row-cell {
+    -fx-border-color: transparent transparent #e4e4e4 transparent;
+}
+
+/* Hover / selection */
+.user-table-view .table-row-cell:hover {
+    -fx-background-color: #e0f3f4;
+}
+.user-table-view .table-row-cell:selected {
+    -fx-background-color: #ffedb9;
+    -fx-text-fill: white;
+}
+
+/* Placeholder ("No content in table") */
+.user-table-view .placeholder .label {
+    -fx-text-fill: #9b9b9b;
+    -fx-font-style: italic;
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="pageRoot" styleClass="page-root" stylesheets="@/css/strategie-list.css"
+           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.advisora.GUI.Investissement.InvestmentListController">
+
+    <BorderPane fx:id="mainPane" styleClass="page">
+
+        <top>
+            <VBox spacing="12" styleClass="header">
+                <padding><Insets bottom="12" left="18" right="18" top="18" /></padding>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="title" text="Gestion des Investissements">
+                        <font><Font name="System Bold" size="31.0" /></font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button onAction="#openTransactions" styleClass="btn-ghost" text="Transactions" />
+                    <Button onAction="#openExchangeRate" styleClass="btn-ghost" text="💱 Taux de Change" />
+                    <Button onAction="#openMacroAnalysis" styleClass="btn-ghost" text="📊 Analyse Macro" />
+                    <Button onAction="#nouvelInvestissement" styleClass="btn-primary" text="+ Nouvel Investissement" />
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtSearch" onKeyReleased="#onSearch" promptText="Rechercher un investissement..." styleClass="search" />
+                    <MenuButton styleClass="btn-ghost" text="Filtrer ▾">
+                        <items>
+                            <MenuItem onAction="#onSortCommentaireAsc" text="Commentaire A → Z" />
+                            <MenuItem onAction="#onSortCommentaireDesc" text="Commentaire Z → A" />
+                            <SeparatorMenuItem />
+                            <MenuItem onAction="#onSortBudgetAsc" text="Budget croissant" />
+                            <MenuItem onAction="#onSortBudgetDesc" text="Budget décroissant" />
+                            <SeparatorMenuItem />
+                            <MenuItem onAction="#onSortIdAsc" text="ID croissant" />
+                            <MenuItem onAction="#onSortIdDesc" text="ID décroissant" />
+                        </items>
+                    </MenuButton>
+                </HBox>
+
+
+            </VBox>
+        </top>
+
+        <center>
+            <VBox fillWidth="true" styleClass="content" spacing="16">
+                <padding><Insets bottom="18" left="18" right="18" top="14" /></padding>
+                <VBox fx:id="chartContainer" styleClass="chart-section" prefHeight="400" maxHeight="600" VBox.vgrow="NEVER" />
+                <ListView fx:id="investmentList" styleClass="card-list" VBox.vgrow="ALWAYS" />
+            </VBox>
+        </center>
+    </BorderPane>
+
+    <StackPane fx:id="overlay" visible="false" managed="false" styleClass="overlay">
+        <VBox fx:id="modalBox" styleClass="dialog-host" />
+    </StackPane>
+</StackPane>
