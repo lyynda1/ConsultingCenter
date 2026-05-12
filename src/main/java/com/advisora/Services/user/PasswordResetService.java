@@ -2,11 +2,16 @@ package com.advisora.Services.user;
 
 import com.advisora.Model.user.User;
 import com.advisora.utils.EmailSender;
+import com.advisora.utils.MailConfig;
 import com.advisora.utils.MyConnection;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.SecureRandom;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class PasswordResetService {
@@ -14,20 +19,12 @@ public class PasswordResetService {
     private final UserService userService = new UserService();
     private final SecureRandom rnd = new SecureRandom();
 
-    // Configure once (or load from config/env)
-    private final EmailSender mailer = new EmailSender(
-            "smtp.gmail.com", 587,
-            "lyynda19@gmaiL.com",
-            "bsiy vjdy yaep ikom"
-    );
-
     public boolean requestCode(String email) {
         email = safe(email);
         if (email.isEmpty()) return false;
 
         User u = userService.getByEmail(email);
         if (u == null) {
-            // Security: donâ€™t reveal if email exists
             return false;
         }
 
@@ -36,7 +33,6 @@ public class PasswordResetService {
         LocalDateTime expires = LocalDateTime.now().plusMinutes(10);
 
         try (Connection conn = MyConnection.getInstance().getConnection()) {
-            // Optional: invalidate older unused codes
             try (PreparedStatement ps = conn.prepareStatement(
                     "UPDATE password_reset SET used_at=NOW() WHERE user_id=? AND used_at IS NULL"
             )) {
@@ -62,7 +58,7 @@ public class PasswordResetService {
                         "This code expires in 10 minutes.\n" +
                         "If you did not request this, ignore this email.";
 
-        mailer.send(email, subject, body);
+        createEmailSender().send(email, subject, body);
         return true;
     }
 
@@ -77,8 +73,6 @@ public class PasswordResetService {
         if (u == null) return false;
 
         try (Connection conn = MyConnection.getInstance().getConnection()) {
-
-            // get latest unused code
             int resetId = -1;
             String codeHash = null;
             Timestamp expiresAt = null;
@@ -104,7 +98,7 @@ public class PasswordResetService {
             }
 
             if (expiresAt == null || expiresAt.before(new Timestamp(System.currentTimeMillis()))) {
-                markUsed(conn, resetId); // expire it
+                markUsed(conn, resetId);
                 return false;
             }
 
@@ -124,11 +118,9 @@ public class PasswordResetService {
 
             if (!ok) return false;
 
-            // âœ… Update password
             String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt(10));
             userService.updatePasswordHashed(u.getId(), hashed);
 
-            // mark code used
             markUsed(conn, resetId);
             return true;
 
@@ -149,6 +141,37 @@ public class PasswordResetService {
     private String generate6DigitCode() {
         int x = rnd.nextInt(900000) + 100000;
         return String.valueOf(x);
+    }
+
+    private EmailSender createEmailSender() {
+        String host = config("ADVISORA_SMTP_HOST", MailConfig.SMTP_HOST);
+        String portText = config("ADVISORA_SMTP_PORT", String.valueOf(MailConfig.SMTP_PORT));
+        String user = config("ADVISORA_SMTP_USER", MailConfig.USERNAME);
+        String password = config("ADVISORA_SMTP_PASSWORD", MailConfig.APP_PASSWORD);
+
+        if (user == null || user.isBlank() || password == null || password.isBlank()) {
+            throw new RuntimeException("SMTP credentials missing. Set ADVISORA_SMTP_USER and ADVISORA_SMTP_PASSWORD or update MailConfig.");
+        }
+
+        int port;
+        try {
+            port = Integer.parseInt(portText);
+        } catch (Exception ex) {
+            port = 587;
+        }
+        return new EmailSender(host, port, user, password);
+    }
+
+    private String config(String key, String fallback) {
+        String env = System.getenv(key);
+        if (env != null && !env.isBlank()) {
+            return env.trim();
+        }
+        String prop = System.getProperty(key);
+        if (prop != null && !prop.isBlank()) {
+            return prop.trim();
+        }
+        return fallback;
     }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }

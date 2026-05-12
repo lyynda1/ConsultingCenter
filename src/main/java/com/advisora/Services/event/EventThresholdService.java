@@ -4,6 +4,7 @@ import com.advisora.Model.strategie.Notification;
 import com.advisora.Services.strategie.NotificationManager;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.EmailSender;
+import com.advisora.utils.MailConfig;
 import com.advisora.utils.MyConnection;
 
 import java.sql.Connection;
@@ -37,6 +38,15 @@ public class EventThresholdService {
     }
 
     private List<ThresholdCandidate> findDueCandidates() {
+        try (Connection cnx = MyConnection.getInstance().getConnection()) {
+            if (!columnExists(cnx, "events", "minReservationThreshold")
+                    || !columnExists(cnx, "events", "thresholdDeadline")) {
+                return List.of();
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Erreur scan seuil reservations: " + ex.getMessage(), ex);
+        }
+
         String sql = "SELECT e.idEv, e.titleEv, e.capaciteEvnt, e.minReservationThreshold, "
                 + "COALESCE(SUM(CASE WHEN COALESCE(b.bookingStatus,'CONFIRMED') IN ('CONFIRMED','PENDING_PAYMENT') THEN b.numTicketBk ELSE 0 END),0) AS reservedSeats "
                 + "FROM events e "
@@ -64,6 +74,24 @@ public class EventThresholdService {
             throw new RuntimeException("Erreur scan seuil reservations: " + ex.getMessage(), ex);
         }
         return list;
+    }
+
+    private boolean columnExists(Connection cnx, String table, String column) throws SQLException {
+        String sql = """
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = ?
+                  AND column_name = ?
+                LIMIT 1
+                """;
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, table);
+            ps.setString(2, column);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
     }
 
     private void cancelEventAndBookings(int eventId) {
@@ -149,30 +177,7 @@ public class EventThresholdService {
     }
 
     private EmailSender createEmailSender() {
-        String host = getenvTrim("ADVISORA_SMTP_HOST", "smtp.gmail.com");
-        String portText = getenvTrim("ADVISORA_SMTP_PORT", "587");
-        String user = getenvTrim("ADVISORA_SMTP_USER", null);
-        String password = getenvTrim("ADVISORA_SMTP_PASSWORD", null);
-
-        if (user == null || password == null) {
-            return null;
-        }
-
-        int port;
-        try {
-            port = Integer.parseInt(portText);
-        } catch (Exception ex) {
-            port = 587;
-        }
-        return new EmailSender(host, port, user, password);
-    }
-
-    private String getenvTrim(String key, String fallback) {
-        String value = System.getenv(key);
-        if (value == null || value.isBlank()) {
-            return fallback;
-        }
-        return value.trim();
+        return MailConfig.createSenderOrNull();
     }
 
     private double round2(double value) {
@@ -187,4 +192,3 @@ public class EventThresholdService {
         int reservedSeats;
     }
 }
-

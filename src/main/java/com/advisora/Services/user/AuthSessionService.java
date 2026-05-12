@@ -63,8 +63,8 @@ public class AuthSessionService {
         LocalDateTime expires = LocalDateTime.now().plusDays(SESSION_DAYS);
 
         String sql = """
-            INSERT INTO auth_session(user_id, token_hash, device_name, expires_at, last_seen_at, ip_address)
-            VALUES(?, ?, ?, ?, NOW(), ?)
+            INSERT INTO auth_session(user_id, token_hash, device_name, expires_at, last_seen_at, ip_address, created_at)
+            VALUES(?, ?, ?, ?, NOW(), ?, NOW())
         """;
 
         try (Connection conn = MyConnection.getInstance().getConnection();

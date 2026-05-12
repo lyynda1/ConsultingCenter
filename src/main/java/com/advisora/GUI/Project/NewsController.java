@@ -17,6 +17,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.awt.Desktop;
 import java.net.URI;
@@ -67,7 +68,10 @@ public class NewsController {
     private void onClose() {
         if (onClose != null) {
             onClose.run();
+            return;
         }
+        Stage stage = (Stage) lblProjectTitle.getScene().getWindow();
+        stage.close();
     }
 
     private void loadNews(boolean forceRefresh) {
@@ -259,4 +263,3 @@ public class NewsController {
         void open(NewsArticle article);
     }
 }
-

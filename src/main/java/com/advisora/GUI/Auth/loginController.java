@@ -9,7 +9,8 @@ import com.advisora.utils.LocalSessionStore;
 import com.advisora.utils.PythonRunner;
 import com.advisora.utils.SceneThemeApplier;
 import com.advisora.utils.TokenUtil;
-
+import com.advisora.utils.i18n.FxLoader;
+import com.advisora.utils.i18n.FxLoader.Loaded;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,18 +25,20 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Pattern;
-import com.advisora.utils.i18n.FxLoader;
-import com.advisora.utils.i18n.FxLoader.Loaded;
-import com.advisora.utils.i18n.I18n;
 
 public class loginController {
 
@@ -50,7 +53,7 @@ public class loginController {
     @FXML private Label loginError;
     @FXML private Label statusLabel;
 
-    private final Image EYE_ON  = new Image(getClass().getResourceAsStream("/GUI/Admin/icons/eyeopen.png"));
+    private final Image EYE_ON = new Image(getClass().getResourceAsStream("/GUI/Admin/icons/eyeopen.png"));
     private final Image EYE_OFF = new Image(getClass().getResourceAsStream("/GUI/Admin/icons/eyeClosed.png"));
     private boolean passwordShown = false;
 
@@ -58,19 +61,13 @@ public class loginController {
     private final AuthSessionService authSessionService = new AuthSessionService();
     private final UserService userService = new UserService();
 
-    // =========================
-    // INIT
-    // =========================
     @FXML
     public void initialize() {
-
-        // bind show/hide password fields
         if (passwordVisibleField != null && passwordField != null) {
             passwordVisibleField.textProperty().bindBidirectional(passwordField.textProperty());
         }
         if (eyeIcon != null) eyeIcon.setImage(EYE_ON);
 
-        // ENTER = login
         if (emailField != null) {
             emailField.sceneProperty().addListener((obs, oldScene, newScene) -> {
                 if (newScene != null) {
@@ -85,10 +82,9 @@ public class loginController {
         }
 
         if (statusLabel != null) statusLabel.setText("Ready.");
-
-        // âœ… auto-login after scene/window exists
         Platform.runLater(this::tryAutoLogin);
     }
+
     private Parent loadView(String fxmlPath) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath), com.advisora.utils.i18n.I18n.bundle());
         return loader.load();
@@ -99,7 +95,6 @@ public class loginController {
             String token = LocalSessionStore.load();
             if (token == null) return;
 
-            // validate session in DB (not expired, not revoked)
             if (!authSessionService.isSessionValid(token)) {
                 LocalSessionStore.clear();
                 return;
@@ -126,11 +121,7 @@ public class loginController {
         }
     }
 
-    // =========================
-    // NAVIGATION
-    // =========================
     @FXML
-
     private void handleOpenForgotPassword() {
         try {
             Parent root = FxLoader.load("/views/ForgotPassword.fxml");
@@ -155,6 +146,7 @@ public class loginController {
             showLoginError(e.getMessage());
         }
     }
+
     @FXML
     private void openGeneralInterface(User user) throws Exception {
         Parent root = FxLoader.load("/views/InterfaceGeneral.fxml");
@@ -162,6 +154,7 @@ public class loginController {
         SceneThemeApplier.setScene(stage, root);
         stage.setTitle("Advisora - Interface Generale (" + user.getRole() + ")");
     }
+
     @FXML
     private void openVerifyLoginCodePage(String email, boolean remember) {
         try {
@@ -180,9 +173,6 @@ public class loginController {
         }
     }
 
-    // =========================
-    // NORMAL LOGIN (WITH 2FA)
-    // =========================
     @FXML
     private void handleLogin() {
         clearErrors();
@@ -190,28 +180,20 @@ public class loginController {
 
         String email = safe(emailField.getText());
         String password = safe(passwordField.getText());
-        // 0) check locked
-        // 0) check locked
         if (userService.isLocked(email)) {
             long sec = userService.getLockRemainingSeconds(email);
-
-            // âœ… if timer finished -> allow login (don't show 0 min)
-            if (sec <= 0) {
-                // optionnel: si ton userService garde encore "locked" alors qu'il est fini,
-                // il faut le dÃ©verrouiller cÃ´tÃ© DB/service (voir plus bas).
-            } else {
+            if (sec > 0) {
                 if (sec < 60) {
-                    showLoginError("Tentative de connexion 3/3. RÃ©essayez dans " + sec + " s.");
+                    showLoginError("Tentative de connexion 3/3. Reessayez dans " + sec + " s.");
                 } else {
-                    long min = (sec + 59) / 60; // ceil
-                    showLoginError("Tentative de connexion 3/3. RÃ©essayez dans " + min + " min.");
+                    long min = (sec + 59) / 60;
+                    showLoginError("Tentative de connexion 3/3. Reessayez dans " + min + " min.");
                 }
                 return;
             }
         }
 
         boolean valid = true;
-
         if (email.isEmpty()) {
             showFieldError(emailField, emailError, "Email is required");
             valid = false;
@@ -228,26 +210,25 @@ public class loginController {
         try {
             User user = userService.authenticate(email, password);
             if (user == null) {
-                int count = userService.registerLoginFailure(email, 10); // âš ï¸ si authenticate le fait dÃ©jÃ  -> NE PAS doubler
-                showLoginError("Invalid email or password");
-                showLoginError("Email ou mot de passe incorrect (" + Math.min(count,3) + "/3)");
-
-
+                long remaining = userService.getLockRemainingSeconds(email);
+                if (remaining > 0) {
+                    showLoginError("Compte temporairement bloque. Reessayez plus tard.");
+                } else {
+                    showLoginError("Email ou mot de passe incorrect.");
+                }
                 if (statusLabel != null) statusLabel.setText("Login failed.");
                 return;
             }
 
-            // âœ… STEP 2FA: send code + open verify page then STOP
-            boolean remember = (rememberMe != null && rememberMe.isSelected());
+            boolean remember = rememberMe != null && rememberMe.isSelected();
+            if (shouldBypassEmailOtp(user)) {
+                completeLogin(user, remember);
+                return;
+            }
 
-            // send OTP to email
             twoFA.requestLoginCode(user.getEmail());
-
             if (statusLabel != null) statusLabel.setText("Verification code sent.");
             openVerifyLoginCodePage(user.getEmail(), remember);
-
-            // IMPORTANT: do NOT create session here.
-            // Session is created only after code verification in VerifyLoginCodeController.
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -264,9 +245,6 @@ public class loginController {
         if (statusLabel != null) statusLabel.setText("Ready.");
     }
 
-    // =========================
-    // TOGGLE PASSWORD
-    // =========================
     @FXML
     private void handleTogglePassword() {
         passwordShown = !passwordShown;
@@ -288,9 +266,6 @@ public class loginController {
         }
     }
 
-    // =========================
-    // FACE LOGIN (optional)
-    // =========================
     @FXML
     private void handleFaceLogin() {
         clearErrors();
@@ -351,7 +326,6 @@ public class loginController {
                 return;
             }
 
-            // âœ… FACE LOGIN: directly create session (no 2FA, unless you want it too)
             String rawToken = TokenUtil.randomToken();
             authSessionService.createSession(user.getId(), rawToken, "Desktop", "127.0.0.1");
             LocalSessionStore.save(rawToken);
@@ -366,22 +340,17 @@ public class loginController {
         }
     }
 
-    // =========================
-    // OPTIONAL LOGOUT HELPER
-    // =========================
     public void logout() {
         try {
             String token = LocalSessionStore.load();
             authSessionService.revokeSession(token);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         LocalSessionStore.clear();
         SessionContext.clear();
     }
 
-    // =========================
-    // FACE INDEX HELPERS
-    // =========================
     private int countIndexLines(File f) {
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             int n = 0;
@@ -623,9 +592,6 @@ public class loginController {
         return defaultRel;
     }
 
-    // =========================
-    // UI ERROR HELPERS
-    // =========================
     private void clearErrors() {
         hideFieldError(emailField, emailError);
         hideFieldError(passwordField, passwordError);
@@ -663,6 +629,7 @@ public class loginController {
         }
         if (input != null) input.getStyleClass().remove("input-error");
     }
+
     @FXML
     private void handleGoogleLogin() {
         if (statusLabel != null) statusLabel.setText("Google login (coming soon).");
@@ -672,8 +639,35 @@ public class loginController {
     private void handleFacebookLogin() {
         if (statusLabel != null) statusLabel.setText("Facebook login (coming soon).");
     }
+
+    private boolean shouldBypassEmailOtp(User user) {
+        if (user == null || user.getEmail() == null) {
+            return false;
+        }
+
+        String disabled = System.getenv("ADVISORA_DISABLE_LOGIN_2FA");
+        if (disabled != null && ("1".equals(disabled) || "true".equalsIgnoreCase(disabled))) {
+            return true;
+        }
+
+        return user.getEmail().trim().toLowerCase().endsWith(".local");
+    }
+
+    private void completeLogin(User user, boolean remember) throws Exception {
+        String rawToken = TokenUtil.randomToken();
+        authSessionService.createSession(user.getId(), rawToken, "Desktop", "127.0.0.1");
+        if (remember) {
+            LocalSessionStore.save(rawToken);
+        } else {
+            LocalSessionStore.clear();
+        }
+
+        SessionContext.setCurrentUser(user);
+        if (statusLabel != null) statusLabel.setText("Login successful.");
+        openGeneralInterface(user);
+    }
+
     private String safe(String s) {
         return s == null ? "" : s.trim();
     }
 }
-

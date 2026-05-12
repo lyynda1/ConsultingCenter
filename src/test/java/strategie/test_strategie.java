@@ -21,7 +21,6 @@ public class test_strategie {
     @Test
     void strategie_default_values_are_initialized() {
         Strategie s = new Strategie();
-        assertEquals(1, s.getVersion());
         assertEquals(StrategyStatut.EN_COURS, s.getStatut());
     }
 
@@ -129,7 +128,6 @@ public class test_strategie {
 
         Strategie s = new Strategie();
         s.setNomStrategie("Strategie croissance");
-        s.setVersion(1);
         s.setStatut(StrategyStatut.EN_COURS);
         s.setTypeStrategie(TypeStrategie.AUTRE);
         s.setDureeTerme(180);

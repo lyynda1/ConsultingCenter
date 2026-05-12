@@ -753,7 +753,10 @@ public class ProjectListController implements Initializable {
             if (contentNavigator != null) {
                 controller.setOnBack(() -> {
                     try {
-                        FXMLLoader projectLoader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
+                        FXMLLoader projectLoader = new FXMLLoader(
+                                getClass().getResource("/views/project/ProjectList.fxml"),
+                                com.advisora.utils.i18n.I18n.bundle()
+                        );
                         Parent projectRoot = projectLoader.load();
                         ProjectListController projectController = projectLoader.getController();
                         projectController.setContentNavigator(contentNavigator);
@@ -963,7 +966,10 @@ public class ProjectListController implements Initializable {
             if (contentNavigator != null) {
                 controller.setOnBack(() -> {
                     try {
-                        FXMLLoader projectLoader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
+                        FXMLLoader projectLoader = new FXMLLoader(
+                                getClass().getResource("/views/project/ProjectList.fxml"),
+                                com.advisora.utils.i18n.I18n.bundle()
+                        );
                         Parent projectRoot = projectLoader.load();
                         ProjectListController projectController = projectLoader.getController();
                         projectController.setContentNavigator(contentNavigator);
@@ -991,7 +997,10 @@ public class ProjectListController implements Initializable {
             if (contentNavigator != null) {
                 controller.setOnBack(() -> {
                     try {
-                        FXMLLoader projectLoader = new FXMLLoader(getClass().getResource("/views/project/ProjectList.fxml"));
+                        FXMLLoader projectLoader = new FXMLLoader(
+                                getClass().getResource("/views/project/ProjectList.fxml"),
+                                com.advisora.utils.i18n.I18n.bundle()
+                        );
                         Parent projectRoot = projectLoader.load();
                         ProjectListController projectController = projectLoader.getController();
                         projectController.setContentNavigator(contentNavigator);
@@ -1395,6 +1404,5 @@ public class ProjectListController implements Initializable {
 
 
 }
-
 
 

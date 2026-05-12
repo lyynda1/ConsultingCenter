@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 public class EventBookingService {
     private final EventQrTicketService qrTicketService = new EventQrTicketService();
+    private final Map<String, Boolean> columnCache = new HashMap<>();
 
     public void createBooking(int clientId, int eventId, int seats) {
         createBookingAndReturnId(clientId, eventId, seats);
@@ -93,14 +94,10 @@ public class EventBookingService {
         if (bookingId <= 0) {
             return null;
         }
-        String sql = "SELECT b.idBk, b.bookingDate, b.numTicketBk, b.totalPrixBk, b.idEv, e.titleEv, e.startDateEv, e.endDateEv, e.currencyCode, b.idUser, b.bookingStatus, b.paymentReference, b.refundAmountBk, b.refundDateBk, b.cancelReasonBk, b.notificationSentBk, b.qrTokenBk, b.qrImagePathBk, "
-                + "CONCAT(COALESCE(u.PrenomUser,''), ' ', COALESCE(u.nomUser,'')) AS clientName, u.EmailUser AS clientEmail "
-                + "FROM bookings b "
-                + "JOIN events e ON e.idEv = b.idEv "
-                + "LEFT JOIN `user` u ON u.idUser = b.idUser "
-                + "WHERE b.idBk = ?";
-
-        List<EventBooking> list = queryBookings(sql, ps -> ps.setInt(1, bookingId));
+        List<EventBooking> list = queryBookings(
+                cnx -> buildBookingSelect(cnx, false, null) + " WHERE b.idBk = ?",
+                ps -> ps.setInt(1, bookingId)
+        );
         return list.isEmpty() ? null : list.getFirst();
     }
 
@@ -139,24 +136,24 @@ public class EventBookingService {
         }
 
         String reminderColumn = hoursBefore == 48 ? "reminder48SentBk" : "reminder24SentBk";
-        String sql = "SELECT b.idBk, b.bookingDate, b.numTicketBk, b.totalPrixBk, b.idEv, e.titleEv, e.startDateEv, e.endDateEv, e.currencyCode, b.idUser, b.bookingStatus, b.paymentReference, b.refundAmountBk, b.refundDateBk, b.cancelReasonBk, b.notificationSentBk, b.qrTokenBk, b.qrImagePathBk, b."
-                + reminderColumn + ", u.EmailUser AS clientEmail, "
-                + "CONCAT(COALESCE(u.PrenomUser,''), ' ', COALESCE(u.nomUser,'')) AS clientName "
-                + "FROM bookings b "
-                + "JOIN events e ON e.idEv = b.idEv "
-                + "LEFT JOIN `user` u ON u.idUser = b.idUser "
-                + "WHERE COALESCE(b.bookingStatus,'CONFIRMED')='CONFIRMED' "
-                + "AND e.startDateEv > NOW() "
-                + "AND e.startDateEv <= DATE_ADD(NOW(), INTERVAL ? HOUR) "
-                + "AND e.startDateEv > DATE_ADD(NOW(), INTERVAL ? HOUR) "
-                + "AND COALESCE(b." + reminderColumn + ", FALSE)=FALSE "
-                + "ORDER BY e.startDateEv ASC";
+        if (!hasReminderColumn(reminderColumn)) {
+            return Collections.emptyList();
+        }
 
         int lowerBound = Math.max(0, hoursBefore - 24);
-        return queryBookings(sql, ps -> {
-            ps.setInt(1, hoursBefore);
-            ps.setInt(2, lowerBound);
-        });
+        return queryBookings(
+                cnx -> buildBookingSelect(cnx, true, reminderColumn)
+                        + " WHERE COALESCE(b.bookingStatus,'CONFIRMED')='CONFIRMED' "
+                        + "AND e.startDateEv > NOW() "
+                        + "AND e.startDateEv <= DATE_ADD(NOW(), INTERVAL ? HOUR) "
+                        + "AND e.startDateEv > DATE_ADD(NOW(), INTERVAL ? HOUR) "
+                        + "AND COALESCE(b." + reminderColumn + ", FALSE)=FALSE "
+                        + "ORDER BY e.startDateEv ASC",
+                ps -> {
+                    ps.setInt(1, hoursBefore);
+                    ps.setInt(2, lowerBound);
+                }
+        );
     }
 
     public void markReminderSent(int bookingId, int hoursBefore) {
@@ -164,6 +161,9 @@ public class EventBookingService {
             return;
         }
         String reminderColumn = hoursBefore == 48 ? "reminder48SentBk" : "reminder24SentBk";
+        if (!hasReminderColumn(reminderColumn)) {
+            return;
+        }
         String sql = "UPDATE bookings SET " + reminderColumn + "=TRUE WHERE idBk=?";
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -235,26 +235,17 @@ public class EventBookingService {
     }
 
     public List<EventBooking> listByClient(int clientId) {
-        String sql = "SELECT b.idBk, b.bookingDate, b.numTicketBk, b.totalPrixBk, b.idEv, e.titleEv, e.startDateEv, e.endDateEv, e.currencyCode, b.idUser, b.bookingStatus, b.paymentReference, b.refundAmountBk, b.refundDateBk, b.cancelReasonBk, b.notificationSentBk, b.qrTokenBk, b.qrImagePathBk, "
-            + "u.EmailUser AS clientEmail, "
-                + "CONCAT(COALESCE(u.PrenomUser,''), ' ', COALESCE(u.nomUser,'')) AS clientName "
-                + "FROM bookings b "
-                + "JOIN events e ON e.idEv = b.idEv "
-                + "LEFT JOIN `user` u ON u.idUser = b.idUser "
-                + "WHERE b.idUser = ? "
-                + "ORDER BY b.bookingDate DESC";
-        return queryBookings(sql, ps -> ps.setInt(1, clientId));
+        return queryBookings(
+                cnx -> buildBookingSelect(cnx, false, null) + " WHERE b.idUser = ? ORDER BY b.bookingDate DESC",
+                ps -> ps.setInt(1, clientId)
+        );
     }
 
     public List<EventBooking> listAll() {
-        String sql = "SELECT b.idBk, b.bookingDate, b.numTicketBk, b.totalPrixBk, b.idEv, e.titleEv, e.startDateEv, e.endDateEv, e.currencyCode, b.idUser, b.bookingStatus, b.paymentReference, b.refundAmountBk, b.refundDateBk, b.cancelReasonBk, b.notificationSentBk, b.qrTokenBk, b.qrImagePathBk, "
-            + "u.EmailUser AS clientEmail, "
-                + "CONCAT(COALESCE(u.PrenomUser,''), ' ', COALESCE(u.nomUser,'')) AS clientName "
-                + "FROM bookings b "
-                + "JOIN events e ON e.idEv = b.idEv "
-                + "LEFT JOIN `user` u ON u.idUser = b.idUser "
-                + "ORDER BY b.bookingDate DESC";
-        return queryBookings(sql, null);
+        return queryBookings(
+                cnx -> buildBookingSelect(cnx, false, null) + " ORDER BY b.bookingDate DESC",
+                null
+        );
     }
 
     public Map<Integer, Integer> getReservedSeatsByEventIds(List<Integer> eventIds) {
@@ -272,8 +263,8 @@ public class EventBookingService {
         }
 
         String sql = "SELECT idEv, COALESCE(SUM(numTicketBk),0) AS reserved "
-            + "FROM bookings WHERE idEv IN (" + placeholders + ") "
-            + "AND COALESCE(bookingStatus,'CONFIRMED') IN ('CONFIRMED','PENDING_PAYMENT') GROUP BY idEv";
+                + "FROM bookings WHERE idEv IN (" + placeholders + ") "
+                + "AND COALESCE(bookingStatus,'CONFIRMED') IN ('CONFIRMED','PENDING_PAYMENT') GROUP BY idEv";
         Map<Integer, Integer> reserved = new HashMap<>();
         try (Connection cnx = MyConnection.getInstance().getConnection();
              PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -294,9 +285,9 @@ public class EventBookingService {
         return reserved;
     }
 
-    private List<EventBooking> queryBookings(String sql, PreparedStatementConfigurer configurer) {
+    private List<EventBooking> queryBookings(SqlBuilder sqlBuilder, PreparedStatementConfigurer configurer) {
         try (Connection cnx = MyConnection.getInstance().getConnection();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+             PreparedStatement ps = cnx.prepareStatement(sqlBuilder.build(cnx))) {
             if (configurer != null) {
                 configurer.configure(ps);
             }
@@ -336,6 +327,25 @@ public class EventBookingService {
         } catch (SQLException ex) {
             throw new RuntimeException("Erreur lecture reservations: " + ex.getMessage(), ex);
         }
+    }
+
+    private String buildBookingSelect(Connection cnx, boolean includeReminder, String reminderColumn) throws SQLException {
+        String currencyExpr = hasColumn(cnx, "events", "currencyCode") ? "e.currencyCode" : "'TND'";
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT b.idBk, b.bookingDate, b.numTicketBk, b.totalPrixBk, b.idEv, ")
+                .append("e.titleEv, e.startDateEv, e.endDateEv, ")
+                .append(currencyExpr).append(" AS currencyCode, ")
+                .append("b.idUser, b.bookingStatus, b.paymentReference, b.refundAmountBk, ")
+                .append("b.refundDateBk, b.cancelReasonBk, b.notificationSentBk, b.qrTokenBk, b.qrImagePathBk");
+        if (includeReminder && reminderColumn != null) {
+            sql.append(", b.").append(reminderColumn);
+        }
+        sql.append(", u.EmailUser AS clientEmail, ")
+                .append("CONCAT(COALESCE(u.PrenomUser,''), ' ', COALESCE(u.nomUser,'')) AS clientName ")
+                .append("FROM bookings b ")
+                .append("JOIN events e ON e.idEv = b.idEv ")
+                .append("LEFT JOIN `user` u ON u.idUser = b.idUser");
+        return sql.toString();
     }
 
     private EventInfo lockEventInfo(Connection cnx, int eventId) throws SQLException {
@@ -431,6 +441,40 @@ public class EventBookingService {
         }
     }
 
+    private boolean hasReminderColumn(String reminderColumn) {
+        try (Connection cnx = MyConnection.getInstance().getConnection()) {
+            return hasColumn(cnx, "bookings", reminderColumn);
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+
+    private boolean hasColumn(Connection cnx, String table, String column) throws SQLException {
+        String cacheKey = table + "." + column;
+        Boolean cached = columnCache.get(cacheKey);
+        if (cached != null) {
+            return cached;
+        }
+
+        String sql = """
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = ?
+                  AND column_name = ?
+                LIMIT 1
+                """;
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, table);
+            ps.setString(2, column);
+            try (ResultSet rs = ps.executeQuery()) {
+                boolean exists = rs.next();
+                columnCache.put(cacheKey, exists);
+                return exists;
+            }
+        }
+    }
+
     private double round2(double value) {
         return Math.round(value * 100.0) / 100.0;
     }
@@ -469,5 +513,9 @@ public class EventBookingService {
     private interface PreparedStatementConfigurer {
         void configure(PreparedStatement ps) throws SQLException;
     }
-}
 
+    @FunctionalInterface
+    private interface SqlBuilder {
+        String build(Connection cnx) throws SQLException;
+    }
+}

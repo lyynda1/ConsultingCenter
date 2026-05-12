@@ -10,6 +10,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class UserService implements IService<User> {
 
@@ -42,7 +43,7 @@ public class UserService implements IService<User> {
             }
 
             try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
-                ps.setString(1, "00000000");
+                ps.setString(1, findAvailableSystemCin(conn));
                 ps.setString(2, adminEmail);
                 ps.setString(3, BCrypt.hashpw(adminPassword, BCrypt.gensalt(12)));
                 ps.setString(4, "Admin");
@@ -57,6 +58,32 @@ public class UserService implements IService<User> {
             }
         } catch (SQLException e) {
             throw new RuntimeException("ensureDefaultAdminAccount failed: " + e.getMessage(), e);
+        }
+    }
+
+    private String findAvailableSystemCin(Connection conn) throws SQLException {
+        String candidate = "00000000";
+        if (!cinExists(conn, candidate)) {
+            return candidate;
+        }
+
+        for (int attempt = 0; attempt < 1000; attempt++) {
+            candidate = String.format("%08d", ThreadLocalRandom.current().nextInt(0, 100_000_000));
+            if (!cinExists(conn, candidate)) {
+                return candidate;
+            }
+        }
+
+        throw new SQLException("no available CIN for default admin");
+    }
+
+    private boolean cinExists(Connection conn, String cin) throws SQLException {
+        String sql = "SELECT 1 FROM `user` WHERE cin = ? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, cin);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
         }
     }
 
@@ -539,4 +566,3 @@ public class UserService implements IService<User> {
         return BCrypt.hashpw(p, BCrypt.gensalt(12)); // 12 rounds is a good default
     }
 }
-

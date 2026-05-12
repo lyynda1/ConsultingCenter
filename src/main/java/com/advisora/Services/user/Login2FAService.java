@@ -1,24 +1,20 @@
 package com.advisora.Services.user;
 
-import com.advisora.utils.MyConnection;
 import com.advisora.utils.EmailSender;
+import com.advisora.utils.MailConfig;
+import com.advisora.utils.MyConnection;
 
-import java.sql.*;
 import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Random;
 
 public class Login2FAService {
 
     private static final int OTP_MINUTES = 10;
-
-    // âœ… configure ton sender une seule fois
-    private final EmailSender sender = new EmailSender(
-            "smtp.gmail.com",
-            587,
-            "lyynda19@gmail.com",
-            "bsiy vjdy yaep ikom" // mot de passe dâ€™application
-    );
 
     public void requestLoginCode(String email) {
         String code = generate6Digits();
@@ -32,9 +28,9 @@ public class Login2FAService {
         """;
 
         String insertSql = """
-    INSERT INTO otp_code(email, purpose, code_hash, expires_at)
-    VALUES(?, 'LOGIN', ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))
-""";
+            INSERT INTO otp_code(email, purpose, code_hash, expires_at)
+            VALUES(?, 'LOGIN', ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))
+        """;
         try (Connection conn = MyConnection.getInstance().getConnection()) {
             conn.setAutoCommit(false);
 
@@ -55,10 +51,9 @@ public class Login2FAService {
             throw new RuntimeException("requestLoginCode failed: " + e.getMessage(), e);
         }
 
-        // âœ… send email (instance method)
         String subject = "Advisora login verification code";
         String body = "Your login code is: " + code + "\n\nThis code expires in " + OTP_MINUTES + " minutes.";
-        sender.send(email, subject, body);
+        createEmailSender().send(email, subject, body);
     }
 
     public boolean verifyLoginCode(String email, String code) {
@@ -116,5 +111,36 @@ public class Login2FAService {
         } catch (Exception e) {
             throw new RuntimeException("sha256 failed", e);
         }
+    }
+
+    private EmailSender createEmailSender() {
+        String host = config("ADVISORA_SMTP_HOST", MailConfig.SMTP_HOST);
+        String portText = config("ADVISORA_SMTP_PORT", String.valueOf(MailConfig.SMTP_PORT));
+        String user = config("ADVISORA_SMTP_USER", MailConfig.USERNAME);
+        String password = config("ADVISORA_SMTP_PASSWORD", MailConfig.APP_PASSWORD);
+
+        if (user == null || user.isBlank() || password == null || password.isBlank()) {
+            throw new RuntimeException("SMTP credentials missing. Set ADVISORA_SMTP_USER and ADVISORA_SMTP_PASSWORD or update MailConfig.");
+        }
+
+        int port;
+        try {
+            port = Integer.parseInt(portText);
+        } catch (Exception ex) {
+            port = 587;
+        }
+        return new EmailSender(host, port, user, password);
+    }
+
+    private String config(String key, String fallback) {
+        String env = System.getenv(key);
+        if (env != null && !env.isBlank()) {
+            return env.trim();
+        }
+        String prop = System.getProperty(key);
+        if (prop != null && !prop.isBlank()) {
+            return prop.trim();
+        }
+        return fallback;
     }
 }

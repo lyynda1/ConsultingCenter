@@ -4,19 +4,16 @@ import com.advisora.Model.event.EventBooking;
 import com.advisora.Services.strategie.NotificationManager;
 import com.advisora.enums.UserRole;
 import com.advisora.utils.EmailSender;
+import com.advisora.utils.MailConfig;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EventNotificationService {
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static final Map<String, String> DOTENV_CACHE = new HashMap<>();
 
     private final EventBookingService bookingService;
 
@@ -129,30 +126,30 @@ public class EventNotificationService {
 
     private void sendEmailIfPossible(String recipient, String subject, String body) {
         if (recipient == null || recipient.isBlank()) {
-            System.err.println("[EVENT-NOTIF] âœ— Email skipped: No recipient email provided");
+            System.err.println("[EVENT-NOTIF] Email skipped: No recipient email provided");
             return;
         }
-        EmailSender sender = buildSenderFromEnv();
+        EmailSender sender = buildSender();
         if (sender == null) {
-            System.err.println("[EVENT-NOTIF] âœ— Email skipped: SMTP credentials not configured (check .env file)");
+            System.err.println("[EVENT-NOTIF] Email skipped: SMTP credentials not configured");
             return;
         }
         try {
             sender.send(recipient.trim(), subject, body);
         } catch (Exception ex) {
-            System.err.println("[EVENT-NOTIF] âœ— Email failed: " + ex.getMessage());
+            System.err.println("[EVENT-NOTIF] Email failed: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
     private void sendEmailWithQrIfPossible(String recipient, String subject, String body, String qrImagePath, int bookingId) {
         if (recipient == null || recipient.isBlank()) {
-            System.err.println("[EVENT-NOTIF] âœ— Email+QR skipped: No recipient email provided");
+            System.err.println("[EVENT-NOTIF] Email+QR skipped: No recipient email provided");
             return;
         }
-        EmailSender sender = buildSenderFromEnv();
+        EmailSender sender = buildSender();
         if (sender == null) {
-            System.err.println("[EVENT-NOTIF] âœ— Email+QR skipped: SMTP credentials not configured (check .env file)");
+            System.err.println("[EVENT-NOTIF] Email+QR skipped: SMTP credentials not configured");
             return;
         }
         try {
@@ -164,80 +161,21 @@ public class EventNotificationService {
                     "ticket-booking-" + bookingId + ".png"
             );
         } catch (Exception ex) {
-            System.err.println("[EVENT-NOTIF] âœ— Email+QR failed: " + ex.getMessage());
+            System.err.println("[EVENT-NOTIF] Email+QR failed: " + ex.getMessage());
             ex.printStackTrace();
             System.out.println("[EVENT-NOTIF] Attempting to send without attachment...");
             sendEmailIfPossible(recipient, subject, body);
         }
     }
 
-    private EmailSender buildSenderFromEnv() {
-        String host = config("ADVISORA_SMTP_HOST", "smtp.gmail.com");
-        String portText = config("ADVISORA_SMTP_PORT", "587");
-        String user = config("ADVISORA_SMTP_USER", null);
-        String password = config("ADVISORA_SMTP_PASSWORD", null);
-        
-        System.out.println("[EVENT-NOTIF] Building EmailSender - Host: " + host + " | Port: " + portText + " | User: " + (user != null ? user : "NOT SET"));
-        
-        if (user == null || password == null) {
-            System.err.println("[EVENT-NOTIF] âœ— SMTP credentials missing! Set ADVISORA_SMTP_USER and ADVISORA_SMTP_PASSWORD in .env");
-            return null;
+    private EmailSender buildSender() {
+        EmailSender sender = MailConfig.createSenderOrNull();
+        if (sender == null) {
+            System.err.println("[EVENT-NOTIF] SMTP credentials missing! Set ADVISORA_SMTP_USER and ADVISORA_SMTP_PASSWORD or update MailConfig.");
         }
-        int port;
-        try {
-            port = Integer.parseInt(portText);
-        } catch (Exception ex) {
-            port = 587;
-        }
-        return new EmailSender(host, port, user, password);
+        return sender;
     }
 
-    private String config(String key, String fallback) {
-        String env = System.getenv(key);
-        if (!isBlank(env)) {
-            return env.trim();
-        }
-        ensureDotEnvLoaded();
-        String fromFile = DOTENV_CACHE.get(key);
-        String value = fromFile == null ? fallback : fromFile.trim();
-        return value;
-    }
-
-    private void ensureDotEnvLoaded() {
-        if (!DOTENV_CACHE.isEmpty()) {
-            return;
-        }
-        Path envPath = Paths.get(".env");
-        if (!Files.exists(envPath)) {
-            System.out.println("[EVENT-NOTIF] .env file not found at " + envPath.toAbsolutePath());
-            return;
-        }
-        try {
-            for (String raw : Files.readAllLines(envPath, StandardCharsets.UTF_8)) {
-                String line = raw == null ? "" : raw.trim();
-                if (line.isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-                int idx = line.indexOf('=');
-                if (idx <= 0) {
-                    continue;
-                }
-                String k = line.substring(0, idx).trim();
-                String v = line.substring(idx + 1).trim();
-                if (v.startsWith("\"") && v.endsWith("\"") && v.length() >= 2) {
-                    v = v.substring(1, v.length() - 1);
-                }
-                DOTENV_CACHE.putIfAbsent(k, v);
-            }
-            System.out.println("[EVENT-NOTIF] Loaded " + DOTENV_CACHE.size() + " env variables from .env file");
-        } catch (Exception ex) {
-            System.err.println("[EVENT-NOTIF] Error reading .env: " + ex.getMessage());
-        }
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.isEmpty() || value.trim().isEmpty();
-    }
     private String safe(String value) {
         return value == null || value.isEmpty() ? "-" : value.trim();
     }

@@ -18,7 +18,12 @@ public final class ThemeManager {
     }
 
     public static ThemeMode getCurrentMode() {
-        String raw = PREFS.get(PREF_KEY_MODE, ThemeMode.LIGHT.name());
+        String raw;
+        try {
+            raw = PREFS.get(PREF_KEY_MODE, ThemeMode.LIGHT.name());
+        } catch (Exception ignored) {
+            return ThemeMode.LIGHT;
+        }
         try {
             return ThemeMode.valueOf(raw);
         } catch (Exception ignored) {
@@ -38,7 +43,11 @@ public final class ThemeManager {
         if (scene == null) return;
 
         ThemeMode safeMode = mode == null ? ThemeMode.LIGHT : mode;
-        PREFS.put(PREF_KEY_MODE, safeMode.name());
+        try {
+            PREFS.put(PREF_KEY_MODE, safeMode.name());
+        } catch (Exception ignored) {
+            // Some Windows setups deny registry-backed Preferences access.
+        }
 
         String baseUrl = ThemeManager.class.getResource(BASE_STYLESHEET).toExternalForm();
         String darkUrl = ThemeManager.class.getResource(DARK_STYLESHEET).toExternalForm();
@@ -76,4 +85,3 @@ public final class ThemeManager {
         applyTheme(scene, dark ? ThemeMode.DARK : ThemeMode.LIGHT);
     }
 }
-
