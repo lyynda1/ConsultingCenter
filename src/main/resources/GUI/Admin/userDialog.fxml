@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<VBox prefWidth="520" spacing="14"
+      styleClass="dialog-card"
+      stylesheets="@users-list.css"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Admin.UserDialogController">
+
+    <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" styleClass="dialog-header">
+        <Label fx:id="titleLabel" text="New User" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✖" onAction="#close" styleClass="btn-ghost"/>
+    </HBox>
+
+    <VBox spacing="10">
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Name"/>
+                <TextField fx:id="nomField"/>
+                <Label fx:id="nomError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Surname"/>
+                <TextField fx:id="prenomField"/>
+                <Label fx:id="prenomError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="6">
+            <Label text="Email"/>
+            <TextField fx:id="emailField"/>
+            <Label fx:id="emailError" managed="false" visible="false" styleClass="field-error"/>
+        </VBox>
+
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="CIN"/>
+                <TextField fx:id="cinField"/>
+                <Label fx:id="cinError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Phone"/>
+                <TextField fx:id="telField"/>
+                <Label fx:id="telError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Birth date"/>
+                <TextField fx:id="dateNField" promptText="yyyy-MM-dd"/>
+                <Label fx:id="dateNError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Role"/>
+                <ComboBox fx:id="roleCombo"/>
+                <Label fx:id="roleError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Password"/>
+                <PasswordField fx:id="passwordField"/>
+                <Label fx:id="passwordError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Expertise (GERANT)"/>
+                <TextField fx:id="expertiseField"/>
+                <Label fx:id="expertiseError" managed="false" visible="false" styleClass="field-error"/>
+            </VBox>
+        </HBox>
+    </VBox>
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <ImageView fx:id="userImageView"
+                   fitWidth="80" fitHeight="80"
+                   preserveRatio="true"/>
+
+        <Button text="Change Photo"
+                onAction="#handleChangePhoto"
+                styleClass="btn-ghost"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#close" styleClass="btn-ghost"/>
+        <Button text="Save" onAction="#save" styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>

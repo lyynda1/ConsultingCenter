@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 20px auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #0066cc 0%, #004499 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 600; }
+        .header p { margin: 8px 0 0 0; font-size: 14px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .greeting { font-size: 16px; color: #2c3e50; margin-bottom: 20px; line-height: 1.6; }
+        .info-box { background-color: #d1ecf1; border-left: 4px solid #0066cc; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .info-box p { margin: 0; color: #0c5460; font-weight: 500; font-size: 15px; }
+        .details { background-color: #f8f9fa; padding: 20px; border-radius: 4px; margin: 20px 0; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #6c757d; font-weight: 600; }
+        .detail-value { color: #2c3e50; font-weight: 500; }
+        .refund-amount { font-size: 18px; font-weight: 700; color: #0066cc; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }
+        .footer a { color: #0066cc; text-decoration: none; }
+        .event-title { color: #0066cc; font-size: 18px; font-weight: 600; margin: 0; }
+        .divider { height: 1px; background-color: #e9ecef; margin: 20px 0; }
+        .timeline { background-color: #f0f7ff; padding: 15px; border-radius: 4px; margin: 15px 0; }
+        .timeline-item { display: flex; padding: 8px 0; }
+        .timeline-dot { color: #0066cc; font-weight: bold; margin-right: 10px; }
+        .timeline-text { color: #2c3e50; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Remboursement Traite</h1>
+            <p>Votre reservation a ete annulee</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Bonjour <strong>{{CLIENT_NAME}}</strong>,
+            </div>
+            
+            <p style="color: #2c3e50; line-height: 1.6;">Nous vous informons que votre reservation a ete annulee et que le remboursement a ete initie sur votre compte.</p>
+            
+            <div class="info-box">
+                <p>ℹ️ Le remboursement est en cours de traitement (delai: 3-5 jours ouvrables)</p>
+            </div>
+            
+            <p style="color: #2c3e50; font-weight: 600; font-size: 14px; margin-top: 20px;">Evenement</p>
+            <p style="color: #0066cc; font-size: 18px; font-weight: 600; margin: 5px 0 15px 0;">{{EVENT_TITLE}}</p>
+            
+            <div class="details">
+                <div class="detail-row">
+                    <span class="detail-label">ID Reservation:</span>
+                    <span class="detail-value">{{BOOKING_ID}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Montant rembourse:</span>
+                    <span class="detail-value refund-amount">{{TOTAL_PRICE}} {{CURRENCY}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Reference paiement:</span>
+                    <span class="detail-value">{{PAYMENT_REF}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Motif annulation:</span>
+                    <span class="detail-value">{{REFUND_REASON}}</span>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <p style="color: #2c3e50; font-weight: 600; margin: 15px 0 10px 0;">Statut du remboursement</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-dot">✓</span>
+                    <span class="timeline-text">Remboursement demande - execute</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-dot">⏳</span>
+                    <span class="timeline-text">En cours de traitement par votre banque (3-5 jours)</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-dot">→</span>
+                    <span class="timeline-text">Disponible sur votre compte bancaire</span>
+                </div>
+            </div>
+            
+            <p style="color: #6c757d; font-size: 13px; line-height: 1.6; margin-top: 15px;">
+                Si vous n'avez pas recu le remboursement apres 5 jours ouvrables, veuillez contacter notre equipe support avec votre reference de paiement ({{PAYMENT_REF}}).
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p style="margin: 0 0 8px 0;">Advisora - Gestion des Evenements</p>
+            <p style="margin: 0;">© 2026 Tous droits reserves | <a href="#">Contactez-nous</a></p>
+        </div>
+    </div>
+</body>
+</html>

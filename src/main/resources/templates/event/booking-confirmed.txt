@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 20px auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 600; }
+        .header p { margin: 8px 0 0 0; font-size: 14px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .greeting { font-size: 16px; color: #2c3e50; margin-bottom: 20px; line-height: 1.6; }
+        .success-box { background-color: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .success-box p { margin: 0; color: #155724; font-weight: 500; font-size: 15px; }
+        .details { background-color: #f8f9fa; padding: 20px; border-radius: 4px; margin: 20px 0; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #6c757d; font-weight: 600; }
+        .detail-value { color: #2c3e50; font-weight: 500; }
+        .qr-section { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 4px; text-align: center; margin: 25px 0; border: 2px dashed #dee2e6; }
+        .qr-section h3 { margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; }
+        .qr-placeholder { background-color: white; padding: 20px; border-radius: 4px; margin: 10px 0; }
+        .qr-token { background-color: #f0f0f0; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 12px; word-break: break-all; color: #495057; margin: 10px 0; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }
+        .footer a { color: #28a745; text-decoration: none; }
+        .event-title { color: #28a745; font-size: 18px; font-weight: 600; margin: 0; }
+        .divider { height: 1px; background-color: #e9ecef; margin: 20px 0; }
+        .badge { display: inline-block; background-color: #28a745; color: white; padding: 4px 8px; border-radius: 3px; font-size: 12px; font-weight: 600; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ Reservation Confirmee</h1>
+            <p>Votre paiement a ete accepte</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Bonjour <strong>{{CLIENT_NAME}}</strong>,
+            </div>
+            
+            <p style="color: #2c3e50; line-height: 1.6;">Excellent! Votre reservation est maintenant confirmee. Votre ticket d'acces est pret et joint a cet email.</p>
+            
+            <div class="success-box">
+                <p>✓ Reservation confirmee et paiement accepte</p>
+            </div>
+            
+            <p style="color: #2c3e50; font-weight: 600; font-size: 14px; margin-top: 20px;">Evenement</p>
+            <p style="color: #28a745; font-size: 18px; font-weight: 600; margin: 5px 0 15px 0;">{{EVENT_TITLE}}</p>
+            
+            <div class="details">
+                <div class="detail-row">
+                    <span class="detail-label">ID Reservation:</span>
+                    <span class="detail-value">{{BOOKING_ID}} <span class="badge">CONFIRMEE</span></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Début:</span>
+                    <span class="detail-value">{{EVENT_START}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Fin:</span>
+                    <span class="detail-value">{{EVENT_END}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Nombre de places:</span>
+                    <span class="detail-value">{{SEATS}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" style="font-size: 16px;">Montant paye:</span>
+                    <span class="detail-value" style="font-size: 16px; color: #28a745; font-weight: 700;">{{TOTAL_PRICE}} {{CURRENCY}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Reference paiement:</span>
+                    <span class="detail-value">{{PAYMENT_REF}}</span>
+                </div>
+            </div>
+            
+            <div class="qr-section">
+                <h3>🎫 Votre Ticket QR</h3>
+                <p style="color: #6c757d; margin: 0 0 10px 0; font-size: 13px;">Presentez ce code a l'entree de l'evenement</p>
+                <div class="qr-placeholder">
+                    <p style="margin: 0 0 10px 0; color: #6c757d; font-size: 12px;">Token Securise:</p>
+                    <div class="qr-token">{{QR_TOKEN}}</div>
+                    <p style="margin: 0; color: #6c757d; font-size: 12px;">Fichier QR joint a cet email: <strong>ticket-booking-{{BOOKING_ID}}.png</strong></p>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <p style="color: #6c757d; font-size: 13px; line-height: 1.6;">
+                <strong>💡 Conseil:</strong> Telechargez votre ticket ou prenez une capture d'ecran pour y acceder facilement le jour de l'evenement. Si vous avez besoin d'aide, notre equipe support est disponible 24/7.
+            </p>
+            
+            <p style="color: #2c3e50; line-height: 1.6; margin: 15px 0 0 0;">
+                Merci de votre confiance et nous avons hate de vous accueillir!
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p style="margin: 0 0 8px 0;">Advisora - Gestion des Evenements</p>
+            <p style="margin: 0;">© 2026 Tous droits reserves | <a href="#">Contactez-nous</a></p>
+        </div>
+    </div>
+</body>
+</html>

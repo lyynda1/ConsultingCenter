@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Objective.AddObjectifController"
+      spacing="14" styleClass="dialog-card" >
+
+    <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" styleClass="dialog-header">
+        <Label text="Nouvel Objectif" style="-fx-font-size: 18px; -fx-font-weight: 800;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✕" onAction="#close" styleClass="btn-close"/>
+    </HBox>
+
+    <VBox spacing="6">
+        <Label text="Nom"/>
+        <TextField fx:id="nomObjectiveField" promptText="Nom de l'objectif"/>
+    </VBox>
+
+
+
+    <VBox spacing="6">
+        <Label text="Description"/>
+        <TextArea fx:id="descriptionField" promptText="Description de l'objectif"/>
+    </VBox>
+
+    <VBox spacing="6">
+        <Label text="priorité"/>
+        <TextField fx:id="priorityField" promptText="ex: 1"/>
+    </VBox>
+
+    <HBox spacing="6" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#close" styleClass="btn-ghost"/>
+        <Button text="Ajouter" onAction="#save" styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.advisora.GUI.Project.ProjectTaskPageController"
+            stylesheets="@../style/project-task-board.css"
+            styleClass="task-page-root"
+            prefWidth="1240"
+            prefHeight="760">
+
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="task-toolbar">
+            <padding>
+                <Insets top="14" right="16" bottom="10" left="16"/>
+            </padding>
+            <Label fx:id="lblProjectTitle" styleClass="task-page-title"/>
+            <Label fx:id="lblProgress" styleClass="task-progress-pill"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Retour Projets" onAction="#onBackToProjects" styleClass="task-close-btn"/>
+            <Button text="Close" onAction="#onClose" styleClass="task-close-btn"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="12" styleClass="task-board">
+            <padding>
+                <Insets top="0" right="16" bottom="12" left="16"/>
+            </padding>
+
+            <VBox spacing="8" styleClass="task-column" HBox.hgrow="ALWAYS">
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="task-column-header">
+                    <Label text="A faire" styleClass="task-column-title"/>
+                    <Label fx:id="lblTodoCount" text="0" styleClass="task-count-pill"/>
+                </HBox>
+                <Label text="Taches a demarrer" styleClass="task-column-subtitle"/>
+                <ListView fx:id="todoList" VBox.vgrow="ALWAYS" styleClass="task-list"/>
+            </VBox>
+
+            <VBox spacing="8" styleClass="task-column" HBox.hgrow="ALWAYS">
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="task-column-header">
+                    <Label text="En cours" styleClass="task-column-title"/>
+                    <Label fx:id="lblInProgressCount" text="0" styleClass="task-count-pill"/>
+                </HBox>
+                <Label text="Taches en cours de traitement" styleClass="task-column-subtitle"/>
+                <ListView fx:id="inProgressList" VBox.vgrow="ALWAYS" styleClass="task-list"/>
+            </VBox>
+
+            <VBox spacing="8" styleClass="task-column" HBox.hgrow="ALWAYS">
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="task-column-header">
+                    <Label text="Termine" styleClass="task-column-title"/>
+                    <Label fx:id="lblDoneCount" text="0" styleClass="task-count-pill"/>
+                </HBox>
+                <Label text="Taches terminees" styleClass="task-column-subtitle"/>
+                <ListView fx:id="doneList" VBox.vgrow="ALWAYS" styleClass="task-list"/>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <VBox spacing="8" styleClass="task-editor-wrap">
+            <padding>
+                <Insets top="0" right="16" bottom="14" left="16"/>
+            </padding>
+
+            <Label fx:id="lblReadonlyHint" text="Client mode: read only" visible="false" managed="false" styleClass="task-readonly-hint"/>
+
+            <TextField fx:id="txtTaskTitle" promptText="Task title" styleClass="task-input"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <VBox spacing="4">
+                    <Label text="Importance" styleClass="task-field-label"/>
+                    <TextField fx:id="txtTaskWeight" promptText="Importance" styleClass="task-input task-weight-input"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Duree (jours)" styleClass="task-field-label"/>
+                    <TextField fx:id="txtTaskDuration" promptText="Duree (jours)" styleClass="task-input task-weight-input"/>
+                </VBox>
+                <ComboBox fx:id="cbStatus" prefWidth="220" styleClass="task-status-combo"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="New" onAction="#onNewTask" styleClass="task-btn-ghost"/>
+                <Button fx:id="btnSaveTask" text="Save" onAction="#onSaveTask" styleClass="task-btn-primary"/>
+                <Button fx:id="btnDeleteTask" text="Delete" onAction="#onDeleteTask" styleClass="task-btn-danger"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

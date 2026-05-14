@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="657.0" prefWidth="998.0" styleClass="dialog-root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advisora.GUI.Strategie.SwotDialogController">
+
+    <VBox prefHeight="610.0" prefWidth="860.0" spacing="12" styleClass="dialog-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <padding>
+            <Insets bottom="18" left="18" right="18" top="18" />
+        </padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="dialog-header">
+            <Label fx:id="dragHandle" styleClass="dialog-title" text="SWOT Analysis" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#onClose" styleClass="btn-close" text="✕" />
+        </HBox>
+
+        <Label fx:id="lblStrategieTitle" styleClass="dialog-subtitle" text="Stratégie : -" />
+
+        <!-- Add bar -->
+
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="swot-addbar">
+            <ComboBox fx:id="cmbType" prefWidth="190" promptText="Type" />
+            <TextField fx:id="txtDesc" promptText="Ajouter un point SWOT..." HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="cmbWeight" prefWidth="120" promptText="Poids" />
+            <Button onAction="#onAdd" styleClass="btn-primary" text="Ajouter" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button onAction="#onAutoGenerate" styleClass="btn-ghost" text="Générer SWOT" />
+            <Button onAction="#onClearAll" styleClass="btn-danger-outline" text="Vider" />
+        </HBox>
+
+        <!-- Grid 2x2 -->
+        <GridPane hgap="25" vgap="25" VBox.vgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints percentHeight="45.0" />
+                <RowConstraints percentHeight="55.0" />
+            </rowConstraints>
+
+            <!-- Strengths -->
+            <VBox spacing="14" styleClass="swot-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="swot-title" text="Forces" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblCountS" styleClass="swot-count" text="0" />
+                </HBox>
+                <ScrollPane fitToWidth="true" prefHeight="167.0" prefWidth="414.0" styleClass="swot-scroll" VBox.vgrow="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="flowStrengths" hgap="8" styleClass="swot-flow" vgap="8">
+                            <padding>
+                                <Insets bottom="8" left="8" right="8" top="8" />
+                            </padding>
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Weaknesses -->
+            <VBox spacing="14" styleClass="swot-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="swot-title" text="Faiblesses" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblCountW" styleClass="swot-count" text="0" />
+                </HBox>
+                <ScrollPane fitToWidth="true" styleClass="swot-scroll" VBox.vgrow="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="flowWeaknesses" hgap="8" styleClass="swot-flow" vgap="8">
+                            <padding>
+                                <Insets bottom="8" left="8" right="8" top="8" />
+                            </padding>
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Opportunities -->
+            <VBox spacing="14" styleClass="swot-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="swot-title" text="Opportunités" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblCountO" styleClass="swot-count" text="0" />
+                </HBox>
+                <ScrollPane fitToWidth="true" styleClass="swot-scroll" VBox.vgrow="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="flowOpportunities" hgap="8" styleClass="swot-flow" vgap="8">
+                            <padding>
+                                <Insets bottom="8" left="8" right="8" top="8" />
+                            </padding>
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Threats -->
+            <VBox spacing="14" styleClass="swot-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="swot-title" text="Menaces" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblCountT" styleClass="swot-count" text="0" />
+                </HBox>
+                <ScrollPane fitToWidth="true" styleClass="swot-scroll" VBox.vgrow="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="flowThreats" hgap="8" styleClass="swot-flow" vgap="8">
+                            <padding>
+                                <Insets bottom="8" left="8" right="8" top="8" />
+                            </padding>
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+        </GridPane>
+
+        <HBox alignment="CENTER_RIGHT" prefHeight="7.0" prefWidth="824.0" spacing="10">
+            <Button onAction="#onClose" styleClass="btn-ghost" text="Fermer" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>

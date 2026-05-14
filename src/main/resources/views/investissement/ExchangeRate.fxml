@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Investissement.ExchangeRateController"
+      spacing="16" styleClass="dialog-card" minWidth="420" maxWidth="480">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" styleClass="dialog-header">
+        <Label text="💱 Taux de Change" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✖" onAction="#close" styleClass="btn-ghost"/>
+    </HBox>
+
+    <!-- ── Subtitle ───────────────────────────────────────── -->
+    <Label text="Base : 1 DNT (Dinar Tunisien)" style="-fx-text-fill: #888; -fx-font-size: 12px;"/>
+
+    <Separator/>
+
+    <!-- ── Status label (loading / error) ────────────────── -->
+    <Label fx:id="statusLabel" text="⏳ Chargement des taux en cours..."
+           style="-fx-text-fill: #777; -fx-font-size: 13px;"
+           wrapText="true"/>
+
+    <!-- ── Rates grid (hidden until loaded) ──────────────── -->
+    <GridPane fx:id="ratesGrid" hgap="32" vgap="12" visible="false" managed="false">
+        <padding><Insets top="4" bottom="4"/></padding>
+
+        <!-- USD -->
+        <Label text="🇺🇸  USD — Dollar américain" style="-fx-font-size: 13px;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label fx:id="usdLabel" text="—" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E97B2C;"
+               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <!-- EUR -->
+        <Label text="🇪🇺  EUR — Euro" style="-fx-font-size: 13px;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label fx:id="eurLabel" text="—" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E97B2C;"
+               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <!-- GBP -->
+        <Label text="🇬🇧  GBP — Livre sterling" style="-fx-font-size: 13px;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label fx:id="gbpLabel" text="—" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #E97B2C;"
+               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    </GridPane>
+
+    <!-- ── Note ───────────────────────────────────────────── -->
+    <Label fx:id="noteLabel" text="" style="-fx-text-fill: #aaa; -fx-font-size: 10px;" visible="false" managed="false"/>
+
+    <Separator/>
+
+    <!-- ── Footer ─────────────────────────────────────────── -->
+    <HBox alignment="CENTER_RIGHT" spacing="8">
+        <Button text="← Retour" onAction="#close" styleClass="btn-ghost"/>
+    </HBox>
+
+</VBox>
+

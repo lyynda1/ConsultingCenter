@@ -1,0 +1,95 @@
+.root,
+.theme-light {
+    -app-bg: #f6f3e7;
+    -surface-1: #ffffff;
+    -surface-2: #f3f0e6;
+    -surface-3: #ede6d2;
+    -text-strong: #111827;
+    -text-muted: #5f6b7b;
+    -border-soft: rgba(0, 0, 0, 0.1);
+    -accent-primary: #e97b2c;
+    -focus-ring: rgba(233, 123, 44, 0.42);
+}
+
+.theme-light.app,
+.theme-light .app {
+    -fx-background-color: -app-bg;
+}
+
+.theme-light .topbar {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .top-title,
+.theme-light .module-title,
+.theme-light .card-title,
+.theme-light .stat-value,
+.theme-light .sidebar .nav .nav-btn .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-light .top-sub,
+.theme-light .hint,
+.theme-light .muted,
+.theme-light .catalog-toolbar-caption,
+.theme-light .stat-label,
+.theme-light .card-meta,
+.theme-light .profile-role,
+.theme-light .sidebar-foot {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-light .sidebar,
+.theme-light .brand-card {
+    -fx-background-color: -surface-3;
+}
+
+.theme-light .card,
+.theme-light .surface-panel,
+.theme-light .toolbar-card,
+.theme-light .resource-card,
+.theme-light .stat-card {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .text-field,
+.theme-light .password-field,
+.theme-light .combo-box,
+.theme-light .text-area {
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+    -fx-prompt-text-fill: rgba(17, 24, 39, 0.45);
+}
+
+.theme-light .text-field:focused,
+.theme-light .password-field:focused,
+.theme-light .combo-box:focused,
+.theme-light .text-area:focused {
+    -fx-border-color: -focus-ring;
+}
+
+.theme-light .button {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.theme-light .button:disabled,
+.theme-light .text-field:disabled,
+.theme-light .password-field:disabled,
+.theme-light .combo-box:disabled,
+.theme-light .menu-button:disabled {
+    -fx-opacity: 0.7;
+}
+
+.home-hero-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
+}
+
+.home-section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}

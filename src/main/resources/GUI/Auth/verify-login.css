@@ -1,0 +1,133 @@
+/* ========= App Background ========= */
+.app{
+    -fx-font-family: "Inter", "Segoe UI", Arial;
+    -fx-font-size: 13px;
+    -fx-background-color: #F6F3E7;
+}
+
+/* ========= Cards ========= */
+.card{
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.18, 0, 10);
+}
+
+.card-title{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 900;
+    -fx-font-size: 18px;
+}
+
+.label{ -fx-text-fill: #1F2937; }
+.muted{ -fx-text-fill: #6B7280; -fx-font-size: 12px; }
+
+/* ========= Inputs ========= */
+.input{
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: rgba(17,24,39,0.45);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 10 12 10 12;
+}
+
+.input:focused{
+    -fx-border-color: rgba(46,125,96,0.45);
+    -fx-border-width: 1.5;
+}
+
+/* ========= Buttons ========= */
+.button{
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.btn-primary{
+    -fx-background-color: #2E7D60;
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 14;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+.btn-primary:hover{ -fx-background-color: #276B53; }
+
+.btn-ghost{
+    -fx-background-color: white;
+    -fx-text-fill: #111827;
+    -fx-font-weight: 800;
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(31,31,31,0.14);
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+.btn-ghost:hover{ -fx-background-color: rgba(31,31,31,0.04); }
+
+/* ===== Verify Login Code page tweaks ===== */
+.verify-card{
+    -fx-padding: 22;
+}
+
+/* OTP input */
+.otp-input{
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-alignment: CENTER;
+
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.12);
+    -fx-border-width: 1;
+    -fx-padding: 10 12 10 12;
+}
+
+.otp-input:focused{
+    -fx-border-color: rgba(46,125,96,0.55);
+    -fx-border-width: 1.6;
+}
+
+/* Info box */
+.info-box{
+    -fx-background-color: rgba(46,125,96,0.10);
+    -fx-background-radius: 12;
+    -fx-padding: 10 12 10 12;
+}
+.info-box .label{
+    -fx-text-fill: #1F2937;
+    -fx-font-weight: 700;
+}
+
+/* Error box */
+.error-box{
+    -fx-background-color: rgba(211,47,47,0.10);
+    -fx-background-radius: 12;
+    -fx-padding: 10 12 10 12;
+}
+.error-box .label{
+    -fx-text-fill: #b71c1c;
+    -fx-font-weight: 800;
+}
+
+.btn-resend{
+    -fx-padding: 8 14 8 14;
+    -fx-font-weight: 800;
+}
+.link-black{
+    -fx-text-fill: #111827;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+.link-black:hover{
+    -fx-underline: true;
+    -fx-opacity: 0.9;
+}

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.ReservationListController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <VBox spacing="8" styleClass="toolbar-card">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Historique Reservations" styleClass="module-title"/>
+            <VBox spacing="4">
+                <Label text="Recherche dynamique"/>
+                <TextField fx:id="txtSearchReservations" prefWidth="340"
+                           promptText="Projet, ressource, fournisseur, client, quantite..."/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Reset filtres" onAction="#onResetFieldFilters" styleClass="btn-ghost"/>
+            <Button text="Export PDF" onAction="#onExportPdf" styleClass="btn-ghost"/>
+            <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+            <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <VBox spacing="4">
+                <Label text="Projet"/>
+                <ComboBox fx:id="comboProjectFilter" prefWidth="220"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Ressource"/>
+                <ComboBox fx:id="comboResourceFilter" prefWidth="220"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Fournisseur"/>
+                <ComboBox fx:id="comboSupplierFilter" prefWidth="220"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Client"/>
+                <ComboBox fx:id="comboClientFilter" prefWidth="220"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <HBox fillHeight="true" spacing="16" styleClass="stats">
+        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+            <styleClass>
+                <String fx:value="stat-card"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <StackPane styleClass="stat-icon-chip stat-icon-orange">
+                    <Label text="&#128196;" styleClass="stat-icon-text"/>
+                </StackPane>
+                <Label text="Nombre reservations" styleClass="stat-label"/>
+            </HBox>
+            <Label fx:id="lblReservationCount" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox maxWidth="1.7976931348623157E308" prefWidth="320" spacing="8" HBox.hgrow="ALWAYS">
+            <styleClass>
+                <String fx:value="stat-card"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <StackPane styleClass="stat-icon-chip stat-icon-yellow">
+                    <Label text="&#128230;" styleClass="stat-icon-text"/>
+                </StackPane>
+                <Label text="Quantite reservee" styleClass="stat-label"/>
+            </HBox>
+            <Label fx:id="lblReservedQty" text="0" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+    <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+        <ListView fx:id="listReservations" VBox.vgrow="ALWAYS" styleClass="card-list"/>
+    </VBox>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>
