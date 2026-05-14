@@ -1,0 +1,81 @@
+/* Base variables and shared primitives for strategy module */
+.page-root,
+.dialog-root,
+.root {
+    -cc-bg: #f6f7f9;
+    -cc-surface: #ffffff;
+    -cc-surface-soft: rgba(255,255,255,0.94);
+    -cc-text: #1f1f1f;
+    -cc-muted: rgba(32,32,32,0.72);
+    -cc-border: rgba(0,0,0,0.10);
+    -cc-shadow: rgba(0,0,0,0.14);
+
+    -cc-accent: #e97b2c;
+    -cc-accent-strong: #d96f26;
+    -cc-accent-soft: rgba(233,123,44,0.18);
+    -cc-accent-focus: rgba(233,123,44,0.78);
+    -cc-focus-soft: rgba(233,123,44,0.18);
+
+    -cc-success: #2ea36a;
+    -cc-success-soft: rgba(46,163,106,0.18);
+    -cc-warning-soft: rgba(244,197,66,0.22);
+    -cc-danger: #e74c3c;
+    -cc-danger-soft: rgba(231,76,60,0.18);
+}
+
+.page-root,
+.page,
+.header,
+.content {
+    -fx-background-color: transparent;
+}
+
+.title {
+    -fx-font-size: 31px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -cc-text;
+}
+
+.button:focused,
+.menu-button:focused,
+.combo-box-base:focused,
+.text-field:focused,
+.text-area:focused {
+    -fx-border-color: -cc-accent-focus;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-focus-color: -cc-focus-soft;
+    -fx-faint-focus-color: rgba(233,123,44,0.10);
+}
+
+.scroll-pane,
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-opacity: 0.35;
+}
+
+.scroll-pane:hover .scroll-bar {
+    -fx-opacity: 1;
+}
+
+/* Local dark overrides for modules that attach this stylesheet directly */
+.theme-dark .page-root,
+.theme-dark .dialog-root {
+    -cc-bg: #121821;
+    -cc-surface: #1a2431;
+    -cc-surface-soft: #223244;
+    -cc-text: #edf3fb;
+    -cc-muted: #b6c3d3;
+    -cc-border: rgba(237, 243, 251, 0.16);
+    -cc-shadow: rgba(0, 0, 0, 0.35);
+}
+
+.theme-dark .page-root,
+.theme-dark .page,
+.theme-dark .content {
+    -fx-background-color: linear-gradient(to bottom, #162232, #1a2638);
+}

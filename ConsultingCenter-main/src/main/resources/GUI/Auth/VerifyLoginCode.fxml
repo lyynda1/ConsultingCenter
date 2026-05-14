@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefWidth="900" prefHeight="600"
+            styleClass="app"
+            stylesheets="/GUI/Auth/verify-login.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.advisora.GUI.Auth.VerifyLoginCodeController">
+
+    <center>
+        <VBox alignment="CENTER" spacing="16">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- FIX: spaces, not commas -->
+            <VBox styleClass="card verify-card" spacing="12" maxWidth="430">
+                <Label text="Vérification (2FA)" styleClass="card-title"/>
+
+                <Label text="Un code a été envoyé par email. Entrez-le pour continuer."
+                       styleClass="muted" wrapText="true"/>
+
+                <Label text="Email" styleClass="label"/>
+                <TextField fx:id="emailField" styleClass="input" editable="false"/>
+
+                <Label text="Code (6 chiffres)" styleClass="label"/>
+                <TextField fx:id="codeField" styleClass="input otp-input" promptText="Ex: 123456"/>
+
+                <VBox fx:id="errorBox" styleClass="error-box" visible="false" managed="false">
+                    <Label fx:id="codeError"/>
+                </VBox>
+
+                <VBox fx:id="infoBox" styleClass="info-box" visible="false" managed="false">
+                    <Label fx:id="infoLabel"/>
+                </VBox>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+
+                    <!-- Retour = label cliquable -->
+                    <Label text="Retour"
+                           onMouseClicked="#handleBackToLogin"
+                           styleClass="link-black"/>
+
+                    <!-- Renvoyer = ghost button -->
+                    <Button fx:id="resendBtn"
+                            text="Renvoyer"
+                            onAction="#handleResend"
+                            styleClass="btn-ghost"/>
+
+                    <!-- Vérifier = primary -->
+                    <Button text="Vérifier"
+                            onAction="#handleVerify"
+                            styleClass="btn-primary"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

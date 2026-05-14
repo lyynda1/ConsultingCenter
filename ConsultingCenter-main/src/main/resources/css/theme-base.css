@@ -1,0 +1,192 @@
+.root,
+.theme-light {
+    -app-bg: #f6f3e7;
+    -surface-1: #ffffff;
+    -surface-2: #f3f0e6;
+    -surface-3: #ede6d2;
+    -text-strong: #111827;
+    -text-muted: #5f6b7b;
+    -border-soft: rgba(0, 0, 0, 0.1);
+    -accent-primary: #e97b2c;
+    -focus-ring: rgba(233, 123, 44, 0.42);
+}
+
+.theme-light.app,
+.theme-light .app {
+    -fx-background-color: -app-bg;
+}
+
+.theme-light .topbar {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .top-title,
+.theme-light .module-title,
+.theme-light .card-title,
+.theme-light .stat-value,
+.theme-light .sidebar .nav .nav-btn .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-light .top-sub,
+.theme-light .hint,
+.theme-light .muted,
+.theme-light .catalog-toolbar-caption,
+.theme-light .stat-label,
+.theme-light .card-meta,
+.theme-light .profile-role,
+.theme-light .sidebar-foot {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-light .sidebar,
+.theme-light .brand-card {
+    -fx-background-color: -surface-3;
+}
+
+.theme-light .card,
+.theme-light .surface-panel,
+.theme-light .toolbar-card,
+.theme-light .resource-card,
+.theme-light .stat-card {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-light .text-field,
+.theme-light .password-field,
+.theme-light .combo-box,
+.theme-light .text-area {
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+    -fx-prompt-text-fill: rgba(17, 24, 39, 0.45);
+}
+
+.theme-light .text-field:focused,
+.theme-light .password-field:focused,
+.theme-light .combo-box:focused,
+.theme-light .text-area:focused {
+    -fx-border-color: -focus-ring;
+}
+
+.theme-light .button {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.theme-light .button:disabled,
+.theme-light .text-field:disabled,
+.theme-light .password-field:disabled,
+.theme-light .combo-box:disabled,
+.theme-light .menu-button:disabled {
+    -fx-opacity: 0.7;
+}
+
+.home-hero-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
+}
+
+.home-section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.home-guide-line {
+    -fx-text-fill: -text-strong;
+    -fx-font-size: 13px;
+}
+
+.home-hero-subtitle {
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 13px;
+}
+
+.home-role-line {
+    -fx-text-fill: -text-strong;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.nav-emoji {
+    -fx-text-fill: -text-strong;
+    -fx-font-size: 14px;
+}
+
+/* Keep interface titles visually consistent regardless of global font scale */
+.module-title,
+.page-title,
+.title,
+.task-page-title,
+.stats-title,
+.gamehub-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
+}
+
+.top-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+/* Compact mode */
+.compact-ui .card,
+.compact-ui .resource-card,
+.compact-ui .stat-card,
+.compact-ui .toolbar-card,
+.compact-ui .surface-panel {
+    -fx-padding: 10;
+}
+
+.compact-ui .list-cell {
+    -fx-padding: 0 0 6 0;
+}
+
+.compact-ui .button,
+.compact-ui .text-field,
+.compact-ui .combo-box,
+.compact-ui .menu-button {
+    -fx-padding: 6 10 6 10;
+}
+
+.compact-ui .table-row-cell {
+    -fx-cell-size: 28px;
+}
+
+/* Settings page blocks */
+.page-container .page-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
+}
+
+.page-container .page-subtitle {
+    -fx-text-fill: -text-muted;
+}
+
+.settings-card {
+    -fx-background-color: -surface-1;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: -border-soft;
+    -fx-border-width: 1;
+    -fx-padding: 14;
+}
+
+.settings-card .card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text-strong;
+}
+
+.settings-label {
+    -fx-text-fill: -text-strong;
+    -fx-font-weight: 700;
+}
+
+.hint-text,
+.font-preview,
+.saved-text {
+    -fx-text-fill: -text-muted;
+}

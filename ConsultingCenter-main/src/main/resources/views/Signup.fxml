@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="720" prefWidth="1280"
+            stylesheets="@signup.css"
+            styleClass="app"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.advisora.GUI.Auth.SignupController">
+
+    <center>
+        <HBox alignment="CENTER" spacing="24">
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- LEFT BRAND -->
+            <VBox alignment="CENTER" spacing="12" styleClass="brand-card">
+                <ImageView fitHeight="120" preserveRatio="true">
+                    <image>
+                        <Image url="@../Admin/icons/ADVISORA.png" />
+                    </image>
+                </ImageView>
+                <Label text="Create account" styleClass="brand-title"/>
+                <Label text="Join Advisora in seconds" styleClass="brand-sub"/>
+            </VBox>
+
+            <!-- RIGHT CARD -->
+            <VBox spacing="14" styleClass="card" prefWidth="520">
+                <Label text="Sign up" styleClass="card-title"/>
+                <Label text="Fill your details to create an account" styleClass="muted"/>
+
+                <GridPane hgap="12" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
+                    </columnConstraints>
+
+                    <!-- First name -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="Prénom" styleClass="label"/>
+                        <TextField fx:id="prenomField" promptText="Ex: Ahmed" styleClass="input"/>
+                        <Label fx:id="prenomError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- Last name -->
+                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label text="Nom" styleClass="label"/>
+                        <TextField fx:id="nomField" promptText="Ex: Ben Ali" styleClass="input"/>
+                        <Label fx:id="nomError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- CIN -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label text="CIN" styleClass="label"/>
+                        <TextField fx:id="cinField" promptText="8 chiffres" styleClass="input"/>
+                        <Label fx:id="cinError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- Phone -->
+                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label text="Téléphone" styleClass="label"/>
+                        <TextField fx:id="telField" promptText="Ex: 22123456 (optionnel)" styleClass="input"/>
+                        <Label fx:id="telError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- Email (full width) -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                        <Label text="Email" styleClass="label"/>
+                        <TextField fx:id="emailField" promptText="ex: aa@example.com" styleClass="input"/>
+                        <Label fx:id="emailError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- Expertise (optional) -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2">
+                        <Label text="Expertise (optionnel)" styleClass="label"/>
+                        <TextField fx:id="expertiseField" promptText="Ex: Finance, RH, IT..." styleClass="input"/>
+                        <Label fx:id="expertiseError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- Password -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+                        <Label text="Mot de passe" styleClass="label"/>
+
+                        <StackPane>
+                            <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="input"/>
+
+                            <TextField fx:id="passwordVisibleField" promptText="••••••••"
+                                       visible="false" managed="false" styleClass="input"/>
+
+                            <Button onAction="#handleTogglePassword"
+                                    styleClass="eye-btn" StackPane.alignment="CENTER_RIGHT">
+                                <graphic>
+                                    <ImageView fx:id="eyeIcon" fitWidth="18" fitHeight="18" preserveRatio="true"/>
+                                </graphic>
+                            </Button>
+                        </StackPane>
+
+                        <Label fx:id="passwordError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+
+                    <!-- Confirm password -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
+                        <Label text="Confirmer le mot de passe" styleClass="label"/>
+                        <PasswordField fx:id="confirmPasswordField" promptText="••••••••" styleClass="input"/>
+                        <Label fx:id="confirmPasswordError" text="" visible="false" managed="false" styleClass="field-error"/>
+                    </VBox>
+                </GridPane>
+
+                <Label fx:id="formError" text="" visible="false" managed="false" styleClass="field-error"/>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Back to login" onAction="#handleBackToLogin" styleClass="btn-outline"/>
+                    <Button text="Create account" onAction="#handleSignup" styleClass="btn-primary"/>
+                </HBox>
+
+                <Label fx:id="statusLabel" text="Ready." styleClass="hint"/>
+            </VBox>
+
+        </HBox>
+    </center>
+</BorderPane>

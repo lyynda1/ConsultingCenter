@@ -1,0 +1,67 @@
+{
+  "it" : {
+    "category" : "it",
+    "top10" : [ {
+      "rank" : 1,
+      "name" : "Apple",
+      "year" : 2023,
+      "description" : "Entreprise technologique multinationale américaine qui conçoit, fabrique et commercialise des produits électroniques grand public, des logiciels et des services en ligne.",
+      "revenue_usd_billions" : 383.3
+    }, {
+      "rank" : 2,
+      "name" : "Alphabet",
+      "year" : 2023,
+      "description" : "Société mère de Google, spécialisée dans les services et produits liés à Internet, y compris la recherche, la publicité, les systèmes d'exploitation mobiles et le cloud computing.",
+      "revenue_usd_billions" : 307.4
+    }, {
+      "rank" : 3,
+      "name" : "Microsoft",
+      "year" : 2023,
+      "description" : "Géant technologique mondial qui développe, fabrique, concède sous licence, prend en charge et vend des logiciels informatiques, des produits électroniques grand public, des ordinateurs personnels et des services connexes.",
+      "revenue_usd_billions" : 211.9
+    }, {
+      "rank" : 4,
+      "name" : "Samsung Electronics",
+      "year" : 2023,
+      "description" : "Société multinationale sud-coréenne d'électronique qui fabrique une large gamme de produits électroniques, y compris des semi-conducteurs, des téléphones mobiles et des écrans.",
+      "revenue_usd_billions" : 198.0
+    }, {
+      "rank" : 5,
+      "name" : "Meta Platforms",
+      "year" : 2023,
+      "description" : "Entreprise technologique américaine axée sur les médias sociaux, la réalité virtuelle et le développement du métavers.",
+      "revenue_usd_billions" : 134.9
+    }, {
+      "rank" : 6,
+      "name" : "Tencent",
+      "year" : 2023,
+      "description" : "Conglomérat technologique et de divertissement multinational chinois, connu pour ses services Internet, ses jeux vidéo et ses plateformes de médias sociaux.",
+      "revenue_usd_billions" : 86.0
+    }, {
+      "rank" : 7,
+      "name" : "IBM",
+      "year" : 2023,
+      "description" : "Société américaine de technologie et de conseil qui fournit du matériel informatique, des logiciels, des services de cloud computing et de l'intelligence artificielle.",
+      "revenue_usd_billions" : 61.9
+    }, {
+      "rank" : 8,
+      "name" : "Oracle",
+      "year" : 2023,
+      "description" : "Spécialiste des logiciels et technologies de bases de données, des systèmes d'ingénierie cloud et des produits logiciels d'entreprise.",
+      "revenue_usd_billions" : 50.0
+    }, {
+      "rank" : 9,
+      "name" : "Broadcom",
+      "year" : 2023,
+      "description" : "Concepteur, développeur et fournisseur mondial de semi-conducteurs et de logiciels d'infrastructure.",
+      "revenue_usd_billions" : 35.8
+    }, {
+      "rank" : 10,
+      "name" : "SAP",
+      "year" : 2023,
+      "description" : "Société multinationale allemande de logiciels qui développe des logiciels d'entreprise pour gérer les opérations commerciales et les relations clients.",
+      "revenue_usd_billions" : 33.0
+    } ],
+    "disclaimer" : "Classement indicatif - chiffres estimatifs, non contractuels."
+  }
+}

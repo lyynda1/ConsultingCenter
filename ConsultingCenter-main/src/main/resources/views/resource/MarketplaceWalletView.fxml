@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.MarketplaceWalletController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="toolbar-card">
+        <Label text="Wallet Mini Shop" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+        <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="surface-strip">
+        <Label text="Solde actuel:" styleClass="module-subtitle"/>
+        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="wallet-balance-box">
+            <StackPane styleClass="coin-chip">
+                <Label text="◎" styleClass="coin-chip-text"/>
+            </StackPane>
+            <Label fx:id="lblWalletBalance" text="0.000 coins" styleClass="wallet-pill"/>
+        </HBox>
+    </HBox>
+
+    <VBox spacing="8" styleClass="wizard-box">
+        <Label text="Recharger wallet (FLOUCI / D17 / STRIPE)" styleClass="wizard-step"/>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Provider"/>
+            <ComboBox fx:id="comboProvider" prefWidth="140"/>
+            <Label text="Montant (TND)"/>
+            <TextField fx:id="txtAmountMoney" promptText="ex: 20.0" prefWidth="120"/>
+            <Label text="Coins estimes:"/>
+            <Label fx:id="lblCoinPreview" text="◎ 0.000 coins" styleClass="hint"/>
+            <Button text="Creer paiement" onAction="#onCreatePayment" styleClass="btn-primary"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="8" styleClass="wizard-box">
+        <Label text="Resultat paiement" styleClass="wizard-step"/>
+        <GridPane hgap="10" vgap="8">
+            <columnConstraints>
+                <ColumnConstraints minWidth="180"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <Label text="Payment ID" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="lblLastPaymentId" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Coins ajoutes au wallet" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label fx:id="lblCoinsAdded" text="NON" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Solde avant" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label fx:id="lblBalanceBefore" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Solde apres" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="lblBalanceAfter" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        </GridPane>
+        <Label text="Le checkout s'ouvre automatiquement dans l'application (in-app)." styleClass="hint"/>
+        <Label fx:id="lblPaymentInfo" text="" styleClass="hint" wrapText="true"/>
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Historique recharges" styleClass="module-subtitle"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+        <ListView fx:id="listTopups" prefHeight="220" styleClass="card-list"/>
+    </VBox>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>

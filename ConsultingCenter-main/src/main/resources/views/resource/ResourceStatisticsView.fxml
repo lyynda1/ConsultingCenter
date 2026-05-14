@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.ResourceStatisticsController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="toolbar-card">
+        <Label text="Statistiques Ressource" styleClass="module-title"/>
+        <Label fx:id="lblRoleTag" text="ROLE" styleClass="status-badge"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+        <Button text="Reset filtres" onAction="#onResetFilters" styleClass="btn-ghost"/>
+        <Button text="Exporter PDF" onAction="#onExportPdf" styleClass="btn-primary"/>
+        <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
+    </HBox>
+
+    <Label fx:id="lblScopeInfo" text="Scope" styleClass="hint"/>
+    <Label fx:id="lblSmartInsight" text="Insight: -" styleClass="review-title"/>
+
+    <VBox spacing="8" styleClass="surface-panel">
+        <Label text="Filtres intelligents + recherche dynamique" styleClass="wizard-step"/>
+        <Label text="Les filtres s'appliquent en temps reel sur ventes, reservations, paiements et avis." styleClass="hint"/>
+        <GridPane hgap="10" vgap="8">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="16"/>
+                <ColumnConstraints percentWidth="16"/>
+                <ColumnConstraints percentWidth="16"/>
+                <ColumnConstraints percentWidth="16"/>
+                <ColumnConstraints percentWidth="16"/>
+                <ColumnConstraints percentWidth="20"/>
+            </columnConstraints>
+
+            <Label text="Date debut" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label text="Date fin" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Utilisateur" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+            <Label text="Statut" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+            <Label text="Ressource" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+            <Label text="Projet" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+
+            <DatePicker fx:id="dpFrom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="dpTo" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <ComboBox fx:id="comboUser" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+            <ComboBox fx:id="comboStatus" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+            <ComboBox fx:id="comboResource" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+            <ComboBox fx:id="comboProject" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
+        </GridPane>
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <Label text="Recherche"/>
+            <TextField fx:id="txtSearch" promptText="nom ressource, utilisateur, projet, commentaire..." HBox.hgrow="ALWAYS"/>
+            <Button text="Appliquer filtres" onAction="#onRefresh" styleClass="btn-primary"/>
+        </HBox>
+    </VBox>
+
+    <HBox fillHeight="true" spacing="12" styleClass="stats">
+        <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="stat-card stat-card-compact">
+            <Label text="Ventes (nb)" styleClass="stat-label"/>
+            <Label fx:id="lblSalesValue" text="0" styleClass="stat-value"/>
+            <Label fx:id="lblSalesCoins" text="0.000" styleClass="hint"/>
+        </VBox>
+        <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="stat-card stat-card-compact">
+            <Label text="Reservations" styleClass="stat-label"/>
+            <Label fx:id="lblReservationsValue" text="0 / 0" styleClass="stat-value"/>
+        </VBox>
+        <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="stat-card stat-card-compact">
+            <Label text="Paiements" styleClass="stat-label"/>
+            <Label fx:id="lblPaymentsValue" text="0 / 0.000" styleClass="stat-value"/>
+        </VBox>
+        <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="stat-card stat-card-compact">
+            <Label text="Avis" styleClass="stat-label"/>
+            <Label fx:id="lblReviewsValue" text="0.00 (0 avis)" styleClass="stat-value"/>
+        </VBox>
+        <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="stat-card stat-card-compact">
+            <Label text="Variation mensuelle" styleClass="stat-label"/>
+            <Label fx:id="lblTrendValue" text="0.0% | 0.000 vs 0.000" styleClass="stat-value trend-flat"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="12" VBox.vgrow="ALWAYS">
+        <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="surface-panel chart-panel">
+            <Label text="Repartition des statuts (ventes)" styleClass="wizard-step"/>
+            <PieChart fx:id="pieSalesStatus" VBox.vgrow="ALWAYS"/>
+        </VBox>
+        <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="surface-panel chart-panel">
+            <Label text="Top ressources vendues" styleClass="wizard-step"/>
+            <BarChart fx:id="barTopResources" legendVisible="false" animated="false" VBox.vgrow="ALWAYS">
+                <xAxis><CategoryAxis label="Ressource"/></xAxis>
+                <yAxis><NumberAxis label="Quantite"/></yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="12" VBox.vgrow="ALWAYS">
+        <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="surface-panel chart-panel">
+            <Label text="Tendance mensuelle (ventes + reservations)" styleClass="wizard-step"/>
+            <LineChart fx:id="lineMonthlyTrend" animated="false" VBox.vgrow="ALWAYS">
+                <xAxis><CategoryAxis label="Mois"/></xAxis>
+                <yAxis><NumberAxis label="Valeur"/></yAxis>
+            </LineChart>
+        </VBox>
+        <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="surface-panel chart-panel">
+            <Label text="Paiements par provider" styleClass="wizard-step"/>
+            <BarChart fx:id="barPaymentProviders" legendVisible="false" animated="false" VBox.vgrow="ALWAYS">
+                <xAxis><CategoryAxis label="Provider"/></xAxis>
+                <yAxis><NumberAxis label="Paiements"/></yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
+
+    <Label fx:id="lblResultInfo" text="Ready." styleClass="hint"/>
+</VBox>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="root"
+      spacing="12"
+      maxWidth="420"
+      minWidth="380"
+      prefWidth="400"
+      styleClass="dialog-card"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Objective.ObjectiveInfoController">
+
+    <!-- title bar -->
+    <HBox fx:id="dragHandle" alignment="CENTER_LEFT" spacing="10" styleClass="dialog-header">
+        <Label text="Détail Objectif" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✕" onAction="#close" styleClass="btn-close"/>
+    </HBox>
+
+    <Label fx:id="nomLabel" wrapText="true"/>
+    <Label fx:id="priorityLabel"/>
+
+    <!-- description big but not “infinite” -->
+    <TextArea fx:id="descArea"
+              editable="false"
+              wrapText="true"
+              prefRowCount="6"
+              maxHeight="180"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Modifier" onAction="#modify" styleClass="btn-ghost"/>
+        <Button text="Supprimer" onAction="#delete" styleClass="btn-danger"/>
+    </HBox>
+</VBox>
+
+

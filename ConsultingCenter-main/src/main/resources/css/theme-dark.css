@@ -1,0 +1,417 @@
+.theme-dark {
+    -app-bg: #121821;
+    -surface-1: #1a2431;
+    -surface-2: #202d3d;
+    -surface-3: #243449;
+    -text-strong: #edf3fb;
+    -text-muted: #b6c3d3;
+    -border-soft: rgba(237, 243, 251, 0.16);
+    -accent-primary: #f39b4c;
+    -focus-ring: rgba(243, 155, 76, 0.55);
+
+    /* Keep strategy/investment module variables in sync in dark mode */
+    -cc-bg: #121821;
+    -cc-surface: #1a2431;
+    -cc-surface-soft: #223244;
+    -cc-text: #edf3fb;
+    -cc-muted: #b6c3d3;
+    -cc-border: rgba(237, 243, 251, 0.16);
+    -cc-shadow: rgba(0, 0, 0, 0.35);
+}
+
+.theme-dark.app,
+.theme-dark .app {
+    -fx-background-color: linear-gradient(to bottom, #121821, #162232);
+}
+
+/* Strategy/Investment module variables must override base.css defaults on their roots */
+.theme-dark .page-root,
+.theme-dark .dialog-root {
+    -cc-bg: #121821;
+    -cc-surface: #1a2431;
+    -cc-surface-soft: #223244;
+    -cc-text: #edf3fb;
+    -cc-muted: #b6c3d3;
+    -cc-border: rgba(237, 243, 251, 0.16);
+    -cc-shadow: rgba(0, 0, 0, 0.35);
+}
+
+/* Ensure center content area is dark even when child pages are transparent */
+.theme-dark #contentHost {
+    -fx-background-color: linear-gradient(to bottom, #162232, #1a2638);
+}
+
+.theme-dark .page-root,
+.theme-dark .page,
+.theme-dark .content {
+    -fx-background-color: linear-gradient(to bottom, #162232, #1a2638);
+}
+
+.theme-dark .sidebar,
+.theme-dark .brand-card,
+.theme-dark .profile {
+    -fx-background-color: -surface-3;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .topbar {
+    -fx-background-color: rgba(20, 29, 41, 0.92);
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .top-title,
+.theme-dark .module-title,
+.theme-dark .module-root .label,
+.theme-dark .home-page .label,
+.theme-dark .card-title,
+.theme-dark .stat-value,
+.theme-dark .profile-name,
+.theme-dark .home-hero-title,
+.theme-dark .home-section-title,
+.theme-dark .sidebar .nav .nav-btn .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .top-sub,
+.theme-dark .hint,
+.theme-dark .muted,
+.theme-dark .home-page .muted,
+.theme-dark .catalog-toolbar-caption,
+.theme-dark .stat-label,
+.theme-dark .card-meta,
+.theme-dark .profile-role,
+.theme-dark .sidebar-foot {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .card,
+.theme-dark .surface-panel,
+.theme-dark .toolbar-card,
+.theme-dark .resource-card,
+.theme-dark .stat-card,
+.theme-dark .reservation-section,
+.theme-dark .wizard-box,
+.theme-dark .review-panel,
+.theme-dark .notification-panel,
+.theme-dark .notification-item {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .module-root,
+.theme-dark .tab-pane {
+    -fx-background-color: linear-gradient(to bottom, #162232, #1a2638);
+}
+
+.theme-dark .chart .axis .tick-label {
+    -fx-fill: -text-strong;
+}
+
+.theme-dark .chart .axis-label,
+.theme-dark .chart .chart-title {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .module-root .text-field,
+.theme-dark .module-root .password-field,
+.theme-dark .module-root .combo-box,
+.theme-dark .module-root .text-area,
+.theme-dark .input,
+.theme-dark .search,
+.theme-dark .search-wrap {
+    -fx-background-color: #243245;
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+    -fx-prompt-text-fill: rgba(237, 243, 251, 0.55);
+}
+
+.theme-dark .text-field:focused,
+.theme-dark .password-field:focused,
+.theme-dark .combo-box:focused,
+.theme-dark .text-area:focused {
+    -fx-border-color: -focus-ring;
+}
+
+.theme-dark .icon-btn,
+.theme-dark .btn-ghost,
+.theme-dark .menu-ghost {
+    -fx-background-color: #28364a;
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .btn-primary {
+    -fx-background-color: -accent-primary;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: rgba(243, 155, 76, 0.65);
+    -fx-border-width: 1;
+}
+
+.theme-dark .btn-ghost,
+.theme-dark .btn-icon {
+    -fx-background-color: #33475f;
+    -fx-text-fill: -text-strong;
+    -fx-border-color: rgba(237, 243, 251, 0.25);
+}
+
+.theme-dark .btn-danger-outline {
+    -fx-background-color: rgba(243, 155, 76, 0.10);
+    -fx-text-fill: #ffd9b5;
+    -fx-border-color: rgba(243, 155, 76, 0.75);
+}
+
+.theme-dark .btn-close {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .sidebar .nav .nav-btn:hover,
+.theme-dark .sidebar .nav .nav-btn:hover .content {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+}
+
+.theme-dark .sidebar .nav .nav-btn {
+    -fx-opacity: 1;
+}
+
+.theme-dark .sidebar .nav .nav-btn .label {
+    -fx-text-fill: #e7eef8;
+    -fx-opacity: 1;
+}
+
+.theme-dark .sidebar .nav .nav-btn.nav-active,
+.theme-dark .sidebar .nav .nav-btn.nav-active .content {
+    -fx-background-color: rgba(243, 155, 76, 0.30);
+}
+
+.theme-dark .sidebar .nav .nav-btn.nav-active .label {
+    -fx-text-fill: #ffffff;
+}
+
+.theme-dark .combo-box-base > .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .combo-box .arrow {
+    -fx-background-color: -text-muted;
+}
+
+.theme-dark .combo-box-popup .list-view {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .combo-box-popup .list-cell:hover,
+.theme-dark .combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: rgba(243, 155, 76, 0.2);
+}
+
+.theme-dark .context-menu {
+    -fx-background-color: #1d2a3a;
+    -fx-border-color: -border-soft;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 4;
+}
+
+.theme-dark .context-menu .separator .line {
+    -fx-border-color: rgba(237, 243, 251, 0.14);
+}
+
+.theme-dark .context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+}
+
+.theme-dark .context-menu .menu-item > .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .context-menu .menu-item:hover,
+.theme-dark .context-menu .menu-item:focused {
+    -fx-background-color: rgba(243, 155, 76, 0.22);
+}
+
+.theme-dark .context-menu .menu-item:disabled > .label {
+    -fx-text-fill: rgba(237, 243, 251, 0.45);
+}
+
+.theme-dark .status-accepted {
+    -fx-background-color: rgba(46, 163, 106, 0.26);
+    -fx-text-fill: #d8ffe9;
+}
+
+.theme-dark .status-pending {
+    -fx-background-color: rgba(244, 197, 66, 0.24);
+    -fx-text-fill: #fff1c3;
+}
+
+.theme-dark .status-refused {
+    -fx-background-color: rgba(230, 84, 84, 0.24);
+    -fx-text-fill: #ffd5d5;
+}
+
+.theme-dark .status-progress {
+    -fx-background-color: rgba(80, 150, 255, 0.26);
+    -fx-text-fill: #d9e9ff;
+}
+
+.theme-dark .status-archived {
+    -fx-background-color: rgba(200, 200, 200, 0.24);
+    -fx-text-fill: #e7edf6;
+}
+
+.theme-dark .status-badge {
+    -fx-border-color: rgba(237, 243, 251, 0.28);
+    -fx-border-width: 1;
+}
+
+.theme-dark .table-view,
+.theme-dark .list-view {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .table-view .column-header-background,
+.theme-dark .table-view .column-header {
+    -fx-background-color: -surface-2;
+}
+
+.theme-dark .table-row-cell {
+    -fx-background-color: -surface-1;
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .table-row-cell:odd {
+    -fx-background-color: #223244;
+}
+
+.theme-dark .table-row-cell:selected,
+.theme-dark .list-cell:selected {
+    -fx-background-color: rgba(243, 155, 76, 0.25);
+}
+
+.theme-dark .button:disabled,
+.theme-dark .text-field:disabled,
+.theme-dark .password-field:disabled,
+.theme-dark .combo-box:disabled,
+.theme-dark .menu-button:disabled {
+    -fx-opacity: 0.75;
+}
+
+/* Dialogs and cards readability in dark mode */
+.theme-dark .dialog-root,
+.theme-dark .dialog-card,
+.theme-dark .dialog-container,
+.theme-dark .modal-box {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+}
+
+.theme-dark .dialog-root .text-field,
+.theme-dark .dialog-root .combo-box,
+.theme-dark .dialog-root .text-area,
+.theme-dark .dialog-container .text-field,
+.theme-dark .dialog-container .combo-box,
+.theme-dark .dialog-container .text-area {
+    -fx-background-color: #243245;
+    -fx-text-fill: -text-strong;
+    -fx-border-color: -border-soft;
+    -fx-prompt-text-fill: rgba(237, 243, 251, 0.55);
+}
+
+.theme-dark .dialog-root .label,
+.theme-dark .dialog-container .label,
+.theme-dark .dialog-card .label,
+.theme-dark .swot-chip-text,
+.theme-dark .swot-title,
+.theme-dark .swot-count {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .dialog-subtitle,
+.theme-dark .swot-chip-weight,
+.theme-dark .swot-empty,
+.theme-dark .card-meta,
+.theme-dark .stat-label {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .legend-panel .label,
+.theme-dark .quad-label .label,
+.theme-dark .chart-filters .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .quad-label {
+    -fx-background-color: rgba(19, 28, 40, 0.92);
+    -fx-border-color: rgba(237, 243, 251, 0.22);
+}
+
+.theme-dark .quad-title {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .quad-sub {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .chart-dialog-surface,
+.theme-dark .dialog-container.chart-dialog-surface {
+    -fx-background-color: -surface-1;
+    -fx-border-color: -border-soft;
+    -fx-opacity: 1;
+}
+
+.theme-dark .chart-filters .check-box .text {
+    -fx-fill: -text-strong;
+}
+
+.theme-dark .swot-addbar,
+.theme-dark .swot-card,
+.theme-dark .swot-chip {
+    -fx-background-color: #223244;
+    -fx-border-color: -border-soft;
+}
+
+/* Home quick guide readability */
+.theme-dark .home-page .card .home-section-title,
+.theme-dark .home-page .card > .label {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .home-guide-line {
+    -fx-text-fill: -text-strong;
+}
+
+/* Ensure strategy titles remain visible in dark mode */
+.theme-dark .title,
+.theme-dark .card-title,
+.theme-dark .dialog-title {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .home-hero-subtitle {
+    -fx-text-fill: #d6e3f3;
+}
+
+.theme-dark .home-role-line {
+    -fx-text-fill: #f3f8ff;
+}
+
+.theme-dark .card-sub {
+    -fx-text-fill: -text-muted;
+}
+
+.theme-dark .metric-line {
+    -fx-text-fill: -text-strong;
+}
+
+.theme-dark .nav-emoji {
+    -fx-text-fill: -text-strong;
+}

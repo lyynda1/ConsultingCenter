@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.advisora.GUI.Ressource.MarketplaceMyListingsController"
+      stylesheets="@../style/resource-module.css"
+      styleClass="module-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="toolbar-card">
+        <Label text="Mes annonces" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#onRefresh" styleClass="btn-ghost"/>
+        <Button text="Fermer" onAction="#onClose" styleClass="btn-ghost"/>
+    </HBox>
+
+    <Label text="Toutes vos annonces publiees sont visibles ici." styleClass="hint"/>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Mes annonces publiees" styleClass="module-subtitle"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnCancelListing" text="Annuler annonce selectionnee" onAction="#onCancelListing" styleClass="btn-ghost"/>
+        <Label text="Total:" styleClass="hint"/>
+        <Label fx:id="lblMyListingsCount" text="0" styleClass="hint"/>
+    </HBox>
+    <VBox VBox.vgrow="ALWAYS" styleClass="surface-panel">
+        <ListView fx:id="listMyListings" prefHeight="420" styleClass="card-list"/>
+    </VBox>
+    <Label fx:id="lblCancelHint" text="Selectionnez une annonce LISTED pour annuler." styleClass="hint"/>
+
+    <Label fx:id="lblStatus" text="Ready." styleClass="hint"/>
+</VBox>

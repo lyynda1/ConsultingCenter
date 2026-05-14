@@ -1,0 +1,397 @@
+/* =========================================
+   GLOBAL & VARIABLES
+   ========================================= */
+.page-root,
+.dialog-root,
+.root {
+    -cc-text: #1f1f1f;
+    -cc-muted: rgba(32, 32, 32, 0.72);
+    -cc-surface: #ffffff;
+    -cc-surface-soft: rgba(255, 255, 255, 0.94);
+    -cc-border: rgba(0, 0, 0, 0.10);
+
+    -primary: #ea7527;
+    -primary-dark: #d96f26;
+}
+
+/* =========================================
+   BUTTONS (base, icon, ghost, primary)
+   ========================================= */
+.btn-base {
+    -fx-cursor: hand;
+}
+
+.btn-icon {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 8 10 8 10;
+}
+
+.btn-icon:hover {
+    -fx-background-color: white;
+}
+
+.btn-primary {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.35), 12, 0.22, 0, 3);
+}
+
+.btn-primary:hover {
+    -fx-background-color: -primary-dark;
+}
+
+.btn-ghost {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 8 14 8 14;
+}
+
+.btn-ghost:hover {
+    -fx-background-color: white;
+}
+
+/* =========================================
+   COMBOBOX FILTERS
+   ========================================= */
+.filter-combo {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f1f1f;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 3);
+}
+
+.filter-combo:hover {
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-background-color: rgba(255,255,255,0.96);
+}
+
+.filter-combo:focused {
+    -fx-border-color: rgba(233,123,44,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.20), 18, 0.22, 0, 4);
+}
+
+.filter-combo .list-cell {
+    -fx-text-fill: #1f1f1f;
+    -fx-padding: 8 10 8 10;
+    -fx-background-color: transparent;
+}
+
+.filter-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.filter-combo .list-view .list-cell:hover {
+    -fx-background-color: rgba(233,123,44,0.12);
+}
+
+.filter-combo .list-view .list-cell:selected {
+    -fx-background-color: rgba(233,123,44,0.18);
+}
+
+/* =========================================
+   DIALOG / MODAL (ADDED MISSING STYLES)
+   ========================================= */
+.dialog-root {
+    -fx-background-color: transparent;
+}
+.dialog-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-background-insets: 0;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 24, 0.20, 0, 8);
+
+    -fx-opacity: 1;
+
+    -fx-min-width: 450;
+    -fx-pref-width: 450;
+}
+
+.dialog-header {
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 0 0 1 0;
+}
+
+/* =========================================
+   FORM INPUTS (ADDED MISSING STYLES)
+   ========================================= */
+TextField {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f1f1f;
+}
+
+TextField:focused {
+    -fx-border-color: rgba(233,123,44,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.20), 12, 0.22, 0, 3);
+}
+
+/* Applying the filter-combo style to standard ComboBoxes in the dialog */
+ComboBox {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f1f1f;
+}
+
+ComboBox:focused {
+    -fx-border-color: rgba(233,123,44,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.20), 12, 0.22, 0, 3);
+}
+
+/* =========================================
+   STAT CARDS
+   ========================================= */
+.stats {
+    -fx-padding: 10 0 10 0;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 14 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
+}
+
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(40,40,40,0.70);
+    -fx-font-weight: 600;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1f1f1f;
+}
+
+.stat-icon-chip {
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-background-radius: 999;
+    -fx-background-insets: 0;
+    -fx-alignment: center;
+}
+
+.stat-icon-text {
+    -fx-font-size: 15px;
+}
+
+.stat-icon-orange { -fx-background-color: rgba(233,123,44,0.18); }
+.stat-icon-yellow { -fx-background-color: rgba(244,197,66,0.22); }
+.stat-icon-green  { -fx-background-color: rgba(46,163,106,0.18); }
+
+/* =========================================
+   PAGE & HEADER
+   ========================================= */
+.page-root {
+    -fx-background-color: transparent;
+}
+
+.page {
+    -fx-background-color: transparent;
+}
+
+.header {
+    -fx-background-color: transparent;
+}
+
+.content {
+    -fx-background-color: transparent;
+}
+
+.title {
+    -fx-font-size: 31px;
+    -fx-font-weight: bold;
+}
+
+/* =========================================
+   LISTVIEW CARDS
+   ========================================= */
+.card-list {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.card-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12 0;
+    -fx-background-insets: 0;
+}
+
+.card-list .list-cell:filled:selected .card {
+    -fx-border-color: rgba(233,123,44,0.90);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.22), 18, 0.18, 0, 4);
+}
+
+.card {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 16 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
+}
+
+.card:hover {
+    -fx-border-color: rgba(233,123,44,0.35);
+}
+
+.card-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -cc-text;
+}
+
+.card-meta {
+    -fx-font-size: 15px;
+    -fx-text-fill: -cc-muted;
+}
+
+.card-sub {
+    -fx-font-size: 13px;
+    -fx-text-fill: -cc-muted;
+}
+
+.metric-line {
+    -fx-font-size: 13px;
+    -fx-text-fill: -cc-text;
+    -fx-font-weight: 600;
+}
+
+.roi-value {
+    -fx-font-size: 27px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1e7d32;
+}
+
+/* =========================================
+   DIALOG SPECIFIC STYLES
+   ========================================= */
+
+/* Root StackPane */
+.dialog-root {
+    -fx-background-color: transparent;
+}
+
+/* Dark overlay when loading */
+.dialog-overlay {
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-alignment: center;
+}
+
+/* White card – the actual dialog */
+.dialog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 24, 0.20, 0, 8);
+    -fx-min-width: 450;
+    -fx-pref-width: 450;
+}
+
+.chart-dialog-surface {
+    -fx-background-color: -cc-surface;
+    -fx-opacity: 1;
+    -fx-background-insets: 0;
+    -fx-border-color: -cc-border;
+}
+
+.dialog-header {
+    -fx-padding: 2 2 8 2;
+}
+
+/* Ensure btn-base exists (if not in base.css) */
+.btn-base {
+    -fx-cursor: hand;
+}
+
+.btn-ghost {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-border-width: 1;
+    -fx-padding: 8 14 8 14;
+}
+
+.btn-ghost:hover {
+    -fx-background-color: white;
+}
+
+.btn-primary {
+    -fx-background-color: #E97B2C;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 10;
+    -fx-padding: 8 14 8 14;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #d96f26;
+}
+
+/* Dark-mode reinforcement for strategy pages/dialogs that use this stylesheet directly */
+.theme-dark .metric-line {
+    -fx-text-fill: -cc-text;
+}
+
+.theme-dark .legend-sub {
+    -fx-text-fill: -cc-muted;
+}
+
+.theme-dark .chart .axis .tick-label {
+    -fx-fill: -cc-text;
+}
+
+.theme-dark .chart .axis-label,
+.theme-dark .chart .chart-title {
+    -fx-text-fill: -cc-text;
+}
+
+

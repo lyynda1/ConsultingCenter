@@ -1,0 +1,80 @@
+/* =========================
+   PROFILE PAGE
+   File: /GUI/Profile/profile.css
+   ========================= */
+
+.profile-root {
+    -fx-background-color: #f6f2ea; /* soft beige like your app */
+}
+
+.profile-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 22;
+    -fx-border-color: rgba(31,31,31,0.08);
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 16, 0.18, 0, 6);
+}
+
+.profile-title {
+    -fx-text-fill: #111827;
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+}
+
+.profile-sub {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.btn-primary {
+    -fx-background-color: #ea7527;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 14;
+    -fx-padding: 10 16 10 16;
+}
+
+.btn-primary:hover { -fx-opacity: 0.92; }
+
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 700;
+    -fx-background-radius: 14;
+    -fx-padding: 9 14 9 14;
+    -fx-border-color: rgba(31,31,31,0.12);
+    -fx-border-radius: 14;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(31,31,31,0.10);
+    -fx-border-radius: 14;
+    -fx-padding: 10 12 10 12;
+}
+
+.text-field:focused {
+    -fx-border-color: rgba(234,117,39,0.55);
+    -fx-border-width: 1.4;
+}
+
+.status-ok {
+    -fx-text-fill: #2ea44f;
+    -fx-font-weight: 800;
+}
+
+.status-err {
+    -fx-text-fill: #d11a2a;
+    -fx-font-weight: 800;
+}
+
+/* avatar circle look (works with clip in controller) */
+.avatar {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: rgba(31,31,31,0.10);
+    -fx-border-width: 2;
+}

@@ -1,0 +1,495 @@
+/* Reusable components for strategy pages and dialogs */
+
+.search {
+    -fx-background-color: -cc-surface-soft;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: -cc-border;
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 13px;
+    -fx-text-fill: -cc-text;
+    -fx-prompt-text-fill: rgba(60,60,60,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 3);
+}
+
+.search:focused {
+    -fx-border-color: -cc-accent-focus;
+    -fx-effect: dropshadow(gaussian, -cc-focus-soft, 18, 0.22, 0, 4);
+}
+
+.stats {
+    -fx-padding: 10 0 10 0;
+}
+
+.stat-card {
+    -fx-background-color: -cc-surface;
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 14 16 14 16;
+    -fx-min-height: 82;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.18, 0, 6);
+}
+
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -cc-muted;
+    -fx-font-weight: 600;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: -cc-text;
+}
+
+.stat-icon-chip {
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-pref-width: 34;
+    -fx-pref-height: 34;
+    -fx-background-radius: 999;
+    -fx-background-insets: 0;
+    -fx-alignment: center;
+}
+
+.stat-icon-text {
+    -fx-font-size: 15px;
+}
+
+.stat-icon-orange { -fx-background-color: -cc-accent-soft; }
+.stat-icon-yellow { -fx-background-color: -cc-warning-soft; }
+.stat-icon-green  { -fx-background-color: -cc-success-soft; }
+
+.badge,
+.status-badge {
+    -fx-background-color: #eaf3ff;
+    -fx-text-fill: -cc-text;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+    -fx-font-weight: 700;
+}
+
+.status-pending,
+.badge.status-pending { -fx-background-color: -cc-accent-soft; }
+.status-accepted,
+.badge.status-accepted { -fx-background-color: -cc-success-soft; }
+.status-refused,
+.badge.status-refused { -fx-background-color: -cc-danger-soft; }
+.status-archived,
+.badge.status-archived,
+.badge.status-non-affectee { -fx-background-color: rgba(221,155,106,0.38); }
+
+.btn-base,
+.btn-ghost,
+.btn-primary,
+.btn-success,
+.btn-danger,
+.btn-danger-outline,
+.btn-icon {
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.btn-base:pressed,
+.btn-ghost:pressed,
+.btn-primary:pressed,
+.btn-success:pressed,
+.btn-danger:pressed,
+.btn-danger-outline:pressed,
+.btn-icon:pressed {
+    -fx-translate-y: 1;
+}
+
+.btn-ghost {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0.18, 0, 2);
+}
+
+.btn-ghost:hover {
+    -fx-background-color: white;
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 12, 0.22, 0, 3);
+}
+
+.btn-primary {
+    -fx-background-color: -cc-accent;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.35), 12, 0.22, 0, 3);
+}
+
+.btn-primary:hover {
+    -fx-background-color: -cc-accent-strong;
+    -fx-effect: dropshadow(gaussian, rgba(233,123,44,0.45), 14, 0.24, 0, 4);
+}
+
+.btn-success {
+    -fx-background-color: -cc-success;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+
+.btn-success:hover {
+    -fx-background-color: #27905d;
+}
+
+.btn-danger {
+    -fx-background-color: -cc-danger;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(217,83,79,0.35), 12, 0.22, 0, 3);
+}
+
+.btn-danger:hover {
+    -fx-background-color: #d44333;
+}
+
+.btn-danger-outline {
+    -fx-background-color: transparent;
+    -fx-text-fill: -cc-accent;
+    -fx-font-weight: 800;
+    -fx-border-color: rgba(233,123,44,0.65);
+    -fx-border-width: 1.4;
+}
+
+.btn-danger-outline:hover {
+    -fx-background-color: rgba(233,123,44,0.10);
+    -fx-border-color: rgba(233,123,44,0.85);
+}
+
+.btn-icon {
+    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: 800;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+
+.btn-icon:hover {
+    -fx-background-color: white;
+}
+
+.btn-close {
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-opacity: 0.8;
+}
+
+.btn-close:hover { -fx-opacity: 1; }
+
+.filter-combo {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 13px;
+    -fx-text-fill: -cc-text;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.18, 0, 3);
+}
+
+.filter-combo:hover {
+    -fx-border-color: rgba(0,0,0,0.14);
+    -fx-background-color: rgba(255,255,255,0.96);
+}
+
+.filter-combo:focused {
+    -fx-border-color: -cc-accent-focus;
+    -fx-effect: dropshadow(gaussian, -cc-focus-soft, 18, 0.22, 0, 4);
+}
+
+.filter-combo .list-cell {
+    -fx-text-fill: -cc-text;
+    -fx-padding: 8 10 8 10;
+    -fx-background-color: transparent;
+}
+
+.filter-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 14;
+    -fx-padding: 0 8 0 6;
+}
+
+.filter-combo .arrow {
+    -fx-background-color: rgba(40,40,40,0.70);
+}
+
+.filter-combo .list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 18, 0.20, 0, 6);
+}
+
+.filter-combo .list-view .list-cell:hover {
+    -fx-background-color: rgba(233,123,44,0.12);
+}
+
+.filter-combo .list-view .list-cell:selected {
+    -fx-background-color: rgba(233,123,44,0.18);
+    -fx-text-fill: -cc-text;
+    -fx-font-weight: 700;
+}
+
+.overlay,
+.modal-overlay {
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-alignment: center;
+}
+
+.dialog-host {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-max-width: -fx-pref-width;
+    -fx-max-height: -fx-pref-height;
+}
+
+.dialog-card,
+.modal-box,
+.dialog-container {
+    -fx-background-color: -cc-surface;
+    -fx-background-insets: 0;
+    -fx-opacity: 1;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 24, 0.20, 0, 8);
+}
+
+.dialog-header {
+    -fx-padding: 2 2 8 2;
+}
+
+.dialog-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -cc-text;
+}
+
+.dialog-subtitle {
+    -fx-opacity: 0.85;
+}
+
+.obj-chips {
+    -fx-padding: 6 0 2 0;
+}
+
+.obj-chip {
+    -fx-background-color: rgba(233,123,44,0.12);
+    -fx-text-fill: -cc-text;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: rgba(233,123,44,0.35);
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+
+.obj-chip:hover {
+    -fx-background-color: rgba(233,123,44,0.18);
+    -fx-border-color: rgba(233,123,44,0.55);
+}
+
+.obj-empty {
+    -fx-text-fill: rgba(40,40,40,0.55);
+    -fx-font-style: italic;
+}
+
+.swot-addbar {
+    -fx-padding: 12;
+    -fx-background-radius: 18;
+    -fx-background-color: -cc-surface-soft;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.08);
+}
+
+.swot-card {
+    -fx-padding: 12;
+    -fx-background-radius: 16;
+    -fx-background-color: -cc-surface-soft;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+}
+
+.swot-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+}
+
+.swot-count {
+    -fx-opacity: 0.75;
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+}
+
+.swot-chip {
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-padding: 12 14 10 14;
+    -fx-background-color: rgba(255,255,255,0.98);
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0.3, 0, 2);
+    -fx-cursor: hand;
+}
+
+.swot-chip:hover {
+    -fx-background-color: rgba(255,255,255,1);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0.4, 0, 4);
+}
+
+.swot-chip-text {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: -cc-text;
+}
+
+.swot-chip-actions { -fx-alignment: center-left; }
+.swot-chip-weight  { -fx-opacity: 0.75; -fx-text-fill: -cc-text; }
+.swot-empty        { -fx-opacity: 0.7; -fx-padding: 8; -fx-text-fill: -cc-text; }
+
+.swot-scroll,
+.swot-scroll > .viewport,
+.swot-flow {
+    -fx-background-color: transparent;
+}
+
+.swot-strength    { -fx-border-color: rgba(60, 200, 120, 0.5); }
+.swot-weakness    { -fx-border-color: rgba(240, 90, 90, 0.5); }
+.swot-opportunity { -fx-border-color: rgba(80, 150, 255, 0.5); }
+.swot-threat      { -fx-border-color: rgba(255, 150, 60, 0.5); }
+
+.chip-btn {
+    -fx-background-radius: 10;
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.chip-btn-danger {
+    -fx-background-radius: 10;
+    -fx-background-color: rgba(255,80,80,0.20);
+}
+
+.chart-holder {
+    -fx-background-radius: 18;
+    -fx-background-color: -cc-surface-soft;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-padding: 10;
+}
+
+.chart {
+    -fx-background-color: transparent;
+}
+
+.chart-plot-background {
+    -fx-background-color: rgba(255,255,255,0.04);
+}
+
+.chart-horizontal-grid-lines,
+.chart-vertical-grid-lines {
+    -fx-stroke: rgba(255,255,255,0.08);
+}
+
+.chart-legend {
+    -fx-visible: false;
+}
+
+.chart-point {
+    -fx-cursor: hand;
+}
+
+.dot-accepted.chart-symbol { -fx-background-color: rgba(60,200,120,0.95), white; }
+.dot-progress.chart-symbol { -fx-background-color: rgba(80,150,255,0.95), white; }
+.dot-pending.chart-symbol  { -fx-background-color: rgba(244,180,0,0.95), white; }
+.dot-refused.chart-symbol  { -fx-background-color: rgba(255,90,90,0.95), white; }
+.dot-default.chart-symbol  { -fx-background-color: rgba(255,122,24,0.95), white; }
+
+.chart-symbol {
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+.chart-line-vertical .chart-series-line,
+.chart-line-horizontal .chart-series-line {
+    -fx-stroke: rgba(255,255,255,0.18);
+    -fx-stroke-dash-array: 6 6;
+    -fx-stroke-width: 1.5;
+}
+
+.chart-line-vertical .chart-symbol,
+.chart-line-horizontal .chart-symbol {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.quad-label {
+    -fx-max-width: 220px;
+    -fx-pref-width: -1;
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 14;
+    -fx-padding: 8 12 8 12;
+    -fx-border-color: rgba(0,0,0,0.12);
+    -fx-border-radius: 14;
+    -fx-opacity: 1;
+}
+
+.quad-title { -fx-font-weight: 800; -fx-text-fill: -cc-text; }
+.quad-sub   { -fx-opacity: 0.8; -fx-font-size: 11px; -fx-text-fill: -cc-text; }
+
+.legend-panel {
+    -fx-background-radius: 18;
+    -fx-background-color: -cc-surface-soft;
+    -fx-border-radius: 18;
+    -fx-border-color: -cc-border;
+    -fx-padding: 14;
+}
+
+.legend-title { -fx-font-weight: 800; -fx-font-size: 14px; -fx-text-fill: -cc-text; }
+.legend-sub   { -fx-opacity: 0.8; -fx-font-size: 11.5px; -fx-text-fill: -cc-muted; }
+
+.legend-dot {
+    -fx-min-width: 14px;
+    -fx-min-height: 14px;
+    -fx-max-width: 14px;
+    -fx-max-height: 14px;
+    -fx-background-radius: 7px;
+}
+
+.legend-dot.dot-accepted { -fx-background-color: rgba(60,200,120,0.95); }
+.legend-dot.dot-progress { -fx-background-color: rgba(80,150,255,0.95); }
+.legend-dot.dot-pending  { -fx-background-color: rgba(244,180,0,0.95); }
+.legend-dot.dot-refused  { -fx-background-color: rgba(255,90,90,0.95); }
+
+.chart-filters {
+    -fx-padding: 10;
+    -fx-background-radius: 16;
+    -fx-background-color: -cc-surface-soft;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+}
+
+.countdown-ok {
+    -fx-text-fill: #2b7a3d;
+    -fx-font-weight: 700;
+}
+
+.countdown-expired {
+    -fx-text-fill: #b2453a;
+    -fx-font-weight: 700;
+}
